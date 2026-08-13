@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	client *redis.Client
+	client                  *redis.Client
 	errClientNotInitialized = errors.New("redis client is not initialized")
 )
 
@@ -26,7 +26,6 @@ func ensureClient() error {
 func NewRedisDb() error {
 	client = redis.NewClient(&redis.Options{
 		Addr:            fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
-		Password:        os.Getenv("REDIS_PASSWORD"),
 		DB:              0,
 		PoolSize:        35,
 		MinIdleConns:    7,

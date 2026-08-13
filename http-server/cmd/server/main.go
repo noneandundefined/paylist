@@ -24,7 +24,7 @@ type httpServer struct {
 
 func main() {
 	/* .env - .env.production */
-	_ = godotenv.Load()
+	_ = godotenv.Load(".env.docker")
 
 	/* Inital logger */
 	logger.InitLogger()
