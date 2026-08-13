@@ -11,10 +11,13 @@ func (s *httpServer) cors(handler http.Handler) http.Handler {
 	env := os.Getenv("GO_ENV")
 
 	var origins []string
-	if env == "" {
+	if env == "DEV" {
 		origins = []string{"http://localhost:5173", "http://192.168.0.4:5173"}
 	} else {
-		origins = []string{"http://localhost:5173", "http://192.168.0.4:5173"}
+		origins = []string{
+			"https://paylist.site",
+			"https://challenges.cloudflare.com",
+		}
 	}
 
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"})

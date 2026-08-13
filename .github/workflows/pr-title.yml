@@ -1,0 +1,43 @@
+name: PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate conventional PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if echo "$TITLE" | grep -qiE '^\[wip\]'; then
+            echo "Skipped: WIP PR"
+            exit 0
+          fi
+
+          pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?!?: .+'
+
+          if echo "$TITLE" | grep -qiE "$pattern"; then
+            echo "PR title is valid: $TITLE"
+            exit 0
+          fi
+
+          echo "::error::Invalid PR title: \"$TITLE\""
+          echo ""
+          echo "Use conventional commit format:"
+          echo "  type: short description"
+          echo ""
+          echo "Examples:"
+          echo "  feat: add category analytics chart"
+          echo "  fix: correct currency conversion in summary"
+          echo "  ci: add GitHub Actions workflows"
+          echo "  chore: update dependabot config"
+          echo ""
+          echo "Breaking change:"
+          echo "  feat!: change subscription API response"
+          exit 1

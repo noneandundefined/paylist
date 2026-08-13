@@ -1,0 +1,37 @@
+backend:
+  - changed-files:
+      - any-glob-to-any-file: http-server/**
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: www-client/**
+
+scripts:
+  - changed-files:
+      - any-glob-to-any-file: scripts/**
+
+infra:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .nginx/**
+          - .systemd/**
+          - docker-compose.yml
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: .github/**
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - README.md
+          - http-server/README.md
+          - "**/*.md"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - http-server/go.mod
+          - http-server/go.sum
+          - www-client/package.json
+          - www-client/pnpm-lock.yaml

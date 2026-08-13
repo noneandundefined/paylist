@@ -1,0 +1,25 @@
+[Unit]
+Description=Paylist HTTPS Server (Main)
+After=network.target
+
+[Service]
+# даём время освободить порт
+ExecStartPre=/bin/sleep 2
+
+# запуск сервера
+ExecStart=/root/paylist/http-server/bin/paylist.http-0.x.x-linux-amd64
+WorkingDirectory=/root/paylist/http-server
+
+# настройки перезапуска
+Restart=on-failure
+RestartSec=10s
+TimeoutStopSec=10s
+KillSignal=SIGINT
+
+User=root
+Group=root
+LimitNOFILE=1048576
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

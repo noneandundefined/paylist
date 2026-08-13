@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /$
+Allow: /sign_in
+Allow: /sign_up
+Allow: /docs/legal/
+
+Disallow: /account
+Disallow: /analytics
+Disallow: /plans
+Disallow: /subscriptions
+Disallow: /pay
+Disallow: /authorize
+Disallow: /paylist-confirm-email
+Disallow: /paylist-sent-confirm-email
+
+Sitemap: https://paylist.site/sitemap.xml

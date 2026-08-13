@@ -11,5 +11,6 @@ set -e
 
 bash pre_deploy
 bash systemd
+bash setup_nginx
 
 echo "All scripts have been successfully executed"

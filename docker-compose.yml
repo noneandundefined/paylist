@@ -13,9 +13,11 @@ services:
             retries: 5
     redis:
         image: redis:8
-        command: redis-server --requirepass redispass
+        command: redis-server --requirepass redispass --appendonly yes --appendfsync everysec
         ports:
             - '6379:6379'
+        volumes:
+            - redis_data:/data
         healthcheck:
             test: ['CMD', 'redis-cli', 'ping']
             interval: 5s
@@ -39,38 +41,14 @@ services:
         build:
             context: http-server
             dockerfile: Dockerfile
+        env_file: '.env.docker'
         volumes:
             - ./http-server:/app
         command: air
         ports:
             - '8080:8080'
-        environment:
-            - DB_ADDR=postgres://postgres:password@host.docker.internal:5432/paylist?sslmode=disable
-            - SUPER_SECRET_KEY=N8YcJ1Xz+MklT+hHQ+NFQShHRJqRHkMlz3i6D9Zb9h8=
-            - IV=OAjRZ1rf+SQZlPku
-
-            - SERVER_BASE_ADDR=http://localhost:8080/api/v1
-
-            - SMTP_EMAIL=infoneomatica.drc@gmail.com
-            - SMTP_ADDR=smtp.gmail.com
-            - SMTP_PORT=587
-            - SMTP_EMAIL_PASSWORD=
-            - SMTP_PASSWORD=ffmiynrpwfsaweak
-            - CLIENT_URL=http://localhost:5173
-
-            - YOOKASSA_SHOP_ID=1379414
-            - YOOKASSA_SECRET_KEY=test_8lLSG1UaByzxWV2f_aF5Wway3D4tW9kL_dhZPB_FzSM
-            - YOOKASSA_RETURN_URL=http://localhost:5173/pay
-
-            - REDIS_HOST=redis
-            - REDIS_PORT=6379
-            - REDIS_PASSWORD=redispass
-
-            - POW_DDOS_DIFFICULTY=3
-            - POW_DDOS_SECRET=85eda0ad95a8f5a7b489ad9f74f2d348
-
-            - LOG_DIR=./logs
-            - GO_ENV=DEV
         depends_on:
             - db
             - redis
+volumes:
+    redis_data:

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Backend README
+    url: https://github.com/noneandundefined/paylist#readme
+    about: Server setup, migrations, and API notes
+  - name: Releases
+    url: https://github.com/noneandundefined/paylist/releases
+    about: Download the latest release
