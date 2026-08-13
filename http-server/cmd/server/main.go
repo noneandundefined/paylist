@@ -23,7 +23,7 @@ type httpServer struct {
 }
 
 func main() {
-	/* .env - .env.production */
+	/* local: .env.docker | deploy replaces via scripts/pre_deploy */
 	_ = godotenv.Load(".env.docker")
 
 	/* Inital logger */

@@ -69,11 +69,11 @@ else
 fi
 
 cd "$HOME/http-server"
-if sed -i.bak "s/godotenv.Load()/godotenv.Load(\"$ENV_FILE\")/" "$HOME/$FILE_GO_HTTP"; then
-    echo -e "Значение переменной Load() заменено в $FILE_GO_HTTP"
+if sed -i.bak -E "s/godotenv\.Load\(\"[^\"]*\"\)/godotenv.Load(\"$ENV_FILE\")/" "$HOME/$FILE_GO_HTTP"; then
+	echo -e "Значение godotenv.Load заменено на \"$ENV_FILE\" в $FILE_GO_HTTP"
 else
-    echo -e "Ошибка: Не удалось заменить значение в файле $FILE_GO_HTTP."
-    exit 1
+	echo -e "Ошибка: Не удалось заменить значение в файле $FILE_GO_HTTP."
+	exit 1
 fi
 
 cd "$HOME/http-server"
