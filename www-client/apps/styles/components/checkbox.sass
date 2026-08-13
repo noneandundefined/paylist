@@ -1,0 +1,30 @@
+/* CHECKBOX STYLING */
+
+.check-custom[type='checkbox']
+	position: relative
+	width: 55px
+	height: 25px
+	-webkit-appearance: none
+	background: #e6eaef
+	outline: none
+	border-radius: 12px
+	transition: 0.2s
+	cursor: pointer
+
+	&:checked
+		background: #35c758
+
+	&:before
+		content: ''
+		position: absolute
+		width: 31px
+		height: 18px
+		border-radius: 12px
+		top: 50%
+		left: 4px
+		background: #fff
+		transform: translateY(-50%)
+		transition: 0.3s
+
+	&:checked:before
+		left: 38%

@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+    db:
+        image: postgres
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: paylist
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 5s
+            retries: 5
+    redis:
+        image: redis:8
+        command: redis-server --requirepass redispass
+        ports:
+            - '6379:6379'
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            retries: 5
+
+    # client:
+    #     build:
+    #         context: www-client
+    #         dockerfile: Dockerfile
+    #     ports:
+    #         - '5173:5173'
+    #     volumes:
+    #         - ./www-client:/app
+    #         - /app/node_modules
+    #     depends_on:
+    #         - db
+    #         - redis
+
+    http_server:
+        restart: always
+        build:
+            context: http-server
+            dockerfile: Dockerfile
+        volumes:
+            - ./http-server:/app
+        command: air
+        ports:
+            - '8080:8080'
+        environment:
+            - DB_ADDR=postgres://postgres:password@host.docker.internal:5432/paylist?sslmode=disable
+            - SUPER_SECRET_KEY=N8YcJ1Xz+MklT+hHQ+NFQShHRJqRHkMlz3i6D9Zb9h8=
+            - IV=OAjRZ1rf+SQZlPku
+
+            - SERVER_BASE_ADDR=http://localhost:8080/api/v1
+
+            - SMTP_EMAIL=infoneomatica.drc@gmail.com
+            - SMTP_ADDR=smtp.gmail.com
+            - SMTP_PORT=587
+            - SMTP_EMAIL_PASSWORD=
+            - SMTP_PASSWORD=ffmiynrpwfsaweak
+            - CLIENT_URL=http://localhost:5173
+
+            - YOOKASSA_SHOP_ID=1379414
+            - YOOKASSA_SECRET_KEY=test_8lLSG1UaByzxWV2f_aF5Wway3D4tW9kL_dhZPB_FzSM
+            - YOOKASSA_RETURN_URL=http://localhost:5173/pay
+
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - REDIS_PASSWORD=redispass
+
+            - POW_DDOS_DIFFICULTY=3
+            - POW_DDOS_SECRET=85eda0ad95a8f5a7b489ad9f74f2d348
+
+            - LOG_DIR=./logs
+            - GO_ENV=DEV
+        depends_on:
+            - db
+            - redis

@@ -1,0 +1,77 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"paylist.server/infra/logger"
+)
+
+const (
+	cronPaymentsClearPending          = "payments.clear-pending"
+	cronSubscriptionsAutoRenew        = "subscriptions.auto-renew"
+	cronSubscriptionsTelegramNotify   = "subscriptions.telegram-notify"
+	cronSubscriptionsNotifyLogCleanup = "subscriptions.notify-log-cleanup"
+	cronUsersResetExpiredPlans        = "users.reset-expired-plans"
+)
+
+func cronContext(job string) context.Context {
+	return context.WithValue(context.Background(), "XREQID", fmt.Sprintf("cron:%s", job))
+}
+
+func (s *httpServer) runCronJob(job string, fn func(context.Context) error) {
+	ctx := cronContext(job)
+	started := time.Now()
+
+	logger.Info("[%s] started", job)
+
+	if err := fn(ctx); err != nil {
+		logger.Error("[%s] failed after %s: %s", job, time.Since(started), err.Error())
+		return
+	}
+
+	logger.Info("[%s] finished in %s", job, time.Since(started))
+}
+
+func (s *httpServer) startCronJobs() {
+	// Stale YooKassa pending payments (>10 min) — every 5 minutes.
+	s.cron.AddFunc("@every 5m", func() {
+		s.runCronJob(cronPaymentsClearPending, func(ctx context.Context) error {
+			return s.store.Payments.Delete_PaymentWithStatusPending(ctx)
+		})
+	})
+
+	// Auto-renew tracked subscriptions whose billing date has passed — daily 00:10 UTC.
+	// Runs before telegram reminders so dates stay consistent.
+	s.cron.AddFunc("0 10 0 * * *", func() {
+		s.runCronJob(cronSubscriptionsAutoRenew, func(ctx context.Context) error {
+			return s.store.TrackedSubscriptions.Update_SubscriptionsMounth(ctx)
+		})
+	})
+
+	// Telegram reminders 3 days before and on billing day — daily 09:00 UTC.
+	if s.telegram != nil {
+		s.cron.AddFunc("0 0 9 * * *", func() {
+			s.runCronJob(cronSubscriptionsTelegramNotify, func(ctx context.Context) error {
+				return s.telegram.SendDueReminders(ctx)
+			})
+		})
+	}
+
+	// Downgrade expired Premium SaaS plans to Free — daily 23:55 UTC.
+	s.cron.AddFunc("0 55 23 * * *", func() {
+		s.runCronJob(cronUsersResetExpiredPlans, func(ctx context.Context) error {
+			return s.store.Users.Update_UserSubscriptionResetExpired(ctx)
+		})
+	})
+
+	// Notification dedup log retention — weekly Sunday 03:30 UTC, keep 90 days.
+	s.cron.AddFunc("0 30 3 * * 0", func() {
+		s.runCronJob(cronSubscriptionsNotifyLogCleanup, func(ctx context.Context) error {
+			return s.store.TrackedSubscriptions.Delete_OldSubscriptionNotificationLogs(ctx, 90)
+		})
+	})
+
+	logger.Info("Cron scheduler registered: payments.clear-pending@5m, subscriptions.auto-renew@00:10, subscriptions.telegram-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
+}

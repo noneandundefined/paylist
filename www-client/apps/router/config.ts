@@ -1,0 +1,95 @@
+import { ROUTES } from '@/constants/constants';
+import { lazy, LazyExoticComponent } from 'react';
+
+const HomePage = lazy(() => import('@/pages/HomePage/index'));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/index'));
+
+const SubscriptionDetailPage = lazy(() => import('@/pages/TrackedSubscriptionPage/index'));
+const CreateSubscriptionPage = lazy(() => import('@/pages/CreateSubscriptionPage/index'));
+
+const PlansPage = lazy(() => import('@/pages/PlansPage/index'));
+const AccountPage = lazy(() => import('@/pages/AccountPage/index'));
+const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
+
+/** Auth */
+const SignInPage = lazy(() => import('@/pages/SignInPage/index'));
+const SignUpPage = lazy(() => import('@/pages/SignUpPage/index'));
+const ConfirmEmail = lazy(() => import('@/pages/ConfirmEmailPage/index'));
+
+export interface CustomRouteConfig {
+	path: string;
+	title?: string;
+	loginRequired?: boolean;
+	redirectIfLogged?: boolean;
+	component: LazyExoticComponent<() => JSX.Element>;
+}
+
+const config: CustomRouteConfig[] = [
+	{
+		path: ROUTES.HOME,
+		loginRequired: true,
+		component: HomePage,
+		title: 'label.page-home',
+	},
+	{
+		path: ROUTES.SUBSCRIPTION_CREATE,
+		loginRequired: true,
+		component: CreateSubscriptionPage,
+		title: 'subscription.create-title',
+	},
+	{
+		path: ROUTES.SUBSCRIPTION_DETAIL,
+		loginRequired: true,
+		component: SubscriptionDetailPage,
+		title: 'subscription.detail-title',
+	},
+	{
+		path: ROUTES.ANALYTICS,
+		loginRequired: true,
+		component: AnalyticsPage,
+		title: 'label.page-analytics',
+	},
+	{
+		path: ROUTES.ACCOUNT,
+		loginRequired: true,
+		component: AccountPage,
+		title: 'label.page-account',
+	},
+	{
+		path: ROUTES.PLANS,
+		loginRequired: true,
+		component: PlansPage,
+		title: 'label.page-plans',
+	},
+	{
+		path: ROUTES.NOT_FOUND,
+		loginRequired: false,
+		redirectIfLogged: false,
+		component: NotFoundPage,
+		title: 'label.page-not-found',
+	},
+	/** AUTH */
+	{
+		path: ROUTES.SIGNIN,
+		loginRequired: false,
+		redirectIfLogged: true,
+		component: SignInPage,
+		title: 'label.page-signin',
+	},
+	{
+		path: ROUTES.SIGNUP,
+		loginRequired: false,
+		redirectIfLogged: true,
+		component: SignUpPage,
+		title: 'label.page-signup',
+	},
+	{
+		path: ROUTES.AUTH_CONFIRM_EMAIL,
+		loginRequired: false,
+		redirectIfLogged: true,
+		component: ConfirmEmail,
+		title: 'label.page-confirm-email',
+	},
+];
+
+export default config;

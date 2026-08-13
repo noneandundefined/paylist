@@ -1,0 +1,15 @@
+.npm/
+.vs/
+.vscode/
+.cache/
+Debug/
+Release/
+
+go/
+node/
+choco/
+__pycache__
+python/
+
+.idea/
+tmp/

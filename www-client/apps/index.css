@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	font-family:
+		'Karla',
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		Roboto,
+		'Helvetica Neue',
+		Arial,
+		sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+	font-size: 15px;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	--color-primary-base: #1976d2;
+	--color-primary-darken1: #005eb6;
+
+	--bg-page: #f7f7f7;
+	--text-primary: #0f172a;
+	--text-secondary: #475569;
+	--text-muted: #64748b;
+	--surface: #ffffff;
+	--surface-muted: #f0f0f0;
+	--surface-hover: rgba(255, 255, 255, 0.75);
+	--surface-border: rgba(255, 255, 255, 0.8);
+	--divider: #f1f5f9;
+	--shadow-soft: rgba(15, 23, 42, 0.05);
+	--focus-ring: rgba(0, 0, 0, 0.1);
+	--modal-overlay: rgba(0, 0, 0, 0.3);
+
+	--overdue-bg: color-mix(in srgb, #fef2f2 72%, var(--surface));
+	--overdue-bg-hover: color-mix(in srgb, #fee2e2 78%, var(--surface));
+	--overdue-border: rgba(252, 165, 165, 0.65);
+	--overdue-text: #991b1b;
+	--overdue-text-muted: #b91c1c;
+	--overdue-badge-bg: #fee2e2;
+	--overdue-badge-text: #991b1b;
+}
+
+.dark {
+	color-scheme: dark;
+
+	--bg-page: #0b0d12;
+	--text-primary: #f1f5f9;
+	--text-secondary: #cbd5e1;
+	--text-muted: #94a3b8;
+	--surface: #151922;
+	--surface-muted: #1e2430;
+	--surface-hover: rgba(255, 255, 255, 0.08);
+	--surface-border: rgba(255, 255, 255, 0.08);
+	--divider: rgba(255, 255, 255, 0.06);
+	--shadow-soft: rgba(0, 0, 0, 0.35);
+	--focus-ring: rgba(255, 255, 255, 0.12);
+	--modal-overlay: rgba(0, 0, 0, 0.55);
+
+	--overdue-bg: color-mix(in srgb, #7f1d1d 22%, var(--surface));
+	--overdue-bg-hover: color-mix(in srgb, #7f1d1d 30%, var(--surface));
+	--overdue-border: rgba(248, 113, 113, 0.24);
+	--overdue-text: #fca5a5;
+	--overdue-text-muted: #f87171;
+	--overdue-badge-bg: rgba(127, 29, 29, 0.55);
+	--overdue-badge-text: #fecaca;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	color: var(--text-primary);
+	background-color: var(--bg-page);
+}
+
+a {
+	color: var(--color-primary-base);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+#root {
+	min-height: 100vh;
+}
+
+.gu-scrollbar-hidden {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.gu-scrollbar-hidden::-webkit-scrollbar {
+	display: none;
+}
+
+@layer components {
+	.gu-page-bg {
+		background-color: var(--bg-page);
+	}
+
+	.gu-text-primary {
+		color: var(--text-primary);
+	}
+
+	.gu-text-secondary {
+		color: var(--text-secondary);
+	}
+
+	.gu-text-muted {
+		color: var(--text-muted);
+	}
+
+	.gu-divide {
+		border-color: var(--divider);
+	}
+
+	.gu-field {
+		@apply w-full rounded-xl border-0 px-4 py-3.5 text-[15px] outline-none transition disabled:cursor-not-allowed disabled:opacity-50;
+		background-color: var(--surface-muted);
+		color: var(--text-primary);
+	}
+
+	.gu-field::placeholder {
+		color: var(--text-muted);
+	}
+
+	.gu-field:focus {
+		box-shadow: 0 0 0 2px var(--focus-ring);
+	}
+
+	.gu-glass {
+		border: 1px solid var(--surface-border);
+		background-color: color-mix(in srgb, var(--surface) 55%, transparent);
+		backdrop-filter: blur(3px);
+		box-shadow:
+			0 1px 2px var(--shadow-soft),
+			inset 0 1px 0 color-mix(in srgb, var(--surface) 92%, transparent);
+	}
+
+	.gu-glass-card {
+		border: 1px solid var(--surface-border);
+		background-color: var(--surface);
+		border-radius: 20px;
+		box-shadow:
+			0 1px 2px var(--shadow-soft),
+			inset 0 1px 0 color-mix(in srgb, var(--surface) 92%, transparent);
+	}
+
+	.gu-glass-pill {
+		@apply gu-glass rounded-full;
+	}
+
+	.gu-glass-icon-btn {
+		@apply gu-glass-pill inline-flex h-12 w-12 items-center justify-center transition;
+		color: var(--text-secondary);
+	}
+
+	.gu-glass-icon-btn:hover {
+		background-color: var(--surface-hover);
+	}
+
+	.gu-glass-fab {
+		@apply gu-glass-pill inline-flex h-14 w-14 items-center justify-center transition;
+		color: var(--text-primary);
+	}
+
+	.gu-glass-fab:hover {
+		background-color: var(--surface-hover);
+	}
+
+	.gu-glass-input {
+		@apply gu-glass gu-field rounded-full text-sm;
+	}
+
+	.gu-glass-input:focus {
+		background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+		box-shadow:
+			0 0 0 3px color-mix(in srgb, var(--surface) 65%, transparent),
+			0 4px 18px var(--shadow-soft),
+			inset 0 1px 0 var(--surface);
+	}
+
+	.gu-glass-input--error {
+		@apply border-red-300/80 bg-red-50/40;
+	}
+
+	.dark .gu-glass-input--error {
+		@apply border-red-400/40 bg-red-950/20;
+	}
+
+	.gu-glass-input--error:focus {
+		@apply border-red-300 bg-red-50/55;
+		box-shadow:
+			0 0 0 3px rgba(248, 113, 113, 0.22),
+			0 4px 18px rgba(248, 113, 113, 0.12),
+			inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	}
+
+	.gu-glass-icon-btn--dark {
+		@apply inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-xl transition hover:bg-white/20;
+		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+	}
+
+	.gu-chip {
+		@apply rounded-full px-3 py-1.5 text-[13px] font-medium transition;
+		background-color: var(--surface-muted);
+		color: var(--text-secondary);
+	}
+
+	.gu-chip--active {
+		@apply bg-[#d7ff00] text-black;
+	}
+
+	.gu-accent-badge {
+		@apply bg-[#d7ff00] px-0.5 text-black;
+	}
+
+	.gu-btn-primary {
+		@apply w-full rounded-full bg-[#d7ff00] py-3.5 text-[15px] font-semibold text-black transition hover:bg-[#d7ff00]/90 disabled:cursor-not-allowed disabled:opacity-50;
+	}
+
+	.gu-modal-surface {
+		background-color: var(--surface);
+		color: var(--text-primary);
+	}
+
+	.gu-modal-option {
+		@apply relative flex cursor-pointer list-none items-center gap-3 rounded-xl px-3 py-4 transition;
+	}
+
+	.gu-modal-option:hover {
+		background-color: var(--surface-muted);
+	}
+
+	.gu-modal-option--selected {
+		background-color: color-mix(in srgb, var(--surface-muted) 85%, var(--text-primary) 15%);
+	}
+
+	.gu-premium-gradient-text {
+		background: linear-gradient(135deg, #0085ff 0%, #22a1ff 55%, #60d1ff 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+	}
+
+	.gu-overdue-surface {
+		border-color: var(--overdue-border) !important;
+		background-color: var(--overdue-bg) !important;
+	}
+
+	a.gu-overdue-surface:hover {
+		background-color: var(--overdue-bg-hover) !important;
+	}
+
+	.gu-overdue-title {
+		color: var(--overdue-text);
+	}
+
+	.gu-overdue-muted {
+		color: var(--overdue-text-muted);
+	}
+
+	.gu-overdue-badge {
+		background-color: var(--overdue-badge-bg);
+		color: var(--overdue-badge-text);
+	}
+}

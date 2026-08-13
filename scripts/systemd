@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -e
+
+# COLORS
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+HOME="$(git rev-parse --show-toplevel)"
+GO_VERSION="1.23.0"
+
+if ! command -v go &>/dev/null; then
+    echo -e "${YELLOW}Golang not found. Install...${NC}"
+    if ! command -v wget &> /dev/null; then
+        echo "Installing wget..."
+        sudo apt-get update
+        sudo apt-get install -y wget
+    fi
+
+    # Скачиваем Go 1.23.0
+    echo "Downloading Go ${GO_VERSION} for Linux..."
+    wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+
+    # Удаляем старую версию если есть
+    echo "Removing old Go installation if exists..."
+    sudo rm -rf /usr/local/go
+
+    # Распаковываем в /usr/local
+    echo "Installing Go..."
+    sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz
+
+    if [[ ":$PATH:" != *":/usr/local/go/bin:"* ]]; then
+        echo "Adding Go to PATH..."
+        echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+        source ~/.bashrc
+    fi
+
+    rm go${GO_VERSION}.linux-amd64.tar.gz
+    go version
+else
+    echo -e "Golang already install."
+fi
+
+cd "$HOME"
+make build
+
+sudo cp "$HOME/.systemd/SubscriptionPlusServer.service" /etc/systemd/system/
+sudo cp "$HOME/.systemd/SubscriptionPlusReservServer.service" /etc/systemd/system/
+
+sudo systemctl stop SubscriptionPlusServer.service
+sudo systemctl stop SubscriptionPlusReservServer.service
+
+sudo systemctl daemon-reload
+
+sudo systemctl start SubscriptionPlusServer.service
+sudo systemctl start SubscriptionPlusReservServer.service
+
+sudo systemctl status SubscriptionPlusServer.service
+sudo systemctl status SubscriptionPlusReservServer.service
+
+sudo systemctl enable SubscriptionPlusServer.service
+sudo systemctl enable SubscriptionPlusReservServer.service
+
+echo -e "${GREEN}Successful creation and launch of systemd services!${NC}"
