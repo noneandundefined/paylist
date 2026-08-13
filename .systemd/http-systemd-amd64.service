@@ -7,7 +7,7 @@ After=network.target
 ExecStartPre=/bin/sleep 2
 
 # запуск сервера
-ExecStart=/root/paylist/http-server/bin/paylist.http-0.x.x-linux-amd64
+ExecStart=/root/paylist/http-server/bin/paylist.server-0.x.x-linux-amd64
 WorkingDirectory=/root/paylist/http-server
 
 # настройки перезапуска

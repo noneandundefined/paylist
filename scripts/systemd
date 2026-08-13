@@ -19,7 +19,13 @@ sudo systemctl daemon-reload
 
 sudo systemctl start http-systemd-amd64.service
 
-sudo systemctl status http-systemd-amd64.service
+if ! sudo systemctl is-active --quiet http-systemd-amd64.service; then
+	echo -e "${RED}Сервис http-systemd-amd64 не запустился.${NC}" >&2
+	sudo journalctl -u http-systemd-amd64.service -n 30 --no-pager >&2
+	exit 1
+fi
+
+sudo systemctl status http-systemd-amd64.service --no-pager || true
 
 sudo systemctl enable http-systemd-amd64.service
 
