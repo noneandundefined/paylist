@@ -8,6 +8,10 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=env.sh
+source "$SCRIPT_DIR/env.sh"
+
 export PATH=/usr/local/go/bin:$PATH
 
 # COLORS
