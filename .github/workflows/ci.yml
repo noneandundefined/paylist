@@ -1,0 +1,51 @@
+name: CI
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches: ['**']
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    http_server_build:
+        name: Build binary http server
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build binary
+              run: |
+                  make
+
+    deploy_prod:
+        name: Deploy production
+        runs-on: ubuntu-latest
+        needs: [http_server_build]
+        if: github.ref == 'refs/heads/main'
+        steps:
+            - uses: actions/checkout@v3
+            - name: SSH Deploy
+              uses: appleboy/ssh-action@v0.1.10
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  password: ${{ secrets.VPS_PASSWORD }}
+                  port: 22
+                  script: |
+                      set -e
+
+                      cd /root/paylist
+
+                      git fetch origin
+                      git reset --hard origin/main
+
+                      cd ./scripts
+
+                      export PATH=/usr/local/go/bin:$PATH
+
+                      bash pre_deploy
+                      bash systemd
+                      bash setup_nginx
