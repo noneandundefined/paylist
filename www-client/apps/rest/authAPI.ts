@@ -2,6 +2,7 @@ import axiosClient from './axios';
 import { ROUTES } from '@/constants/constants';
 import { notify } from '@/components/Notification/notify';
 import { CACHEKEYs } from '@/constants/CacheKeys.constants';
+import { clearAuthSession } from '@/utils/authSessionUtils';
 import { apiGet, apiPost } from '@/rest/apiClient';
 import type { AuthSigninRequest } from '@/interface/auth/authSigninRequest.interface';
 import type { AuthSignupRequest } from '@/interface/auth/authSignupRequest.interface';
@@ -42,8 +43,11 @@ export const basicAuthConfirmPending = async (email: string): Promise<{ pending:
 export const basicAuthConfirmEmail = async (exp: unknown, sig: unknown, uuid: unknown): Promise<AuthConfirmResponse> => apiGet(`${apiPath}/confirm?exp=${exp}&sig=${sig}&uuid=${uuid}`);
 
 export const basicAuthSignOut = async (): Promise<void> => {
-	const message = await apiPost<string>(`${apiPath}/signout`);
-	notify.success(message);
-
-	window.location.replace(ROUTES.SIGNIN);
+	try {
+		const message = await apiPost<string>(`${apiPath}/signout`);
+		notify.success(message);
+	} finally {
+		clearAuthSession();
+		window.location.replace(ROUTES.SIGNIN);
+	}
 };

@@ -17,6 +17,7 @@ export const useLoginState = () => {
 
 	const displayName = loginState ? getUserDisplayName(loginState) : 'user';
 	const initials = getInitialsFromName(displayName);
+	const avatar = loginState?.avatars ?? null;
 	const isPremium = isPremiumPlan(loginState?.plan_name);
 	const canUseNotification = isPremium && (loginState?.notification_subscriptions ?? false);
 
@@ -27,6 +28,7 @@ export const useLoginState = () => {
 		updateHServer,
 		displayName,
 		initials,
+		avatar,
 		isPremium,
 		canUseNotification,
 	};

@@ -144,6 +144,7 @@ func (s *UserStore) Get_UserLoginStateByUserUuid(ctx context.Context, userUuid s
 			user_cores.email_confirmed,
 			user_cores.first_name,
 			user_cores.last_name,
+			user_cores.avatars,
 			user_subscriptions.plan_name,
 			user_subscriptions.valid_to,
 			COALESCE(subscriptions.amount, 0) AS amount,
@@ -271,6 +272,22 @@ func (s *UserStore) Update_UserProfile(ctx context.Context, userUuid string, fir
 	_, err := s.db.ExecContext(ctx, query, firstName, lastName, userUuid)
 	if err != nil {
 		logger.Error("Update_UserProfile req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserStore) Update_UserAvatar(ctx context.Context, userUuid string, avatarURL string) error {
+	query := `
+		UPDATE user_cores SET avatars = $1 WHERE user_uuid = $2
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	if _, err := s.db.ExecContext(ctx, query, avatarURL, userUuid); err != nil {
+		logger.Error("Update_UserAvatar req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
 		return err
 	}
 

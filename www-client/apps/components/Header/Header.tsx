@@ -21,12 +21,12 @@ const getGreetingKey = (): string => {
 
 const Header = () => {
 	const { t } = useTranslation();
-	const { displayName, initials, isPremium } = useLoginState();
+	const { displayName, initials, avatar, isPremium } = useLoginState();
 
 	return (
 		<header className="mb-5 flex items-center justify-between gap-3">
 			<Link to={ROUTES.ACCOUNT} className="flex min-w-0 items-center gap-3 cursor-pointer no-underline hover:no-underline">
-				<UserAvatar initials={initials} isPremium={isPremium} size="sm" />
+				<UserAvatar initials={initials} isPremium={isPremium} size="sm" src={avatar} />
 
 				<div className="min-w-0">
 					<p className="truncate text-[13px] gu-text-muted">{t(getGreetingKey())}</p>

@@ -37,24 +37,18 @@ func (h *Handler) sendConfirmEmail(ctx context.Context, email string, userUUID s
 
 	go func() {
 		if errSendEmail := pkg.SendEmail(email, tr.T("confirm-email-title"), fmt.Sprintf(`
-				<body>
-					<p>%s <b>%s</b></p>
-					<p>%s:</p>
+				<p>%s</p>
 
-					<a href="%s">
-						%s
-					</a>
+				<div style="border-left:4px solid #0085FF; padding:4px 0 4px 16px; margin:16px 0;">
+					<a href="%s" style="color:#0085FF; text-decoration:underline; font-weight:bold;">%s</a>
+				</div>
 
-					<p>%s</p>
-					<p>P.S. %s</p>
-				</body>
+				<p>%s</p>
 			`,
-			tr.T("request-email-mail"), email,
-			tr.T("go-to-link-confirm-email"),
+			tr.T("email-account-created"),
 			link,
-			link,
+			tr.T("email-confirm-cta"),
 			tr.T("exp-limit-reset-password"),
-			tr.T("email-created-automatic"),
 		), tr); errSendEmail != nil {
 			logger.Error("sendConfirmEmail req={%s}: %s", reqID, errSendEmail.Error())
 		}

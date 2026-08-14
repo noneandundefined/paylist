@@ -168,6 +168,7 @@
 	"auth.error.invalid-credentials": "Invalid email or password",
 	"account.profile-title": "Profile",
 	"account.email-label": "E-mail",
+	"account.change-avatar": "Change avatar",
 	"account.logout": "Log out",
 	"account.logout-confirm-desc": "Are you sure you want to log out?",
 	"account.become-pro-prefix": "Together with",

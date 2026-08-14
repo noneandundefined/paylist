@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import PageLayout from '../PageLayout';
 import { ROUTES } from '@/constants/constants';
-import { CACHEKEYs } from '@/constants/CacheKeys.constants';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@/context/ThemeContext';
 import { QUERY_KEYS } from '@/constants/QueryKeys.constants';
@@ -24,6 +23,7 @@ import { useConfirm } from '@/hooks/useConfirm';
 import { useInvalidateSubscriptions } from '@/hooks/useInvalidateSubscriptions';
 import { getAppLanguage, SUPPORTED_LANGUAGES } from '@/constants/Language.constant';
 import { notifyPremiumRequired, notifySoon } from '@/utils/premiumUtils';
+import { clearAuthSession } from '@/utils/authSessionUtils';
 import { basicUserAccountDelete, basicUserSettingsGet, basicUserSettingsUpdate } from '@/rest/userAPI';
 
 import Delete from '@/components/@icons/delete';
@@ -36,7 +36,7 @@ const AccountPage = () => {
 	const { isDark, setTheme } = useTheme();
 	const { confirm } = useConfirm();
 	const { invalidateListAndSummary } = useInvalidateSubscriptions();
-	const { loginState, loading, displayName, initials, isPremium, canUseNotification } = useLoginState();
+	const { loginState, loading, reload, displayName, initials, avatar, isPremium, canUseNotification } = useLoginState();
 
 	const [displayCurrency, setDisplayCurrency] = useState('USD');
 	const [country, setCountry] = useState('US');
@@ -114,9 +114,7 @@ const AccountPage = () => {
 
 		try {
 			await basicUserAccountDelete();
-			localStorage.removeItem(CACHEKEYs.L_SESSION);
-			localStorage.removeItem(CACHEKEYs.AUTH_EMAIL);
-			localStorage.removeItem(CACHEKEYs.AUTH_STEP);
+			clearAuthSession();
 			window.location.replace(ROUTES.SIGNIN);
 		} finally {
 			setDeletingAccount(false);
@@ -133,7 +131,7 @@ const AccountPage = () => {
 				</header>
 
 				<section className="flex flex-col items-center px-2 text-center">
-					<UserAvatar initials={initials} isPremium={isPremium} size="lg" />
+					<UserAvatar initials={initials} isPremium={isPremium} size="lg" src={avatar} editable onUpdated={() => void reload()} />
 
 					<p className="mt-1 font-serif text-[22px] font-bold leading-tight gu-text-primary">{displayName}</p>
 					<p className="mt-1 text-[14px] gu-text-muted">

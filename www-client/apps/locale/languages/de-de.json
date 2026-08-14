@@ -168,6 +168,7 @@
 	"auth.error.invalid-credentials": "Ungültige E-Mail oder Passwort",
 	"account.profile-title": "Profil",
 	"account.email-label": "E-Mail",
+	"account.change-avatar": "Profilbild ändern",
 	"account.logout": "Abmelden",
 	"account.logout-confirm-desc": "Möchten Sie sich wirklich abmelden?",
 	"account.become-pro-prefix": "Gemeinsam mit",

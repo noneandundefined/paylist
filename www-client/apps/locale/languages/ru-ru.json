@@ -168,6 +168,7 @@
 	"auth.error.invalid-credentials": "Неверный email или пароль",
 	"account.profile-title": "Профиль",
 	"account.email-label": "E-mail",
+	"account.change-avatar": "Изменить аватар",
 	"account.logout": "Выйти",
 	"account.logout-confirm-desc": "Вы уверены, что хотите выйти из аккаунта?",
 	"account.become-pro-prefix": "Вместе с",

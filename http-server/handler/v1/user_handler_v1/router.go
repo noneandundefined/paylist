@@ -47,6 +47,11 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
+	userRouter.Handle("/me/avatar", middleware.PowDDos()(
+		httpx.ErrorHandler(h.UserAvatarUpdateHandler_V1),
+	)).Methods(http.MethodPost)
+
+	/* Access: ALL */
 	userRouter.Handle("/me", middleware.PowDDos()(
 		httpx.ErrorHandler(h.UserProfileUpdateHandler_V1),
 	)).Methods(http.MethodPatch)

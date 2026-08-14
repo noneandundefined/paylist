@@ -168,6 +168,7 @@
 	"auth.error.invalid-credentials": "Correo electrónico o contraseña incorrectos",
 	"account.profile-title": "Perfil",
 	"account.email-label": "Correo electrónico",
+	"account.change-avatar": "Cambiar avatar",
 	"account.logout": "Cerrar sesión",
 	"account.logout-confirm-desc": "¿Seguro que quieres cerrar sesión?",
 	"account.become-pro-prefix": "Junto con",

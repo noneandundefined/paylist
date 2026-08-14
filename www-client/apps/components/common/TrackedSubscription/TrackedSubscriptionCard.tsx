@@ -20,16 +20,16 @@ const TrackedSubscriptionCard: React.FC<TrackedSubscriptionCardProps> = ({ subsc
 	return (
 		<Link
 			to={buildRoute(ROUTES.SUBSCRIPTION_DETAIL, { id: subscription.id })}
-			className={`gu-glass-card flex w-full items-center gap-3 px-4 py-5 text-left no-underline transition hover:no-underline ${overdue ? 'gu-overdue-surface' : 'hover:bg-[var(--surface-muted)] gu-text-primary'}`}
+			className={`gu-glass-card flex min-w-0 w-full items-center gap-3 overflow-hidden px-4 py-5 text-left no-underline transition hover:no-underline ${overdue ? 'gu-overdue-surface' : 'hover:bg-[var(--surface-muted)] gu-text-primary'}`}
 		>
 			<SubscriptionIcon name={subscription.name} />
 
-			<div className="min-w-0 flex-1">
-				<div className="flex min-w-0 items-center gap-2">
-					<p className={`truncate text-[17px] -tracking-wide font-bold ${overdue ? 'gu-overdue-title' : 'gu-text-primary'}`}>{subscription.name}</p>
+			<div className="min-w-0 flex-1 overflow-hidden">
+				<div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+					<p className={`overflow-hidden text-ellipsis whitespace-nowrap text-[17px] -tracking-wide font-bold ${overdue ? 'gu-overdue-title' : 'gu-text-primary'}`}>{subscription.name}</p>
 					{renewalBadgeLabel && <AccentBadge className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${overdue ? 'gu-overdue-badge' : ''}`}>{renewalBadgeLabel}</AccentBadge>}
 				</div>
-				<p className={`mt-0.5 truncate text-[13px] ${overdue ? 'gu-overdue-muted' : 'gu-text-muted'}`}>{getRenewOnDateLabel(subscription.date_pay, t, i18n.language)}</p>
+				<p className={`mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] ${overdue ? 'gu-overdue-muted' : 'gu-text-muted'}`}>{getRenewOnDateLabel(subscription.date_pay, t, i18n.language)}</p>
 			</div>
 
 			<div className="shrink-0 text-right">

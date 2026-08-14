@@ -11,6 +11,7 @@ export interface UserLoginStateResponse {
 	email_confirmed: boolean;
 	first_name: string | null;
 	last_name: string | null;
+	avatars: string | null;
 	plan_name: string;
 	valid_to: string | null;
 	amount: number;
@@ -57,6 +58,14 @@ export const basicUserSessionsDisconnect = async (sessionId: string): Promise<vo
 
 export const basicUserProfileUpdate = async (payload: UserMeUpdateRequest): Promise<void> => {
 	const message = await apiPatch<string>(`${apiPath}/me`, payload);
+	notify.success(message);
+};
+
+export const basicUserAvatarUpdate = async (file: File): Promise<void> => {
+	const payload = new FormData();
+	payload.append('avatar', file);
+
+	const message = await apiPost<string>(`${apiPath}/me/avatar`, payload);
 	notify.success(message);
 };
 

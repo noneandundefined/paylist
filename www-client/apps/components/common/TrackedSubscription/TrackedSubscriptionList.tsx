@@ -11,11 +11,15 @@ const TrackedSubscriptionList: React.FC<TrackedSubscriptionListProps> = ({ subsc
 	const { t } = useTranslation();
 
 	return (
-		<section className="space-y-6">
+		<section className="min-w-0 space-y-6">
 			<SectionHeader title={t('home.active-subscriptions')} />
 
-			<div className="flex flex-col gap-2.5">
-				{subscriptions.length === 0 ? <p className="px-1 text-[14px] gu-text-muted">{t('home.no-active-subscriptions')}</p> : subscriptions.map((item) => <TrackedSubscriptionCard key={item.id} subscription={item} />)}
+			<div className="flex min-w-0 flex-col gap-2.5">
+				{subscriptions.length === 0 ? (
+					<p className="px-1 text-[14px] text-center gu-text-muted">{t('home.no-active-subscriptions')}</p>
+				) : (
+					subscriptions.map((item) => <TrackedSubscriptionCard key={item.id} subscription={item} />)
+				)}
 			</div>
 		</section>
 	);

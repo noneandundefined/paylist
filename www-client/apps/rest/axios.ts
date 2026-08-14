@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import { PoWDDosDecision } from '@/utils/PowDDosUtils';
 import { notify } from '@/components/Notification/notify';
 import { CACHEKEYs } from '@/constants/CacheKeys.constants';
+import { clearAuthSession } from '@/utils/authSessionUtils';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { config as configClient } from '@/.config/config.client';
 
@@ -96,7 +97,7 @@ axiosClient.interceptors.response.use(
 			if (error.response && error.response.status) {
 				if (error.response.status === 401) {
 					try {
-						localStorage.removeItem(CACHEKEYs.L_SESSION);
+						clearAuthSession();
 					} catch (e) {
 						console.error(e);
 					}

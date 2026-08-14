@@ -23,6 +23,7 @@ type Storage struct {
 		Update_UserSubscriptionResetExpired(ctx context.Context) error
 		Update_UserEmailConfirmedByUid(ctx context.Context, userUuid string, confirmed bool) error
 		Update_UserProfile(ctx context.Context, userUuid string, firstName, lastName *string) error
+		Update_UserAvatar(ctx context.Context, userUuid string, avatarURL string) error
 		Update_UserEmail(ctx context.Context, userUuid, email string) error
 
 		Delete_UserByUuid(ctx context.Context, userUuid string) error

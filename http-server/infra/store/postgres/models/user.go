@@ -11,6 +11,7 @@ type UserCore struct {
 	EmailConfirmed bool      `json:"email_confirmed" db:"email_confirmed"`
 	FirstName      *string   `json:"first_name,omitempty" db:"first_name"`
 	LastName       *string   `json:"last_name,omitempty" db:"last_name"`
+	Avatars        *string   `json:"avatars,omitempty" db:"avatars"`
 	Password       string    `json:"-" db:"password"`
 }
 
@@ -53,6 +54,7 @@ type UserLoginState struct {
 	EmailConfirmed bool      `json:"email_confirmed" db:"email_confirmed"`
 	FirstName      *string   `json:"first_name" db:"first_name"`
 	LastName       *string   `json:"last_name" db:"last_name"`
+	Avatars        *string   `json:"avatars" db:"avatars"`
 
 	/* User subscriptions */
 	PlanName string     `json:"plan_name" db:"plan_name"`

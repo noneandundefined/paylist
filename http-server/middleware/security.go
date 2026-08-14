@@ -14,9 +14,10 @@ import (
 )
 
 const (
-	MaxBodySize        = 1 << 20
-	MaxViolationsPerIP = 3
-	IpBlockDuration    = 10 * time.Minute
+	MaxBodySize          = 1 << 20
+	MaxMultipartBodySize = 3 << 20
+	MaxViolationsPerIP   = 3
+	IpBlockDuration      = 10 * time.Minute
 )
 
 var (
@@ -41,7 +42,15 @@ func SecurityMiddleware() mux.MiddlewareFunc { //nolint
 			}
 
 			/* Limit size */
-			r.Body = http.MaxBytesReader(w, r.Body, MaxBodySize)
+			maxBody := int64(MaxBodySize)
+			if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data") {
+				maxBody = MaxMultipartBodySize
+				r.Body = http.MaxBytesReader(w, r.Body, maxBody)
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			r.Body = http.MaxBytesReader(w, r.Body, maxBody)
 
 			var bodyContent string
 			if r.Method == http.MethodPost || r.Method == http.MethodPut {
