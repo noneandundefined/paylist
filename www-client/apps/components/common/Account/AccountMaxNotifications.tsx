@@ -1,3 +1,4 @@
+import ChevronRight from '@/components/@icons/chevron-right';
 import MessageArrowRightOutline from '@/components/@icons/message-arrow-right-outline';
 import GUIButton from '@/components/ui/Button/GUIButton';
 import { basicUserMaxDisconnect, basicUserMaxLink } from '@/rest/userAPI';
@@ -48,10 +49,15 @@ const AccountMaxNotifications: React.FC<AccountMaxNotificationsProps> = ({ canUs
 
 	return (
 		<div className="space-y-2">
-			<p className="text-[13px] gu-text-muted">{t('account.max-connect-desc')}</p>
-			<GUIButton type="button" onClick={onConnect} className="w-full py-3">
-				{t('account.max-connect')}
-			</GUIButton>
+			{/* <p className="text-[13px] gu-text-muted">{t('account.max-connect-desc')}</p> */}
+			<div className="flex items-center justify-between">
+				<p className="text-[15px] gu-text-primary">{t('account.max-title')}</p>
+
+				<button type="button" className="flex cursor-pointer items-center gap-2 rounded-md bg-[#d7ff00] px-3 py-1" onClick={onConnect}>
+					<p className="text-black">{t('account.connect')}</p>
+					<ChevronRight fill="#000" size={19} />
+				</button>
+			</div>
 		</div>
 	);
 };

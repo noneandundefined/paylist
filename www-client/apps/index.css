@@ -56,7 +56,7 @@
 	--surface-muted: #1e2430;
 	--surface-hover: rgba(255, 255, 255, 0.08);
 	--surface-border: rgba(255, 255, 255, 0.08);
-	--divider: rgba(255, 255, 255, 0.06);
+	--divider: rgba(255, 255, 255, 0.08);
 	--shadow-soft: rgba(0, 0, 0, 0.35);
 	--focus-ring: rgba(255, 255, 255, 0.12);
 	--modal-overlay: rgba(0, 0, 0, 0.55);
@@ -120,7 +120,7 @@ a:hover {
 		color: var(--text-muted);
 	}
 
-	.gu-divide {
+	.gu-divide > :not([hidden]) ~ :not([hidden]) {
 		border-color: var(--divider);
 	}
 

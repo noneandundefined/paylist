@@ -90,14 +90,14 @@ const AccountCategoriesManager: React.FC<AccountCategoriesManagerProps> = ({ isP
 						/>
 
 						<GUIButton type="button" onClick={onAddCategory} disabled={saving || label.trim().length < 2} className="gu-glass-icon-btn shrink-0 px-4">
-							<span className="gu-glass-icon-btn">
-								<Plus fill="#000" size={18} />
-							</span>
+							<div>
+								<Plus fill="currentColor" size={19} />
+							</div>
 						</GUIButton>
 					</div>
 
 					{customCategories.length === 0 ? (
-						<p className="text-[13px] gu-text-muted">{t('account.categories-empty')}</p>
+						<p className="text-[13px] text-center gu-text-muted">{t('account.categories-empty')}</p>
 					) : (
 						<CategoryChipGroup categories={customCategories} onDelete={onDeleteCategory} deleteAriaLabel={t('account.category-delete')} />
 					)}

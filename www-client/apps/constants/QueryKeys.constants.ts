@@ -9,4 +9,5 @@ export const QUERY_KEYS = {
 	currencyRates: 'respCurrencyRates',
 	countryList: 'respCountryList',
 	planList: 'respPlanList',
+	paymentBilling: 'respPaymentBilling',
 } as const;

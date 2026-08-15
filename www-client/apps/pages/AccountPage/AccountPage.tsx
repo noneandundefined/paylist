@@ -18,6 +18,7 @@ import PageLoadingState from '@/components/common/PageLoadingState/PageLoadingSt
 import CurrencySelect from '@/components/common/Currency/CurrencySelect';
 import CountrySelect from '@/components/common/Country/CountrySelect';
 import PremiumBadge from '@/components/common/PremiumBadge/PremiumBadge';
+import AccountPremiumPlanCard from '@/components/common/Account/AccountPremiumPlanCard';
 import { useHandleServer } from '@/hooks/Server/useHandleServer';
 import { useLoginState } from '@/hooks/useLoginState';
 import { useConfirm } from '@/hooks/useConfirm';
@@ -140,7 +141,7 @@ const AccountPage = () => {
 					</p>
 				</section>
 
-				{!isPremium && <PremiumBadge />}
+				{isPremium ? <AccountPremiumPlanCard validTo={loginState.valid_to} /> : <PremiumBadge />}
 
 				<AccountSection title={t('account.settings-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
@@ -171,8 +172,8 @@ const AccountPage = () => {
 
 				<AccountSection title={t('account.subscriptions-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
-						<PremiumGatedSection title={t('account.notifications-settings')} isPremium={isPremium && canUseNotification} hint={t('account.notifications-premium-hint')}>
-							<div className="space-y-4">
+						<PremiumGatedSection title={t('account.notifications-settings')} isPremium={isPremium && canUseNotification}>
+							<div className="space-y-3">
 								<AccountTelegramNotifications
 									canUseNotification={canUseNotification}
 									connected={Boolean(userSettings?.telegram_connected)}

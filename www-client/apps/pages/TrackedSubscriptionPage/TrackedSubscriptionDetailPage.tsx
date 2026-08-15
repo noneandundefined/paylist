@@ -220,14 +220,12 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 
 				<section className="gu-glass-card space-y-3 px-3 py-3.5">
 					<h2 className="text-[15px] font-semibold gu-text-primary">{t('subscription.note')}</h2>
-					<p className="text-[12px] gu-text-muted">{t('subscription.note-personal')}</p>
 
 					<GUITextarea value={note} onChange={(event) => setNote(event.target.value)} placeholder={t('subscription.note-placeholder')} aria-label={t('subscription.note')} maxLength={2000} />
 				</section>
 
 				<section className="gu-glass-card space-y-3 px-3 py-3.5">
 					<h2 className="text-[15px] font-semibold gu-text-primary">{t('subscription.category')}</h2>
-					<p className="text-[12px] gu-text-muted">{t('subscription.category-personal')}</p>
 
 					<CategoryChipGroup categories={availableCategories} selectedSlugs={categories} onToggle={toggleCategory} />
 				</section>

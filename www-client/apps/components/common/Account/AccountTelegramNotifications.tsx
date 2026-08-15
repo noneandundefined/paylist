@@ -1,4 +1,5 @@
 import BellOutline from '@/components/@icons/bell-outline';
+import ChevronRight from '@/components/@icons/chevron-right';
 import GUIButton from '@/components/ui/Button/GUIButton';
 import { basicUserTelegramDisconnect, basicUserTelegramLink } from '@/rest/userAPI';
 import { useTranslation } from 'react-i18next';
@@ -48,10 +49,15 @@ const AccountTelegramNotifications: React.FC<AccountTelegramNotificationsProps> 
 
 	return (
 		<div className="space-y-2">
-			<p className="text-[13px] gu-text-muted">{t('account.telegram-connect-desc')}</p>
-			<GUIButton type="button" onClick={onConnect} className="w-full py-3">
-				{t('account.telegram-connect')}
-			</GUIButton>
+			{/* <p className="text-[13px] gu-text-muted">{t('account.telegram-connect-desc')}</p> */}
+			<div className="flex items-center justify-between">
+				<p className="text-[15px] gu-text-primary">{t('account.telegram-title')}</p>
+
+				<button type="button" className="flex cursor-pointer items-center gap-2 rounded-md bg-[#d7ff00] px-3 py-1" onClick={onConnect}>
+					<p className="text-black">{t('account.connect')}</p>
+					<ChevronRight fill="#000" size={19} />
+				</button>
+			</div>
 		</div>
 	);
 };

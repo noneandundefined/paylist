@@ -219,7 +219,7 @@ const AnalyticsSpendingChart: React.FC<AnalyticsSpendingChartProps> = ({ points,
 
 			{isPremium && !hasCountry ? <p className="mt-4 text-center text-[13px] gu-text-muted">{t('analytics.inflation-country-hint')}</p> : null}
 
-			{showInflation ? <p className="mt-3 text-center text-[11px] leading-relaxed gu-text-muted">{t('analytics.inflation-disclaimer')}</p> : null}
+			{showInflation ? <p className="mt-3 text-center text-[13px] leading-relaxed gu-text-muted">{t('analytics.inflation-disclaimer')}</p> : null}
 		</section>
 	);
 };

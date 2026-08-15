@@ -14,8 +14,8 @@ interface UserAvatarProps {
 	onUpdated?: () => void;
 }
 
-const premiumRingClass = 'border-[linear-gradient(98deg,#0085FF_0%,#22A1FF_45%,#60D1FF_100%)]';
-const freeRingClass = 'border-slate-400';
+const premiumGradientClass = 'bg-[linear-gradient(98deg,#0085FF_0%,#22A1FF_45%,#60D1FF_100%)]';
+const freeRingClass = 'bg-slate-400';
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, size = 'lg', src, editable = false, onUpdated }) => {
 	const { t } = useTranslation();
@@ -28,9 +28,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 		setBroken(false);
 	}, [src]);
 
-	const ringClass = isPremium ? premiumRingClass : freeRingClass;
+	const ringClass = isPremium ? premiumGradientClass : freeRingClass;
 	const isSmall = size === 'sm';
-	const innerClass = isSmall ? (isPremium ? `${premiumRingClass} text-white` : 'bg-slate-400 text-white') : isPremium ? 'bg-[linear-gradient(180deg,#dbeafe_0%,#eff6ff_100%)] text-[#2a2867]' : 'bg-slate-200 text-slate-600';
+	const innerClass = isSmall ? (isPremium ? `${premiumGradientClass} text-white` : 'bg-slate-400 text-white') : isPremium ? 'bg-[linear-gradient(180deg,#dbeafe_0%,#eff6ff_100%)] text-[#2a2867]' : 'bg-slate-200 text-slate-600';
 	const showImage = Boolean(src) && !broken;
 
 	const onFileChange: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
@@ -52,18 +52,20 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 	};
 
 	const avatar = (
-		<div className={`rounded-full border-2 p-1 ${ringClass}`}>
-			<div className={`relative overflow-hidden rounded-full bg-white ${isSmall ? 'h-11 w-11' : 'h-[8rem] w-[8rem]'}`}>
-				{showImage ? (
-					<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
-				) : (
-					<div className={`flex h-full w-full items-center justify-center font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass}`}>{initials}</div>
-				)}
-				{editable && (
-					<div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/50 transition-opacity ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100'}`}>
-						<CameraPlusOutline fill="#ffffff" size={isSmall ? 18 : 36} />
-					</div>
-				)}
+		<div className={`rounded-full p-[2px] ${ringClass}`}>
+			<div className="rounded-full bg-[var(--bg-page)] p-1">
+				<div className={`relative overflow-hidden rounded-full bg-white ${isSmall ? 'h-11 w-11' : 'h-[8rem] w-[8rem]'}`}>
+					{showImage ? (
+						<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
+					) : (
+						<div className={`flex h-full w-full items-center justify-center font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass}`}>{initials}</div>
+					)}
+					{editable && (
+						<div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/50 transition-opacity ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100'}`}>
+							<CameraPlusOutline fill="#ffffff" size={isSmall ? 18 : 36} />
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);

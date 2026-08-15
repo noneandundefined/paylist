@@ -218,8 +218,11 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 
 	const hasMembers = members.length > 1;
 	const findButton = isOwner ? (
-		<button type="button" onClick={() => setSearchOpen((open) => !open)} className="gu-glass-pill shrink-0 px-3 py-2 text-[13px] font-semibold gu-text-primary">
-			{t('subscription.find-members')}
+		<button type="button" onClick={() => setSearchOpen((open) => !open)} className="gu-glass-pill shrink-0 p-3 text-[13px] font-semibold gu-text-primary">
+			{/* {t('subscription.find-members')} */}
+			<div>
+				<Plus fill="currentColor" size={19} />
+			</div>
 		</button>
 	) : null;
 
