@@ -35,6 +35,7 @@ INSERT INTO subscriptions (plan_name, amount, currency, duration_days, max_total
     '{
         "en": [
             "Up to 10 tracked subscriptions",
+            "Share a subscription with 1 member",
             "Manual subscription management",
             "Auto-renewal date tracking",
             "Payment date calendar",
@@ -42,6 +43,7 @@ INSERT INTO subscriptions (plan_name, amount, currency, duration_days, max_total
         ],
         "ru": [
             "До 10 отслеживаемых подписок",
+            "Совместная подписка с 1 участником",
             "Ручное добавление и редактирование",
             "Отслеживание автопродления",
             "Календарь дат оплаты",
@@ -49,6 +51,7 @@ INSERT INTO subscriptions (plan_name, amount, currency, duration_days, max_total
         ],
         "de": [
             "Bis zu 10 Abonnements",
+            "Abo mit 1 Teilnehmer teilen",
             "Manuelles Hinzufügen und Bearbeiten",
             "Automatische Verlängerungsdaten",
             "Kalender der Zahlungstermine",
@@ -56,6 +59,7 @@ INSERT INTO subscriptions (plan_name, amount, currency, duration_days, max_total
         ],
         "es": [
             "Hasta 10 suscripciones",
+            "Comparte una suscripción con 1 participante",
             "Gestión manual de suscripciones",
             "Seguimiento de renovación automática",
             "Calendario de fechas de pago",
@@ -75,33 +79,37 @@ INSERT INTO subscriptions (plan_name, amount, currency, duration_days, max_total
     '{
         "en": [
             "Unlimited tracked subscriptions",
+            "Unlimited subscription members",
             "Automatic subscription detection",
-            "Telegram reminders before payment",
+            "Payment reminders before due date",
             "Advanced spending analytics"
         ],
         "ru": [
             "Неограниченное число подписок",
+            "Неограниченное число участников подписки",
             "Автоматический поиск подписок",
-            "Telegram-напоминания перед оплатой",
+            "Напоминания перед оплатой",
             "Расширенная аналитика расходов"
         ],
         "de": [
             "Unbegrenzte Anzahl an Abonnements",
+            "Unbegrenzte Anzahl an Teilnehmern",
             "Automatische Abonnement-Erkennung",
-            "Telegram-Erinnerungen vor der Zahlung",
+            "Erinnerungen vor der Zahlung",
             "Erweiterte Ausgabenanalyse"
         ],
         "es": [
             "Suscripciones ilimitadas",
+            "Participantes ilimitados en la suscripción",
             "Detección automática de suscripciones",
-            "Recordatorios por Telegram antes del pago",
+            "Recordatorios antes del pago",
             "Análisis avanzado de gastos"
         ]
     }'
 )
 ON CONFLICT (plan_name) DO NOTHING;
 
-COMMENT ON TABLE subscriptions IS 'SaaS tariff plans for Paylist subscription tracking service';
+COMMENT ON TABLE subscriptions IS 'SaaS tariff plans for Paylist subscription tracking service. Free: max 2 members per shared subscription (owner + 1). Premium: unlimited members.';
 COMMENT ON COLUMN subscriptions.id IS 'Primary key of the tariff plan';
 COMMENT ON COLUMN subscriptions.created_at IS 'Plan record creation timestamp (UTC)';
 COMMENT ON COLUMN subscriptions.plan_name IS 'Unique plan identifier shown to users (e.g. Free, Premium)';
@@ -109,7 +117,7 @@ COMMENT ON COLUMN subscriptions.amount IS 'Plan price per billing period';
 COMMENT ON COLUMN subscriptions.currency IS 'ISO currency code for the plan price';
 COMMENT ON COLUMN subscriptions.duration_days IS 'Billing period length in days';
 COMMENT ON COLUMN subscriptions.max_total_subscriptions IS 'Maximum tracked subscriptions per user; NULL means unlimited';
-COMMENT ON COLUMN subscriptions.notification_subscriptions IS 'Whether the plan includes Telegram payment reminders';
+COMMENT ON COLUMN subscriptions.notification_subscriptions IS 'Whether the plan includes payment reminders';
 COMMENT ON COLUMN subscriptions.auto_find_subscriptions IS 'Whether the plan includes automatic subscription detection';
 COMMENT ON COLUMN subscriptions.description IS 'Localized short plan description (JSON: en, ru, de, es)';
 COMMENT ON COLUMN subscriptions.features IS 'Localized list of plan features (JSON: en[], ru[], de[], es[])';

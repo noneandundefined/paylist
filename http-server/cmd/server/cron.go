@@ -12,6 +12,7 @@ const (
 	cronPaymentsClearPending          = "payments.clear-pending"
 	cronSubscriptionsAutoRenew        = "subscriptions.auto-renew"
 	cronSubscriptionsTelegramNotify   = "subscriptions.telegram-notify"
+	cronSubscriptionsMaxNotify        = "subscriptions.max-notify"
 	cronSubscriptionsNotifyLogCleanup = "subscriptions.notify-log-cleanup"
 	cronUsersResetExpiredPlans        = "users.reset-expired-plans"
 )
@@ -42,19 +43,27 @@ func (s *httpServer) startCronJobs() {
 		})
 	})
 
-	// Auto-renew tracked subscriptions whose billing date has passed — daily 00:10 UTC.
-	// Runs before telegram reminders so dates stay consistent.
-	s.cron.AddFunc("0 10 0 * * *", func() {
+	// Billing day stays as-is; roll to next period at 00:00 the following day.
+	// Aug 15 → Sep 15, job runs at 00:00 on Aug 16.
+	s.cron.AddFunc("0 0 0 * * *", func() {
 		s.runCronJob(cronSubscriptionsAutoRenew, func(ctx context.Context) error {
 			return s.store.TrackedSubscriptions.Update_SubscriptionsMounth(ctx)
 		})
 	})
 
-	// Telegram reminders 3 days before and on billing day — daily 09:00 UTC.
+	// Messenger reminders 3 days before and on billing day — daily 09:00 UTC.
 	if s.telegram != nil {
 		s.cron.AddFunc("0 0 9 * * *", func() {
 			s.runCronJob(cronSubscriptionsTelegramNotify, func(ctx context.Context) error {
 				return s.telegram.SendDueReminders(ctx)
+			})
+		})
+	}
+
+	if s.maxbot != nil {
+		s.cron.AddFunc("0 0 9 * * *", func() {
+			s.runCronJob(cronSubscriptionsMaxNotify, func(ctx context.Context) error {
+				return s.maxbot.SendDueReminders(ctx)
 			})
 		})
 	}
@@ -73,5 +82,5 @@ func (s *httpServer) startCronJobs() {
 		})
 	})
 
-	logger.Info("Cron scheduler registered: payments.clear-pending@5m, subscriptions.auto-renew@00:10, subscriptions.telegram-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
+	logger.Info("Cron scheduler registered: payments.clear-pending@5m, subscriptions.auto-renew@00:00, subscriptions.telegram-notify@09:00, subscriptions.max-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
 }

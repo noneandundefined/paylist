@@ -10,4 +10,5 @@ export const CACHEKEYs = {
 	SUBSCRIPTION_AD_LAST_SHOW: `${indexKey}:subscription:ad:lastshow`,
 	DISPLAY_CURRENCY: `${indexKey}:settings:display-currency`,
 	THEME: `${indexKey}:settings:theme`,
+	SUBSCRIPTION_INVITE_TOKEN: `${indexKey}:subscription:invite-token`,
 };

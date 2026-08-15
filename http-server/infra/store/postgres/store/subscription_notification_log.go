@@ -9,17 +9,17 @@ import (
 	"paylist.server/infra/logger"
 )
 
-func (s *TrackedSubscriptionStore) Create_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, channel string, notifyDate time.Time) error {
+func (s *TrackedSubscriptionStore) Create_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, userUUID, channel string, notifyDate time.Time) error {
 	query := `
-		INSERT INTO subscription_notification_log (tracked_subscription_id, channel, notify_date)
-		VALUES ($1, $2, $3)
-		ON CONFLICT (tracked_subscription_id, channel, notify_date) DO NOTHING
+		INSERT INTO subscription_notification_log (tracked_subscription_id, user_uuid, channel, notify_date)
+		VALUES ($1, $2, $3, $4)
+		ON CONFLICT DO NOTHING
 	`
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	if _, err := s.db.ExecContext(ctx, query, subscriptionID, channel, notifyDate.Format("2006-01-02")); err != nil {
+	if _, err := s.db.ExecContext(ctx, query, subscriptionID, userUUID, channel, notifyDate.Format("2006-01-02")); err != nil {
 		logger.Error("Create_SubscriptionNotificationLog req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
 		return err
 	}
@@ -27,13 +27,14 @@ func (s *TrackedSubscriptionStore) Create_SubscriptionNotificationLog(ctx contex
 	return nil
 }
 
-func (s *TrackedSubscriptionStore) Has_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, channel string, notifyDate time.Time) (bool, error) {
+func (s *TrackedSubscriptionStore) Has_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, userUUID, channel string, notifyDate time.Time) (bool, error) {
 	query := `
 		SELECT 1
 		FROM subscription_notification_log
 		WHERE tracked_subscription_id = $1
-			AND channel = $2
-			AND notify_date = $3
+			AND user_uuid = $2
+			AND channel = $3
+			AND notify_date = $4
 		LIMIT 1
 	`
 
@@ -42,7 +43,7 @@ func (s *TrackedSubscriptionStore) Has_SubscriptionNotificationLog(ctx context.C
 
 	var exists int
 
-	err := s.db.QueryRowContext(ctx, query, subscriptionID, channel, notifyDate.Format("2006-01-02")).Scan(&exists)
+	err := s.db.QueryRowContext(ctx, query, subscriptionID, userUUID, channel, notifyDate.Format("2006-01-02")).Scan(&exists)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil

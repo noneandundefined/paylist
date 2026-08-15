@@ -11,6 +11,7 @@ export const useInvalidateSubscriptions = () => {
 
 	const invalidateAfterUpdate = async (subscriptionId: number) => {
 		await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.trackedSubscriptionDetail, subscriptionId] });
+		await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.trackedSubscriptionMembers, subscriptionId] });
 		await invalidateListAndSummary();
 	};
 

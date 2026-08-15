@@ -12,7 +12,7 @@ import (
 
 func (s *UserStore) Get_UserSettingsByUserUuid(ctx context.Context, userUuid string) (*models.UserSettings, error) {
 	query := `
-		SELECT user_uuid, created_at, updated_at, display_currency, country, telegram_chat_id, telegram_username, telegram_language
+		SELECT user_uuid, created_at, updated_at, display_currency, country, telegram_chat_id, telegram_username, telegram_language, max_user_id, max_username, max_language
 		FROM user_settings
 		WHERE user_uuid = $1
 	`
@@ -31,6 +31,9 @@ func (s *UserStore) Get_UserSettingsByUserUuid(ctx context.Context, userUuid str
 		&settings.TelegramChatID,
 		&settings.TelegramUsername,
 		&settings.TelegramLanguage,
+		&settings.MaxUserID,
+		&settings.MaxUsername,
+		&settings.MaxLanguage,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

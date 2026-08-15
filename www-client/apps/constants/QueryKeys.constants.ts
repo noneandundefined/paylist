@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
 	trackedSubscriptionSummary: 'respTrackedSubscriptionSummary',
 	trackedSubscriptionDetail: 'respTrackedSubscriptionDetail',
 	trackedSubscriptionCategoryList: 'respTrackedSubscriptionCategoryList',
+	trackedSubscriptionMembers: 'respTrackedSubscriptionMembers',
 	currencyRates: 'respCurrencyRates',
 	countryList: 'respCountryList',
 	planList: 'respPlanList',

@@ -114,6 +114,29 @@ func (s *UserStore) Get_UserCoreByUserUuid(ctx context.Context, userUuid string)
 	return user, nil
 }
 
+func (s *UserStore) Search_UserPublicProfilesByEmail(ctx context.Context, emailQuery, excludeUserUUID string, limit int) ([]models.UserPublicProfile, error) {
+	query := `
+		SELECT email, first_name, last_name, avatars
+		FROM user_cores
+		WHERE email = $1
+			AND user_uuid <> $2
+			AND email_confirmed = TRUE
+		ORDER BY email ASC
+		LIMIT $3
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	users, err := pgqx.QueryContext[models.UserPublicProfile](ctx, s.db, query, emailQuery, excludeUserUUID, limit)
+	if err != nil {
+		logger.Error("Search_UserPublicProfilesByEmail req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return nil, err
+	}
+
+	return users, nil
+}
+
 func (s *UserStore) Get_UserSubscriptionsByUserUuid(ctx context.Context, userUuid string) (*models.UserSubscription, error) {
 	query := `
 		SELECT * FROM user_subscriptions WHERE user_uuid = $1 LIMIT 1

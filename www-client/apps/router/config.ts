@@ -15,6 +15,7 @@ const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
 const SignInPage = lazy(() => import('@/pages/SignInPage/index'));
 const SignUpPage = lazy(() => import('@/pages/SignUpPage/index'));
 const ConfirmEmail = lazy(() => import('@/pages/ConfirmEmailPage/index'));
+const SubscriptionInvitePage = lazy(() => import('@/pages/SubscriptionInvitePage/index'));
 
 export interface CustomRouteConfig {
 	path: string;
@@ -41,7 +42,6 @@ const config: CustomRouteConfig[] = [
 		path: ROUTES.SUBSCRIPTION_DETAIL,
 		loginRequired: true,
 		component: SubscriptionDetailPage,
-		title: 'subscription.detail-title',
 	},
 	{
 		path: ROUTES.ANALYTICS,
@@ -89,6 +89,13 @@ const config: CustomRouteConfig[] = [
 		redirectIfLogged: true,
 		component: ConfirmEmail,
 		title: 'label.page-confirm-email',
+	},
+	{
+		path: ROUTES.SUBSCRIPTION_INVITE,
+		loginRequired: false,
+		redirectIfLogged: false,
+		component: SubscriptionInvitePage,
+		title: 'subscription.invite-title',
 	},
 ];
 

@@ -36,12 +36,14 @@ CREATE TABLE IF NOT EXISTS subscription_categories (
 
 CREATE TABLE IF NOT EXISTS tracked_subscription_categories (
     tracked_subscription_id BIGINT NOT NULL REFERENCES tracked_subscriptions(id) ON DELETE CASCADE,
+    user_uuid VARCHAR(255) NOT NULL REFERENCES user_cores(user_uuid) ON DELETE CASCADE,
     category_id BIGINT NOT NULL REFERENCES subscription_categories(id) ON DELETE CASCADE,
 
-    PRIMARY KEY (tracked_subscription_id, category_id)
+    PRIMARY KEY (tracked_subscription_id, user_uuid, category_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_tracked_subscription_categories_category_id ON tracked_subscription_categories(category_id);
+CREATE INDEX IF NOT EXISTS idx_tracked_subscription_categories_user_uuid ON tracked_subscription_categories(user_uuid);
 
 INSERT INTO subscription_categories (slug) VALUES
     ('subscriptions'),
@@ -88,7 +90,7 @@ COMMENT ON COLUMN tracked_subscriptions.note IS 'Optional user note for the trac
 COMMENT ON TABLE subscription_categories IS 'Catalog of subscription categories (music, subscriptions, etc.)';
 COMMENT ON COLUMN subscription_categories.slug IS 'Stable category key used for i18n on the client';
 
-COMMENT ON TABLE tracked_subscription_categories IS 'Many-to-many link between tracked subscriptions and categories';
+COMMENT ON TABLE tracked_subscription_categories IS 'Per-member categories for a tracked subscription';
 -- +goose StatementEnd
 
 -- +goose Down
@@ -96,6 +98,7 @@ COMMENT ON TABLE tracked_subscription_categories IS 'Many-to-many link between t
 DROP TRIGGER IF EXISTS set_tracked_sub_updated_at_trigger ON tracked_subscriptions;
 DROP FUNCTION IF EXISTS set_tracked_sub_updated_at();
 
+DROP INDEX IF EXISTS idx_tracked_subscription_categories_user_uuid;
 DROP INDEX IF EXISTS idx_tracked_subscription_categories_category_id;
 DROP TABLE IF EXISTS tracked_subscription_categories;
 DROP TABLE IF EXISTS subscription_categories;

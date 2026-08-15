@@ -13,6 +13,7 @@ import PremiumGatedSection from '@/components/common/Account/PremiumGatedSection
 import AccountSettingsRow from '@/components/common/Account/AccountSettingsRow';
 import AccountCategoriesManager from '@/components/common/Account/AccountCategoriesManager';
 import AccountTelegramNotifications from '@/components/common/Account/AccountTelegramNotifications';
+import AccountMaxNotifications from '@/components/common/Account/AccountMaxNotifications';
 import PageLoadingState from '@/components/common/PageLoadingState/PageLoadingState';
 import CurrencySelect from '@/components/common/Currency/CurrencySelect';
 import CountrySelect from '@/components/common/Country/CountrySelect';
@@ -170,15 +171,26 @@ const AccountPage = () => {
 
 				<AccountSection title={t('account.subscriptions-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
-						<AccountTelegramNotifications
-							isPremium={isPremium}
-							canUseNotification={canUseNotification}
-							connected={Boolean(userSettings?.telegram_connected)}
-							username={userSettings?.telegram_username}
-							onChanged={() => {
-								void reloadSettings();
-							}}
-						/>
+						<PremiumGatedSection title={t('account.notifications-settings')} isPremium={isPremium && canUseNotification} hint={t('account.notifications-premium-hint')}>
+							<div className="space-y-4">
+								<AccountTelegramNotifications
+									canUseNotification={canUseNotification}
+									connected={Boolean(userSettings?.telegram_connected)}
+									username={userSettings?.telegram_username}
+									onChanged={() => {
+										void reloadSettings();
+									}}
+								/>
+								<AccountMaxNotifications
+									canUseNotification={canUseNotification}
+									connected={Boolean(userSettings?.max_connected)}
+									username={userSettings?.max_username}
+									onChanged={() => {
+										void reloadSettings();
+									}}
+								/>
+							</div>
+						</PremiumGatedSection>
 
 						<PremiumGatedSection title={t('account.currency')} isPremium={isPremium}>
 							<CurrencySelect value={displayCurrency} onChange={onCurrencyChange} />

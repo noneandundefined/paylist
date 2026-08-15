@@ -24,6 +24,14 @@ export const formatSubscriptionPrice = (price: number, currency: string, languag
 	return formatCurrency(price, currency, language);
 };
 
+export const getSubscriptionShareAmount = (subscription: { price: number; share_price?: number }): number => {
+	if (typeof subscription.share_price === 'number' && Number.isFinite(subscription.share_price)) {
+		return subscription.share_price;
+	}
+
+	return subscription.price;
+};
+
 export const getRenewOnDateLabel = (datePay: string, t: TFunction, locale?: string): string => {
 	if (isSubscriptionOverdue(datePay)) {
 		return t('home.overdue-on-date', {

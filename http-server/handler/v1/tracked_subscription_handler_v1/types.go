@@ -43,3 +43,44 @@ type TrackedSubscriptionDetailResponse struct {
 	models.TrackedSubscription
 	Categories []string `json:"categories"`
 }
+
+type TrackedSubscriptionInvitePayload struct {
+	Email        string  `json:"email" validate:"required,email"`
+	SharePercent float64 `json:"share_percent" validate:"required,gt=0,lte=100"`
+}
+
+type TrackedSubscriptionInviteAcceptPayload struct {
+	Token string `json:"token" validate:"required"`
+}
+
+type TrackedSubscriptionShareItemPayload struct {
+	MemberID     uint64  `json:"member_id" validate:"required"`
+	SharePercent float64 `json:"share_percent" validate:"required,gt=0,lte=100"`
+}
+
+type TrackedSubscriptionShareProposalPayload struct {
+	Shares []TrackedSubscriptionShareItemPayload `json:"shares" validate:"required,min=1,dive"`
+}
+
+type TrackedSubscriptionShareVotePayload struct {
+	Accept bool `json:"accept"`
+}
+
+type TrackedSubscriptionShareProposalResponse struct {
+	ID                 uint64                                        `json:"id"`
+	ProposedByUserUUID string                                        `json:"proposed_by_user_uuid"`
+	Status             string                                        `json:"status"`
+	Items              []models.TrackedSubscriptionShareProposalItem `json:"items"`
+	Votes              []models.TrackedSubscriptionShareVote         `json:"votes"`
+	MyVote             *bool                                         `json:"my_vote"`
+}
+
+type TrackedSubscriptionMembersResponse struct {
+	Members         []models.TrackedSubscriptionMember        `json:"members"`
+	PendingProposal *TrackedSubscriptionShareProposalResponse `json:"pending_proposal"`
+}
+
+type TrackedSubscriptionInviteAcceptResponse struct {
+	Message        string `json:"message"`
+	SubscriptionID uint64 `json:"subscription_id"`
+}

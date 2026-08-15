@@ -41,6 +41,27 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	)).Methods(http.MethodDelete)
 
 	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/invites/accept", httpx.ErrorHandler(h.AcceptSubscriptionInviteHandler_V1)).Methods(http.MethodPost)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members", httpx.ErrorHandler(h.GetSubscriptionMembersHandler_V1)).Methods(http.MethodGet)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members", httpx.ErrorHandler(h.InviteSubscriptionMemberHandler_V1)).Methods(http.MethodPost)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/me", httpx.ErrorHandler(h.LeaveSubscriptionHandler_V1)).Methods(http.MethodDelete)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/{memberId:[0-9]+}", httpx.ErrorHandler(h.DeleteSubscriptionMemberHandler_V1)).Methods(http.MethodDelete)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares", httpx.ErrorHandler(h.ProposeSubscriptionSharesHandler_V1)).Methods(http.MethodPost)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares/{proposalId:[0-9]+}/vote", httpx.ErrorHandler(h.VoteSubscriptionSharesHandler_V1)).Methods(http.MethodPost)
+
+	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", httpx.ErrorHandler(h.GetSubscriptionByIdHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
@@ -48,6 +69,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 
 	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", httpx.ErrorHandler(h.DeleteSubscriptionHandler_V1)).Methods(http.MethodDelete)
+
+	/* Access: ALL */
+	trackedSubscriptionFreeRouter.Handle("/invites", httpx.ErrorHandler(h.GetSubscriptionInviteHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
 	trackedSubscriptionFreeRouter.Handle("/images/w350", httpx.ErrorHandler(h.GetSubscriptionImageHandler_V1)).Methods(http.MethodGet)

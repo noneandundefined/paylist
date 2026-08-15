@@ -27,7 +27,20 @@ func (h *Handler) DeleteSubscriptionHandler_V1(w http.ResponseWriter, r *http.Re
 		return httperr.BadRequest(tr.TErr("error.tracked-subscription-invalid-id"))
 	}
 
-	if err := h.Store.TrackedSubscriptions.Delete_SubscriptionById(ctx, id, authToken.User.UserUUID); err != nil {
+	existing, err := h.Store.TrackedSubscriptions.Get_SubscriptionById(ctx, uint64(id), authToken.User.UserUUID)
+	if err != nil {
+		return httperr.Db(ctx, err)
+	}
+
+	if existing == nil {
+		return httperr.NotFound(tr.TErr("error.tracked-subscription-not-found"))
+	}
+
+	if !existing.IsOwner {
+		return httperr.Forbidden(tr.TErr("error.shared-subscription-owner-only"))
+	}
+
+	if err := h.Store.TrackedSubscriptions.Delete_SubscriptionById(ctx, id, existing.UserUUID); err != nil {
 		return httperr.Db(ctx, err)
 	}
 

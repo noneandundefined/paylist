@@ -14,8 +14,6 @@ import (
 
 /* Отправка email письма на почту */
 func SendEmail(to, title, content string, tr locale.Translator) error {
-	go_env := os.Getenv("GO_ENV") == "DEV"
-
 	port, err := strconv.Atoi(strings.TrimSpace(os.Getenv("SMTP_PORT")))
 	if err != nil || port == 0 {
 		port = 587
@@ -32,12 +30,7 @@ func SendEmail(to, title, content string, tr locale.Translator) error {
 	mail.SetBody("text/html", BuildEmailTemplate(content, tr))
 
 	d := gomail.NewDialer(smtpAddr, port, smtpEmail, smtpPassword)
-
-	if go_env {
-		d.SSL = false
-	} else {
-		d.SSL = true
-	}
+	d.SSL = port == 465
 
 	if err := d.DialAndSend(mail); err != nil {
 		return fmt.Errorf("%s: %v", tr.TErr("error.email-send-failed"), err)

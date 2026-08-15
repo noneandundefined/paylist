@@ -16,6 +16,7 @@ type Storage struct {
 
 		Get_UserCoreByEmail(ctx context.Context, email string) (*models.UserCore, error)
 		Get_UserCoreByUserUuid(ctx context.Context, userUuid string) (*models.UserCore, error)
+		Search_UserPublicProfilesByEmail(ctx context.Context, emailQuery, excludeUserUUID string, limit int) ([]models.UserPublicProfile, error)
 		Get_UserSubscriptionsByUserUuid(ctx context.Context, userUuid string) (*models.UserSubscription, error)
 		Get_UserLoginStateByUserUuid(ctx context.Context, userUuid string) (*models.UserLoginState, error)
 		Get_UserPermissionsByUserUuid(ctx context.Context, userUuid string) (*models.UserPlanPermissions, error)
@@ -34,6 +35,9 @@ type Storage struct {
 		Upsert_UserTelegram(ctx context.Context, userUuid string, chatID int64, username, language string) error
 		Clear_UserTelegram(ctx context.Context, userUuid string) error
 		Get_UserUuidByTelegramChatID(ctx context.Context, chatID int64) (string, error)
+		Upsert_UserMax(ctx context.Context, userUuid string, userID int64, username, language string) error
+		Clear_UserMax(ctx context.Context, userUuid string) error
+		Get_UserUuidByMaxUserID(ctx context.Context, userID int64) (string, error)
 	}
 	TrackedSubscriptions interface { //nolint
 		Create_Subscription(ctx context.Context, sub *models.TrackedSubscription) error
@@ -43,19 +47,41 @@ type Storage struct {
 		Get_SubscriptionsByUuid(ctx context.Context, uuid string, search string) (*[]models.TrackedSubscription, error)
 		Get_AllSubscriptionsByUuid(ctx context.Context, uuid string) ([]models.TrackedSubscription, error)
 		Get_SubscriptionById(ctx context.Context, id uint64, uuid string) (*models.TrackedSubscription, error)
-		Get_CategorySlugsBySubscriptionID(ctx context.Context, id uint64) ([]string, error)
+		Get_CategorySlugsBySubscriptionID(ctx context.Context, id uint64, userUUID string) ([]string, error)
 		Get_CategorySlugsMapByUserUUID(ctx context.Context, userUUID string) (map[uint64][]string, error)
 		Get_AllSubscriptionCategories(ctx context.Context) ([]models.SubscriptionCategory, error)
 		Get_SubscriptionCategoriesForUser(ctx context.Context, userUuid string) ([]models.SubscriptionCategory, error)
 		Create_UserSubscriptionCategory(ctx context.Context, userUuid, slug, label string) (*models.SubscriptionCategory, error)
 		Delete_UserSubscriptionCategory(ctx context.Context, userUuid string, categoryID uint64) error
 		Get_SubscriptionsForTelegramNotify(ctx context.Context) (*[]models.TrackedSubscriptionNotifyCandidate, error)
-		Create_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, channel string, notifyDate time.Time) error
-		Has_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, channel string, notifyDate time.Time) (bool, error)
+		Get_SubscriptionsForMaxNotify(ctx context.Context) (*[]models.TrackedSubscriptionNotifyCandidate, error)
+		Create_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, userUUID, channel string, notifyDate time.Time) error
+		Has_SubscriptionNotificationLog(ctx context.Context, subscriptionID uint64, userUUID, channel string, notifyDate time.Time) (bool, error)
 		Delete_OldSubscriptionNotificationLogs(ctx context.Context, olderThanDays int) error
+
+		Get_MembersBySubscriptionID(ctx context.Context, subscriptionID uint64) ([]models.TrackedSubscriptionMember, error)
+		Get_AcceptedMember(ctx context.Context, subscriptionID uint64, userUUID string) (*models.TrackedSubscriptionMember, error)
+		Get_MemberByID(ctx context.Context, subscriptionID, memberID uint64) (*models.TrackedSubscriptionMember, error)
+		Get_MemberByEmail(ctx context.Context, subscriptionID uint64, email string) (*models.TrackedSubscriptionMember, error)
+		Count_ActiveMembers(ctx context.Context, subscriptionID uint64) (int, error)
+		Create_MemberInvite(ctx context.Context, member *models.TrackedSubscriptionMember) error
+		Refresh_MemberInvite(ctx context.Context, member *models.TrackedSubscriptionMember, newShare float64) error
+		Get_InviteByToken(ctx context.Context, token string) (*models.TrackedSubscriptionInvitePreview, *models.TrackedSubscriptionMember, error)
+		Accept_MemberInvite(ctx context.Context, memberID uint64, userUUID string) error
+		Delete_MemberAndReturnShare(ctx context.Context, subscriptionID, memberID uint64, sharePercent float64) error
+
+		Get_PendingShareProposal(ctx context.Context, subscriptionID uint64) (*models.TrackedSubscriptionShareProposal, error)
+		Get_ShareProposalByID(ctx context.Context, subscriptionID, proposalID uint64) (*models.TrackedSubscriptionShareProposal, error)
+		Get_ShareProposalItems(ctx context.Context, proposalID uint64) ([]models.TrackedSubscriptionShareProposalItem, error)
+		Get_ShareProposalVotes(ctx context.Context, proposalID uint64) ([]models.TrackedSubscriptionShareVote, error)
+		Create_ShareProposal(ctx context.Context, subscriptionID uint64, proposedBy string, items []models.TrackedSubscriptionShareProposalItem) (*models.TrackedSubscriptionShareProposal, error)
+		Upsert_ShareVote(ctx context.Context, proposalID uint64, userUUID string, accepted bool) error
+		Reject_ShareProposal(ctx context.Context, proposalID uint64) error
+		Apply_ShareProposal(ctx context.Context, proposalID uint64, items []models.TrackedSubscriptionShareProposalItem) error
 
 		Update_SubscriptionsMounth(ctx context.Context) error
 		Update_SubscriptionById(ctx context.Context, sub *models.TrackedSubscription, id int) error
+		Update_MemberPreferences(ctx context.Context, subscriptionID uint64, userUUID string, notification, includeInAnalytics bool, note *string) error
 		Replace_SubscriptionCategories(ctx context.Context, id uint64, userUUID string, slugs []string) error
 		Delete_SubscriptionById(ctx context.Context, id int, uuid string) error
 	}

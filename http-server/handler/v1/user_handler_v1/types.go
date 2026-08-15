@@ -26,6 +26,8 @@ type UserSettingsResponse struct {
 	Country           *string `json:"country,omitempty"`
 	TelegramConnected bool    `json:"telegram_connected"`
 	TelegramUsername  *string `json:"telegram_username,omitempty"`
+	MaxConnected      bool    `json:"max_connected"`
+	MaxUsername       *string `json:"max_username,omitempty"`
 }
 
 type UserSettingsUpdatePayload struct {

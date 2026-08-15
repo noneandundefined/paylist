@@ -29,9 +29,22 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	)).Methods(http.MethodDelete)
 
 	/* Access: Premium */
+	userRouter.Handle("/max/link", middleware.PowDDos()(
+		httpx.ErrorHandler(h.UserMaxLinkHandler_V1),
+	)).Methods(http.MethodPost)
+
+	/* Access: ALL */
+	userRouter.Handle("/max", middleware.PowDDos()(
+		httpx.ErrorHandler(h.UserMaxDisconnectHandler_V1),
+	)).Methods(http.MethodDelete)
+
+	/* Access: Premium */
 	userRouter.Handle("/settings", middleware.PowDDos()(
 		httpx.ErrorHandler(h.UserSettingsUpdateHandler_V1),
 	)).Methods(http.MethodPatch)
+
+	/* Access: ALL */
+	userRouter.Handle("/search", httpx.ErrorHandler(h.UserSearchHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
 	userRouter.Handle("/login-state", httpx.ErrorHandler(h.UserLoginStateHandler_V1)).Methods(http.MethodGet)

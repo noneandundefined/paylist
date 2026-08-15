@@ -17,6 +17,7 @@ export const ROUTES = {
 	AUTH_AUTHORIZE_DEVICE: '/authorize',
 	AUTH_CONFIRM_EMAIL: '/paylist-confirm-email',
 	AUTH_SENT_CONFIRM_EMAIL: '/paylist-sent-confirm-email',
+	SUBSCRIPTION_INVITE: '/paylist-subscription-invite',
 };
 
 type Params = Record<string, string | number>;

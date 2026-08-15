@@ -33,6 +33,72 @@ export interface TrackedSubscriptionResponse {
 	include_in_analytics: boolean;
 	note?: string | null;
 	categories?: string[];
+	share_percent?: number;
+	share_price?: number;
+	is_owner?: boolean;
+}
+
+export type SharedSubscriptionMemberStatus = 'pending' | 'accepted' | 'declined';
+export type SharedSubscriptionMemberRole = 'owner' | 'member';
+
+export interface SharedSubscriptionMember {
+	id: number;
+	created_at: string;
+	updated_at: string;
+	tracked_subscription_id: number;
+	user_uuid?: string | null;
+	email: string;
+	role: SharedSubscriptionMemberRole;
+	share_percent: number;
+	notification: boolean;
+	include_in_analytics: boolean;
+	status: SharedSubscriptionMemberStatus;
+	invite_expires_at?: string | null;
+	first_name?: string | null;
+	last_name?: string | null;
+	avatars?: string | null;
+}
+
+export interface SharedSubscriptionShareItem {
+	proposal_id: number;
+	member_id: number;
+	share_percent: number;
+}
+
+export interface SharedSubscriptionShareVote {
+	proposal_id: number;
+	user_uuid: string;
+	accepted: boolean;
+	created_at: string;
+}
+
+export interface SharedSubscriptionShareProposal {
+	id: number;
+	proposed_by_user_uuid: string;
+	status: string;
+	items: SharedSubscriptionShareItem[];
+	votes: SharedSubscriptionShareVote[];
+	my_vote: boolean | null;
+}
+
+export interface SharedSubscriptionMembersResponse {
+	members: SharedSubscriptionMember[];
+	pending_proposal: SharedSubscriptionShareProposal | null;
+}
+
+export interface SharedSubscriptionInvitePreview {
+	subscription_id: number;
+	subscription_name: string;
+	owner_name: string;
+	email: string;
+	share_percent: number;
+	status: SharedSubscriptionMemberStatus;
+	invite_expires_at?: string | null;
+}
+
+export interface SharedSubscriptionInviteAcceptResponse {
+	message: string;
+	subscription_id: number;
 }
 
 export interface TrackedSubscriptionDetailResponse extends TrackedSubscriptionResponse {
@@ -76,6 +142,22 @@ export const basicTrackedSubscriptionCreate = async (payload: TrackedSubscriptio
 export const basicTrackedSubscriptionUpdate = async (id: number, payload: TrackedSubscriptionEditRequest): Promise<string> => apiPut(`${apiPath}/${id}`, payload);
 
 export const basicTrackedSubscriptionDelete = async (id: number): Promise<string> => apiDelete(`${apiPath}/${id}`);
+
+export const basicTrackedSubscriptionMembers = async (id: number): Promise<SharedSubscriptionMembersResponse> => apiGet(`${apiPath}/${id}/members`);
+
+export const basicTrackedSubscriptionInvite = async (id: number, email: string, sharePercent: number): Promise<string> => apiPost(`${apiPath}/${id}/members`, { email, share_percent: sharePercent });
+
+export const basicTrackedSubscriptionRemoveMember = async (id: number, memberId: number): Promise<string> => apiDelete(`${apiPath}/${id}/members/${memberId}`);
+
+export const basicTrackedSubscriptionLeave = async (id: number): Promise<string> => apiDelete(`${apiPath}/${id}/members/me`);
+
+export const basicTrackedSubscriptionProposeShares = async (id: number, shares: Array<{ member_id: number; share_percent: number }>): Promise<string> => apiPost(`${apiPath}/${id}/shares`, { shares });
+
+export const basicTrackedSubscriptionVoteShares = async (id: number, proposalId: number, accept: boolean): Promise<string> => apiPost(`${apiPath}/${id}/shares/${proposalId}/vote`, { accept });
+
+export const basicTrackedSubscriptionInvitePreview = async (token: string): Promise<SharedSubscriptionInvitePreview> => apiGet(`${apiPath}/invites`, { params: { token } });
+
+export const basicTrackedSubscriptionAcceptInvite = async (token: string): Promise<SharedSubscriptionInviteAcceptResponse> => apiPost(`${apiPath}/invites/accept`, { token });
 
 export const getTrackedSubscriptionImageUrl = (name: string): string => {
 	const baseURL = configClient.type.release === 'dev' ? configClient.links.URL_BACKEND_DEV : configClient.links.URL_BACKEND_PROD;

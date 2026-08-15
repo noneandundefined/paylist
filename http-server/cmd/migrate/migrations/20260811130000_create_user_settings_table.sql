@@ -11,6 +11,10 @@ CREATE TABLE IF NOT EXISTS user_settings (
     telegram_username VARCHAR(64),
     telegram_language CHAR(2),
 
+    max_user_id BIGINT,
+    max_username VARCHAR(64),
+    max_language CHAR(2),
+
     CONSTRAINT chk_user_settings_display_currency CHECK (display_currency IS NULL OR display_currency ~ '^[A-Z]{3}$'),
     CONSTRAINT chk_user_settings_country CHECK (country IS NULL OR country ~ '^[A-Z]{2}$')
 );
@@ -18,6 +22,10 @@ CREATE TABLE IF NOT EXISTS user_settings (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_user_settings_telegram_chat_id
 	ON user_settings (telegram_chat_id)
 	WHERE telegram_chat_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_settings_max_user_id
+	ON user_settings (max_user_id)
+	WHERE max_user_id IS NOT NULL;
 
 CREATE OR REPLACE FUNCTION set_user_settings_updated_at()
 RETURNS TRIGGER AS $$

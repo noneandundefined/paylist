@@ -1,5 +1,6 @@
 import PageLayout from '../PageLayout';
 import { ROUTES } from '@/constants/constants';
+import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, Navigate, useParams } from 'react-router-dom';
@@ -21,7 +22,8 @@ import { notifyPremiumRequired } from '@/utils/premiumUtils';
 import { clampPremiumSubscriptionFlags, resolvePremiumSubscriptionFlags } from '@/utils/subscriptionPremiumUtils';
 import { getNextBillingLabel } from '@/utils/TrackedSubscriptionDisplayUtils';
 import { isSubscriptionOverdue } from '@/utils/SubscriptionRenewalUtils';
-import { basicTrackedSubscriptionDelete, basicTrackedSubscriptionGetById, basicTrackedSubscriptionUpdate } from '@/rest/trackedSubscriptionAPI';
+import SubscriptionSharingPanel from '@/components/common/TrackedSubscription/SubscriptionSharingPanel';
+import { basicTrackedSubscriptionDelete, basicTrackedSubscriptionGetById, basicTrackedSubscriptionLeave, basicTrackedSubscriptionMembers, basicTrackedSubscriptionUpdate } from '@/rest/trackedSubscriptionAPI';
 import { GUITextarea } from '@/components/ui/Input/GUITextarea';
 
 import Close from '@/components/@icons/close';
@@ -46,6 +48,12 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 		enabled: Number.isFinite(subscriptionId) && subscriptionId > 0,
 	});
 
+	const { data: membersData, reload: reloadMembers } = useHandleServer([QUERY_KEYS.trackedSubscriptionMembers, subscriptionId], () => basicTrackedSubscriptionMembers(subscriptionId), {
+		enabled: Number.isFinite(subscriptionId) && subscriptionId > 0,
+	});
+
+	const isOwner = Boolean(subscription?.is_owner);
+
 	const [categories, setCategories] = useState<string[]>([]);
 	const [autoRenewal, setAutoRenewal] = useState(false);
 	const [notification, setNotification] = useState(false);
@@ -53,6 +61,14 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 	const [note, setNote] = useState('');
 	const [saving, setSaving] = useState(false);
 	const [deleting, setDeleting] = useState(false);
+
+	useEffect(() => {
+		if (!subscription?.name) {
+			return;
+		}
+
+		document.title = subscription.name;
+	}, [subscription?.name]);
 
 	useEffect(() => {
 		if (!subscription) {
@@ -74,14 +90,16 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 
 		const baseline = clampPremiumSubscriptionFlags(subscription.auto_renewal, subscription.notification, canUseNotification);
 
+		const ownerFieldsDirty = isOwner && autoRenewal !== baseline.autoRenewal;
+
 		return (
-			autoRenewal !== baseline.autoRenewal ||
+			ownerFieldsDirty ||
 			notification !== baseline.notification ||
 			includeInAnalytics !== subscription.include_in_analytics ||
 			normalizeNote(note) !== normalizeNote(subscription.note) ||
 			!areCategoriesEqual(categories, subscription.categories ?? [])
 		);
-	}, [subscription, autoRenewal, notification, includeInAnalytics, note, categories, canUseNotification]);
+	}, [subscription, autoRenewal, notification, includeInAnalytics, note, categories, canUseNotification, isOwner]);
 
 	if (!Number.isFinite(subscriptionId) || subscriptionId <= 0) {
 		return <Navigate to={ROUTES.NOT_FOUND} replace />;
@@ -145,18 +163,21 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 	};
 
 	const onCancelSubscription = async () => {
-		if (deleting || !(await confirm('subscription.cancel-confirm-desc', 'subscription.cancel'))) {
+		const confirmKey = isOwner ? 'subscription.cancel-confirm-desc' : 'subscription.leave-confirm-desc';
+		const titleKey = isOwner ? 'subscription.cancel' : 'subscription.leave';
+
+		if (deleting || !(await confirm(confirmKey, titleKey))) {
 			return;
 		}
 
 		setDeleting(true);
 
 		try {
-			const message = await basicTrackedSubscriptionDelete(subscription.id);
+			const message = isOwner ? await basicTrackedSubscriptionDelete(subscription.id) : await basicTrackedSubscriptionLeave(subscription.id);
 
 			await invalidateAfterDelete(subscriptionId);
 
-			notify.success(message || t('subscription.cancel-success'));
+			notify.success(message || (isOwner ? t('subscription.cancel-success') : t('subscription.leave-success')));
 			navigate(ROUTES.HOME, { replace: true });
 		} finally {
 			setDeleting(false);
@@ -165,6 +186,9 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 
 	return (
 		<PageLayout>
+			<Helmet>
+				<title>{subscription.name}</title>
+			</Helmet>
 			<div className="flex flex-col space-y-3">
 				<PageHeader title={t('subscription.detail-title')} backTo={ROUTES.HOME} backLabel={t('action.back')} />
 
@@ -191,20 +215,31 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 						<Close fill="currentColor" size={18} />
 					</span>
 
-					<span className="font-medium leading-tight gu-text-primary">{t('subscription.cancel')}</span>
+					<span className="font-medium leading-tight gu-text-primary">{isOwner ? t('subscription.cancel') : t('subscription.leave')}</span>
 				</GUIButton>
 
 				<section className="gu-glass-card space-y-3 px-3 py-3.5">
 					<h2 className="text-[15px] font-semibold gu-text-primary">{t('subscription.note')}</h2>
+					<p className="text-[12px] gu-text-muted">{t('subscription.note-personal')}</p>
 
 					<GUITextarea value={note} onChange={(event) => setNote(event.target.value)} placeholder={t('subscription.note-placeholder')} aria-label={t('subscription.note')} maxLength={2000} />
 				</section>
 
 				<section className="gu-glass-card space-y-3 px-3 py-3.5">
 					<h2 className="text-[15px] font-semibold gu-text-primary">{t('subscription.category')}</h2>
+					<p className="text-[12px] gu-text-muted">{t('subscription.category-personal')}</p>
 
 					<CategoryChipGroup categories={availableCategories} selectedSlugs={categories} onToggle={toggleCategory} />
 				</section>
+
+				<SubscriptionSharingPanel
+					subscription={subscription}
+					membersData={membersData}
+					onChanged={async () => {
+						await invalidateAfterUpdate(subscriptionId);
+						await reloadMembers();
+					}}
+				/>
 
 				<SubscriptionSettingsPanel
 					autoRenewal={autoRenewal}
@@ -215,6 +250,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 					onIncludeInAnalyticsChange={setIncludeInAnalytics}
 					canUseNotification={canUseNotification}
 					onPremiumRequired={() => notifyPremiumRequired(t)}
+					canChangeAutoRenewal={isOwner}
 				/>
 
 				{isDirty && (

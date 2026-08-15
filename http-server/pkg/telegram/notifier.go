@@ -42,7 +42,7 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 	today := time.Now().UTC()
 
 	for _, item := range *candidates {
-		alreadySent, err := n.store.TrackedSubscriptions.Has_SubscriptionNotificationLog(ctx, item.ID, notifyChannel, today)
+		alreadySent, err := n.store.TrackedSubscriptions.Has_SubscriptionNotificationLog(ctx, item.ID, item.MemberUserUUID, notifyChannel, today)
 		if err != nil {
 			logger.Error("SendDueReminders: failed to check notification log for subscription=%d: %s", item.ID, err.Error())
 			continue
@@ -65,14 +65,14 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 		}
 
 		text := tr.T(localeKey)
-		text = fmt.Sprintf(text, item.Name, formatPrice(item.Price, item.Currency), item.DatePay.Format("02.01.2006"))
+		text = fmt.Sprintf(text, item.Name, formatPrice(item.SharePrice, item.Currency), item.DatePay.Format("02.01.2006"))
 
 		if err := n.client.SendMessage(item.TelegramChatID, text); err != nil {
 			logger.Error("SendDueReminders: failed to send telegram message subscription=%d chat=%d: %s", item.ID, item.TelegramChatID, err.Error())
 			continue
 		}
 
-		if err := n.store.TrackedSubscriptions.Create_SubscriptionNotificationLog(ctx, item.ID, notifyChannel, today); err != nil {
+		if err := n.store.TrackedSubscriptions.Create_SubscriptionNotificationLog(ctx, item.ID, item.MemberUserUUID, notifyChannel, today); err != nil {
 			logger.Error("SendDueReminders: failed to log notification subscription=%d: %s", item.ID, err.Error())
 		}
 	}

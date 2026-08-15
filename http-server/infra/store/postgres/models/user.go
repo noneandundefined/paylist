@@ -15,6 +15,13 @@ type UserCore struct {
 	Password       string    `json:"-" db:"password"`
 }
 
+type UserPublicProfile struct {
+	Email     string  `json:"email" db:"email"`
+	FirstName *string `json:"first_name,omitempty" db:"first_name"`
+	LastName  *string `json:"last_name,omitempty" db:"last_name"`
+	Avatars   *string `json:"avatars,omitempty" db:"avatars"`
+}
+
 type UserSubscription struct {
 	ID                      uint64     `json:"id" db:"id"`
 	CreatedAt               time.Time  `json:"created_at" db:"created_at"`
@@ -83,4 +90,7 @@ type UserSettings struct {
 	TelegramChatID   *int64    `json:"telegram_chat_id,omitempty" db:"telegram_chat_id"`
 	TelegramUsername *string   `json:"telegram_username,omitempty" db:"telegram_username"`
 	TelegramLanguage *string   `json:"telegram_language,omitempty" db:"telegram_language"`
+	MaxUserID        *int64    `json:"max_user_id,omitempty" db:"max_user_id"`
+	MaxUsername      *string   `json:"max_username,omitempty" db:"max_username"`
+	MaxLanguage      *string   `json:"max_language,omitempty" db:"max_language"`
 }

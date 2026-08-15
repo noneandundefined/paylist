@@ -36,7 +36,7 @@ func (h *Handler) GetSubscriptionByIdHandler_V1(w http.ResponseWriter, r *http.R
 		return httperr.NotFound(tr.TErr("error.tracked-subscription-not-found"))
 	}
 
-	categories, err := h.Store.TrackedSubscriptions.Get_CategorySlugsBySubscriptionID(ctx, uint64(id))
+	categories, err := h.Store.TrackedSubscriptions.Get_CategorySlugsBySubscriptionID(ctx, uint64(id), authToken.User.UserUUID)
 	if err != nil {
 		return httperr.Db(ctx, err)
 	}

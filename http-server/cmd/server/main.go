@@ -3,12 +3,14 @@ package main
 import (
 	"database/sql"
 	"os"
+	"strings"
 
 	"paylist.server/infra/locale"
 	"paylist.server/infra/logger"
 	"paylist.server/infra/store/postgres"
 	"paylist.server/infra/store/postgres/store"
 	"paylist.server/infra/store/redis"
+	"paylist.server/pkg/maxbot"
 	"paylist.server/pkg/telegram"
 
 	"github.com/joho/godotenv"
@@ -20,6 +22,7 @@ type httpServer struct {
 	cron     *cron.Cron
 	store    store.Storage
 	telegram *telegram.Notifier
+	maxbot   *maxbot.Notifier
 }
 
 func main() {
@@ -62,6 +65,24 @@ func main() {
 		}
 	} else if os.Getenv("TELEGRAM_BOT_TOKEN") != "" {
 		logger.Error("Telegram bot is configured but failed to initialize: %s", err.Error())
+	}
+
+	if maxClient, err := maxbot.NewFromEnv(); err == nil {
+		server.maxbot = maxbot.NewNotifier(store, maxClient)
+
+		if maxPollingEnabled() {
+			startMaxPolling(server.maxbot, maxClient)
+		} else if webhookSecret := strings.TrimSpace(os.Getenv("MAX_WEBHOOK_SECRET")); webhookSecret != "" {
+			if webhookURL := maxWebhookURL(webhookSecret); webhookURL != "" {
+				if err := maxClient.SubscribeWebhook(webhookURL, webhookSecret); err != nil {
+					logger.Error("MAX subscribe webhook failed: %s", err.Error())
+				} else {
+					logger.Info("MAX webhook subscribed")
+				}
+			}
+		}
+	} else if os.Getenv("MAX_BOT_TOKEN") != "" {
+		logger.Error("MAX bot is configured but failed to initialize: %s", err.Error())
 	}
 
 	server.cron = cron.New(cron.WithSeconds())

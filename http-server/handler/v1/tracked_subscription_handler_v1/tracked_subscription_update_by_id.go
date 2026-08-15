@@ -42,12 +42,6 @@ func (h *Handler) EditSubscriptionHandler_V1(w http.ResponseWriter, r *http.Requ
 		return httperr.BadRequest(tr.TErr("error.fields-not-filled"))
 	}
 
-	if err := validateTrackedSubscriptionPayload(tr, authToken, payload.Price, payload.DatePay.Time, payload.AutoRenewal, payload.Notification); err != nil {
-		return err
-	}
-
-	payload.AutoRenewal, payload.Notification = normalizePremiumSubscriptionFields(authToken, payload.AutoRenewal, payload.Notification)
-
 	existing, err := h.Store.TrackedSubscriptions.Get_SubscriptionById(ctx, uint64(id), authToken.User.UserUUID)
 	if err != nil {
 		return httperr.Db(ctx, err)
@@ -57,17 +51,25 @@ func (h *Handler) EditSubscriptionHandler_V1(w http.ResponseWriter, r *http.Requ
 		return httperr.NotFound(tr.TErr("error.tracked-subscription-not-found"))
 	}
 
-	sub := trackedSubscriptionFromEditPayload(authToken.User.UserUUID, payload)
-	sub.ID = existing.ID
+	payload.AutoRenewal, payload.Notification = normalizePremiumSubscriptionFields(authToken, payload.AutoRenewal, payload.Notification)
 
-	if err := h.Store.TrackedSubscriptions.Update_SubscriptionById(ctx, sub, id); err != nil {
-		return httperr.Db(ctx, err)
-	}
+	if existing.IsOwner {
+		if err := validateTrackedSubscriptionPayload(tr, authToken, payload.Price, payload.DatePay.Time, payload.AutoRenewal, payload.Notification); err != nil {
+			return err
+		}
 
-	if !isSameDate(existing.DatePay, sub.DatePay) {
-		previousDatePay := existing.DatePay
-		if err := writeSubscriptionHistory(ctx, h.Store.TrackedSubscriptions, sub, historyEventDateChanged, &previousDatePay); err != nil {
+		sub := trackedSubscriptionFromEditPayload(existing.UserUUID, payload)
+		sub.ID = existing.ID
+
+		if err := h.Store.TrackedSubscriptions.Update_SubscriptionById(ctx, sub, id); err != nil {
 			return httperr.Db(ctx, err)
+		}
+
+		if !isSameDate(existing.DatePay, sub.DatePay) {
+			previousDatePay := existing.DatePay
+			if err := writeSubscriptionHistory(ctx, h.Store.TrackedSubscriptions, sub, historyEventDateChanged, &previousDatePay); err != nil {
+				return httperr.Db(ctx, err)
+			}
 		}
 	}
 
@@ -75,6 +77,10 @@ func (h *Handler) EditSubscriptionHandler_V1(w http.ResponseWriter, r *http.Requ
 		if err := h.Store.TrackedSubscriptions.Replace_SubscriptionCategories(ctx, uint64(id), authToken.User.UserUUID, payload.Categories); err != nil {
 			return httperr.Db(ctx, err)
 		}
+	}
+
+	if err := h.Store.TrackedSubscriptions.Update_MemberPreferences(ctx, uint64(id), authToken.User.UserUUID, payload.Notification, includeInAnalyticsValue(payload.IncludeInAnalytics), normalizeNote(payload.Note)); err != nil {
+		return httperr.Db(ctx, err)
 	}
 
 	httpx.HttpResponse(w, r, http.StatusOK, tr.T("success.tracked-subscription-updated"))

@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '@/constants/constants';
+import { CACHEKEYs } from '@/constants/CacheKeys.constants';
 import { basicAuthSignUp } from '@/rest/authAPI';
 import { Link, useNavigate } from 'react-router-dom';
 import { GUInput } from '@/components/ui/Input/GUInput';
@@ -34,6 +35,13 @@ const SignUpPage = () => {
 		const message = await basicAuthSignUp(data);
 
 		notify.success(message || t('auth.confirm-email-sent'));
+
+		const inviteToken = sessionStorage.getItem(CACHEKEYs.SUBSCRIPTION_INVITE_TOKEN);
+		if (inviteToken) {
+			navigate(`${ROUTES.SUBSCRIPTION_INVITE}?token=${encodeURIComponent(inviteToken)}`, { replace: true });
+			return;
+		}
+
 		navigate(ROUTES.SIGNIN, { replace: true });
 	};
 

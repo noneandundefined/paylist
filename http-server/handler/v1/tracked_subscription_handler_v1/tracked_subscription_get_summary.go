@@ -38,7 +38,7 @@ func resolveDominantCurrency(ctx context.Context, subscriptions []models.Tracked
 			cur = "USD"
 		}
 
-		monthlyAmount := currency.GetMonthlyAmount(sub.Price, sub.Period)
+		monthlyAmount := currency.GetMonthlyAmount(sub.SharePrice, sub.Period)
 
 		entry := stats[cur]
 		entry.count++
@@ -136,7 +136,7 @@ func (h *Handler) GetSubscriptionSummaryHandler_V1(w http.ResponseWriter, r *htt
 			continue
 		}
 
-		monthlyAmount := currency.GetMonthlyAmount(sub.Price, sub.Period)
+		monthlyAmount := currency.GetMonthlyAmount(sub.SharePrice, sub.Period)
 		subCurrency := strings.ToUpper(sub.Currency)
 		if subCurrency == "" {
 			subCurrency = "USD"

@@ -25,6 +25,12 @@ const ConfirmEmailPage = () => {
 				if (response.status === 'success') {
 					localStorage.setItem(CACHEKEYs.L_SESSION, response.message);
 
+					const inviteToken = sessionStorage.getItem(CACHEKEYs.SUBSCRIPTION_INVITE_TOKEN);
+					if (inviteToken) {
+						navigate(`${ROUTES.SUBSCRIPTION_INVITE}?token=${encodeURIComponent(inviteToken)}`, { replace: true });
+						return;
+					}
+
 					navigate(ROUTES.HOME, { replace: true });
 					return;
 				}

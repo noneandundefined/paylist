@@ -11,7 +11,7 @@ import (
 
 func (h *Handler) GetSubscriptionImageHandler_V1(w http.ResponseWriter, r *http.Request) error {
 	tr := middleware.TranslatorFromContext(r.Context())
-	
+
 	nlp := ml.NewNLPBuilder()
 
 	name := r.URL.Query().Get("name")

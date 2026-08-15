@@ -15,6 +15,7 @@ interface SubscriptionSettingsPanelProps {
 	onIncludeInAnalyticsChange: (checked: boolean) => void;
 	canUseNotification: boolean;
 	onPremiumRequired: () => void;
+	canChangeAutoRenewal?: boolean;
 }
 
 const SubscriptionSettingsPanel: React.FC<SubscriptionSettingsPanelProps> = ({
@@ -26,6 +27,7 @@ const SubscriptionSettingsPanel: React.FC<SubscriptionSettingsPanelProps> = ({
 	onIncludeInAnalyticsChange,
 	canUseNotification,
 	onPremiumRequired,
+	canChangeAutoRenewal = true,
 }) => {
 	const { t } = useTranslation();
 
@@ -40,7 +42,14 @@ const SubscriptionSettingsPanel: React.FC<SubscriptionSettingsPanelProps> = ({
 
 	return (
 		<div className="gu-glass-card divide-y gu-divide overflow-hidden">
-			<SubscriptionSettingRow icon={<Reload fill="currentColor" size={21} />} label={t('subscription.auto-renewal')} checked={autoRenewal} onChange={onAutoRenewalChange} />
+			<SubscriptionSettingRow
+				icon={<Reload fill="currentColor" size={21} />}
+				label={t('subscription.auto-renewal')}
+				checked={autoRenewal}
+				onChange={onAutoRenewalChange}
+				locked={!canChangeAutoRenewal}
+				hint={!canChangeAutoRenewal ? t('subscription.auto-renewal-owner-only') : undefined}
+			/>
 
 			<SubscriptionSettingRow
 				icon={<BellOutline fill="currentColor" size={21} />}

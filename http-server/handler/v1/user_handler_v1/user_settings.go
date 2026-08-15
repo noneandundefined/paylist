@@ -27,6 +27,8 @@ func (h *Handler) UserSettingsGetHandler_V1(w http.ResponseWriter, r *http.Reque
 		Country:           settings.Country,
 		TelegramConnected: settings.TelegramChatID != nil,
 		TelegramUsername:  settings.TelegramUsername,
+		MaxConnected:      settings.MaxUserID != nil,
+		MaxUsername:       settings.MaxUsername,
 	}
 
 	httpx.HttpResponseWithETag(w, r, http.StatusOK, response)

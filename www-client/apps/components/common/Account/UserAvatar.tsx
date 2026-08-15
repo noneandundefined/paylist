@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { basicUserAvatarUpdate } from '@/rest/userAPI';
+import CameraPlusOutline from '@/components/@icons/camera-plus-outline';
 
 type UserAvatarSize = 'sm' | 'lg';
 
@@ -51,26 +52,18 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 	};
 
 	const avatar = (
-		// <div className={`rounded-full`}>
-		// 	<div className={`relative ${ringClass} overflow-hidden rounded-full ${isSmall ? 'h-11 w-11' : 'h-[6rem] w-[6rem]'}`}>
-		// 		<div className={`flex h-full w-full items-center justify-center overflow-hidden font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass} ${showImage ? 'p-[2px]' : ''}`}>
-		// 			{showImage ? <img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} /> : initials}
-		// 		</div>
-		// 		{uploading && <div className="absolute inset-0 bg-black/35" />}
-		// 	</div>
-		// </div>
 		<div className={`rounded-full border-2 p-1 ${ringClass}`}>
-			<div className="bg-white rounded-full">
+			<div className={`relative overflow-hidden rounded-full bg-white ${isSmall ? 'h-11 w-11' : 'h-[8rem] w-[8rem]'}`}>
 				{showImage ? (
-					<div className={`${isSmall ? 'h-11 w-11' : 'h-[6rem] w-[6rem]'}`}>
-						<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
-					</div>
+					<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
 				) : (
-					<div className={`relative ${ringClass} overflow-hidden rounded-full ${isSmall ? 'h-11 w-11' : 'h-[6rem] w-[6rem]'}`}>
-						<div className={`flex h-full w-full items-center justify-center overflow-hidden font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass} ${showImage ? 'p-[2px]' : ''}`}>{initials}</div>
+					<div className={`flex h-full w-full items-center justify-center font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass}`}>{initials}</div>
+				)}
+				{editable && (
+					<div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/50 transition-opacity ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100'}`}>
+						<CameraPlusOutline fill="#ffffff" size={isSmall ? 18 : 36} />
 					</div>
 				)}
-				{uploading && <div className="absolute inset-0 bg-black/35" />}
 			</div>
 		</div>
 	);
@@ -81,7 +74,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 
 	return (
 		<>
-			<button type="button" className="cursor-pointer rounded-full border-0 bg-transparent p-0" aria-label={t('account.change-avatar')} disabled={uploading} onClick={() => inputRef.current?.click()}>
+			<button type="button" className="group cursor-pointer rounded-full border-0 bg-transparent p-0" aria-label={t('account.change-avatar')} disabled={uploading} onClick={() => inputRef.current?.click()}>
 				{avatar}
 			</button>
 			<input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={onFileChange} />

@@ -5,7 +5,7 @@ import AccentBadge from '@/components/common/AccentBadge/AccentBadge';
 import SubscriptionIcon from '@/components/common/TrackedSubscription/SubscriptionIcon';
 import { getRenewalBadgeDays, isSubscriptionOverdue } from '@/utils/SubscriptionRenewalUtils';
 import type { TrackedSubscriptionResponse } from '@/rest/trackedSubscriptionAPI';
-import { formatSubscriptionPrice, getRenewOnDateLabel } from '@/utils/TrackedSubscriptionDisplayUtils';
+import { formatSubscriptionPrice, getRenewOnDateLabel, getSubscriptionShareAmount } from '@/utils/TrackedSubscriptionDisplayUtils';
 
 interface TrackedSubscriptionCardProps {
 	subscription: TrackedSubscriptionResponse;
@@ -33,7 +33,7 @@ const TrackedSubscriptionCard: React.FC<TrackedSubscriptionCardProps> = ({ subsc
 			</div>
 
 			<div className="shrink-0 text-right">
-				<p className={`text-[17px] font-bold ${overdue ? 'gu-overdue-title' : ''}`}>{formatSubscriptionPrice(subscription.price, subscription.currency, i18n.language)}</p>
+				<p className={`text-[17px] font-bold ${overdue ? 'gu-overdue-title' : ''}`}>{formatSubscriptionPrice(getSubscriptionShareAmount(subscription), subscription.currency, i18n.language)}</p>
 				<p className={`text-[13px] capitalize ${overdue ? 'gu-overdue-muted' : 'gu-text-muted'}`}>{t(`home.period-${subscription.period}`)}</p>
 			</div>
 		</Link>

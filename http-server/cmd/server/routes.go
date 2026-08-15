@@ -10,6 +10,7 @@ import (
 	"paylist.server/handler/v1/country_handler_v1"
 	"paylist.server/handler/v1/currency_handler_v1"
 	"paylist.server/handler/v1/device_handler_v1"
+	"paylist.server/handler/v1/max_handler_v1"
 	"paylist.server/handler/v1/payment_handler_v1"
 	"paylist.server/handler/v1/plan_handler_v1"
 	"paylist.server/handler/v1/telegram_handler_v1"
@@ -64,6 +65,13 @@ func (s *httpServer) routes() http.Handler {
 		webhookSecret := strings.TrimSpace(os.Getenv("TELEGRAM_WEBHOOK_SECRET"))
 		if webhookSecret != "" {
 			subrouter.HandleFunc("/telegram/webhook/"+webhookSecret, telegram_handler_v1.WebhookHandler(s.telegram)).Methods(http.MethodPost)
+		}
+	}
+
+	if s.maxbot != nil {
+		webhookSecret := strings.TrimSpace(os.Getenv("MAX_WEBHOOK_SECRET"))
+		if webhookSecret != "" {
+			subrouter.HandleFunc("/max/webhook/"+webhookSecret, max_handler_v1.WebhookHandler(s.maxbot)).Methods(http.MethodPost)
 		}
 	}
 

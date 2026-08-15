@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { ROUTES } from '@/constants/constants';
+import { CACHEKEYs } from '@/constants/CacheKeys.constants';
 import { useTranslation } from 'react-i18next';
 import { basicAuthSignIn } from '@/rest/authAPI';
 import { Link, useNavigate } from 'react-router-dom';
@@ -33,6 +34,12 @@ const SignInPage = () => {
 
 		if (result.status === 'signed_in') {
 			notify.success(t('auth.signin-success'));
+			const inviteToken = sessionStorage.getItem(CACHEKEYs.SUBSCRIPTION_INVITE_TOKEN);
+			if (inviteToken) {
+				navigate(`${ROUTES.SUBSCRIPTION_INVITE}?token=${encodeURIComponent(inviteToken)}`, { replace: true });
+				return;
+			}
+
 			navigate(ROUTES.HOME, { replace: true });
 			return;
 		}

@@ -1,4 +1,5 @@
 import type { TrackedSubscriptionResponse } from '@/rest/trackedSubscriptionAPI';
+import { getSubscriptionShareAmount } from '@/utils/TrackedSubscriptionDisplayUtils';
 
 export type AnalyticsPeriod = '1M' | '3M' | '6M' | '1Y';
 
@@ -124,11 +125,11 @@ const paymentAmountInMonth = (subscription: TrackedSubscriptionResponse, target:
 	const anchor = normalizeDate(subscription.date_pay);
 
 	if (subscription.period === 'monthly') {
-		return subscription.price;
+		return getSubscriptionShareAmount(subscription);
 	}
 
 	if (target.getMonth() === anchor.getMonth()) {
-		return subscription.price;
+		return getSubscriptionShareAmount(subscription);
 	}
 
 	return 0;
@@ -161,7 +162,7 @@ const outflowWithinDays = (subscriptions: TrackedSubscriptionResponse[], days: n
 
 		while (next.getTime() <= horizon.getTime()) {
 			if (next.getTime() >= today.getTime()) {
-				total += convert(subscription.price, subscription.currency);
+				total += convert(getSubscriptionShareAmount(subscription), subscription.currency);
 			}
 
 			if (subscription.period === 'yearly') {
@@ -219,11 +220,11 @@ const buildRecommendations = (subscriptions: TrackedSubscriptionResponse[], mont
 			continue;
 		}
 
-		const yearlyIfMonthly = subscription.price * 12;
-		const estimatedYearlyPlan = subscription.price * 10;
+		const yearlyIfMonthly = getSubscriptionShareAmount(subscription) * 12;
+		const estimatedYearlyPlan = getSubscriptionShareAmount(subscription) * 10;
 		const savings = yearlyIfMonthly - estimatedYearlyPlan;
 
-		if (savings >= subscription.price * 1.5) {
+		if (savings >= getSubscriptionShareAmount(subscription) * 1.5) {
 			recommendations.push({
 				id: `yearly-${subscription.id}`,
 				type: 'yearly-save',
@@ -245,7 +246,7 @@ const buildRecommendations = (subscriptions: TrackedSubscriptionResponse[], mont
 			.filter((item) => item.include_in_analytics)
 			.map((item) => ({
 				item,
-				monthly: convert(getMonthlyAmount(item.price, item.period), item.currency),
+				monthly: convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency),
 			}))
 			.sort((left, right) => right.monthly - left.monthly);
 
@@ -282,7 +283,7 @@ const buildRecommendations = (subscriptions: TrackedSubscriptionResponse[], mont
 	});
 
 	if (dueSoon.length >= 3) {
-		const total = dueSoon.reduce((sum, item) => sum + convert(item.period === 'yearly' ? item.price : item.price, item.currency), 0);
+		const total = dueSoon.reduce((sum, item) => sum + convert(getSubscriptionShareAmount(item), item.currency), 0);
 		recommendations.push({
 			id: 'cluster',
 			type: 'cluster',
@@ -301,12 +302,12 @@ const buildRecommendations = (subscriptions: TrackedSubscriptionResponse[], mont
 			return false;
 		}
 
-		const monthly = convert(getMonthlyAmount(item.price, item.period), item.currency);
+		const monthly = convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency);
 		return monthly > 0 && monthly / monthlyTotal < 0.05;
 	});
 
 	if (smallSubs.length >= 4 && monthlyTotal > 0) {
-		const total = smallSubs.reduce((sum, item) => sum + convert(getMonthlyAmount(item.price, item.period), item.currency), 0);
+		const total = smallSubs.reduce((sum, item) => sum + convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency), 0);
 		recommendations.push({
 			id: 'small-subs',
 			type: 'small-subs',
@@ -350,7 +351,7 @@ const buildCategoryBreakdown = (subscriptions: TrackedSubscriptionResponse[], mo
 			continue;
 		}
 
-		const monthlyAmount = convert(getMonthlyAmount(subscription.price, subscription.period), subscription.currency);
+		const monthlyAmount = convert(getMonthlyAmount(getSubscriptionShareAmount(subscription), subscription.period), subscription.currency);
 		const categories = subscription.categories?.length ? subscription.categories : ['uncategorized'];
 		const share = monthlyAmount / categories.length;
 
@@ -400,7 +401,7 @@ export const buildAnalyticsSnapshot = (subscriptions: TrackedSubscriptionRespons
 	let monthlyTotal = 0;
 
 	for (const subscription of analyticsSubs) {
-		monthlyTotal += convert(getMonthlyAmount(subscription.price, subscription.period), subscription.currency);
+		monthlyTotal += convert(getMonthlyAmount(getSubscriptionShareAmount(subscription), subscription.period), subscription.currency);
 	}
 
 	monthlyTotal = Math.round(monthlyTotal * 100) / 100;
@@ -416,7 +417,7 @@ export const buildAnalyticsSnapshot = (subscriptions: TrackedSubscriptionRespons
 
 	const topSubscriptions: SubscriptionShare[] = analyticsSubs
 		.map((subscription) => {
-			const monthlyAmount = convert(getMonthlyAmount(subscription.price, subscription.period), subscription.currency);
+			const monthlyAmount = convert(getMonthlyAmount(getSubscriptionShareAmount(subscription), subscription.period), subscription.currency);
 			return {
 				subscription,
 				monthlyAmount,
@@ -429,7 +430,7 @@ export const buildAnalyticsSnapshot = (subscriptions: TrackedSubscriptionRespons
 	const upcomingPayments = analyticsSubs
 		.map((subscription) => ({
 			subscription,
-			amount: convert(subscription.price, subscription.currency),
+			amount: convert(getSubscriptionShareAmount(subscription), subscription.currency),
 			daysUntil: getDaysUntil(subscription.date_pay, subscription.period),
 		}))
 		.filter((item) => item.daysUntil >= 0)

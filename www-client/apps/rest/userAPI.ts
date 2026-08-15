@@ -34,13 +34,30 @@ export interface UserSettingsResponse {
 	country?: string | null;
 	telegram_connected?: boolean;
 	telegram_username?: string | null;
+	max_connected?: boolean;
+	max_username?: string | null;
 }
 
 export interface TelegramLinkResponse {
 	bot_url: string;
 }
 
+export interface UserPublicProfile {
+	email: string;
+	first_name?: string | null;
+	last_name?: string | null;
+	avatars?: string | null;
+}
+
 export const basicUserLoginState = async (): Promise<UserLoginStateResponse> => apiGet(`${apiPath}/login-state`);
+
+export const basicUserSearchByEmail = async (email: string): Promise<UserPublicProfile[]> => {
+	const users = await apiGet<UserPublicProfile[]>(`${apiPath}/search`, {
+		params: { email },
+	});
+
+	return users ?? [];
+};
 
 export const basicUserSettingsGet = async (): Promise<UserSettingsResponse> => apiGet(`${apiPath}/settings`);
 
@@ -78,5 +95,12 @@ export const basicUserTelegramLink = async (): Promise<TelegramLinkResponse> => 
 
 export const basicUserTelegramDisconnect = async (): Promise<void> => {
 	const message = await apiDelete<string>(`${apiPath}/telegram`);
+	notify.success(message);
+};
+
+export const basicUserMaxLink = async (): Promise<TelegramLinkResponse> => apiPost(`${apiPath}/max/link`);
+
+export const basicUserMaxDisconnect = async (): Promise<void> => {
+	const message = await apiDelete<string>(`${apiPath}/max`);
 	notify.success(message);
 };
