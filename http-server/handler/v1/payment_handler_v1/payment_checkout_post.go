@@ -83,16 +83,16 @@ func (h *Handler) PostCheckoutHandler_V1(w http.ResponseWriter, r *http.Request)
 			Currency: plan.Currency,
 		},
 		Capture: true,
-		Confirmation: yookassa.Confirmation{
+		Confirmation: &yookassa.Confirmation{
 			Type:      "redirect",
 			ReturnURL: returnURL,
 		},
-		Description: fmt.Sprintf("Subs paylist.app - %s", plan.PlanName),
+		Description: yookassaPremiumDescription(false, plan.DurationDays),
 		Metadata: map[string]string{
 			"user_uuid": authToken.User.UserUUID,
 			"plan_name": plan.PlanName,
 		},
-		SavePaymentMethod: false,
+		SavePaymentMethod: true,
 	})
 	if err != nil {
 		logger.Error("PostCheckoutHandler_V1: %s", err.Error())

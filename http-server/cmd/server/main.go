@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"os"
 	"strings"
+	"time"
 
 	"paylist.server/infra/locale"
 	"paylist.server/infra/logger"
@@ -85,7 +86,7 @@ func main() {
 		logger.Error("MAX bot is configured but failed to initialize: %s", err.Error())
 	}
 
-	server.cron = cron.New(cron.WithSeconds())
+	server.cron = cron.New(cron.WithSeconds(), cron.WithLocation(time.UTC))
 
 	server.startCronJobs()
 

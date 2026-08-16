@@ -6,24 +6,36 @@ type Amount struct {
 }
 
 type Confirmation struct {
-	Type      string `json:"type"`
-	ReturnURL string `json:"return_url"`
+	Type      string `json:"type,omitempty"`
+	ReturnURL string `json:"return_url,omitempty"`
 }
 
 type CreatePaymentRequest struct {
 	Amount            Amount            `json:"amount"`
 	Capture           bool              `json:"capture"`
-	Confirmation      Confirmation      `json:"confirmation"`
+	Confirmation      *Confirmation     `json:"confirmation,omitempty"`
+	PaymentMethodID   string            `json:"payment_method_id,omitempty"`
 	Description       string            `json:"description"`
 	Metadata          map[string]string `json:"metadata,omitempty"`
 	SavePaymentMethod bool              `json:"save_payment_method,omitempty"`
 }
 
+type PaymentMethodCard struct {
+	First6        string `json:"first6"`
+	Last4         string `json:"last4"`
+	ExpiryYear    string `json:"expiry_year"`
+	ExpiryMonth   string `json:"expiry_month"`
+	CardType      string `json:"card_type"`
+	IssuerCountry string `json:"issuer_country"`
+	IssuerName    string `json:"issuer_name"`
+}
+
 type PaymentMethod struct {
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	Title string `json:"title"`
-	Saved bool   `json:"saved"`
+	ID    string             `json:"id"`
+	Type  string             `json:"type"`
+	Title string             `json:"title"`
+	Saved bool               `json:"saved"`
+	Card  *PaymentMethodCard `json:"card,omitempty"`
 }
 
 type PaymentConfirmation struct {

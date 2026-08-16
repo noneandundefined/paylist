@@ -73,6 +73,15 @@ func (c *Client) GetPayment(ctx context.Context, paymentID string) (*Payment, er
 	return &payment, nil
 }
 
+func (c *Client) GetPaymentMethod(ctx context.Context, paymentMethodID string) (*PaymentMethod, error) {
+	var method PaymentMethod
+	if err := c.doJSON(ctx, http.MethodGet, "/payment_methods/"+paymentMethodID, "", nil, &method); err != nil {
+		return nil, err
+	}
+
+	return &method, nil
+}
+
 func (c *Client) doJSON(ctx context.Context, method, path, idempotenceKey string, body any, out any) error {
 	var reader io.Reader
 	if body != nil {

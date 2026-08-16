@@ -1,9 +1,6 @@
-import { getAppLanguage, type AppLanguageCode } from '@/constants/Language.constant';
+import { buildRoute, ROUTES } from '@/constants/constants';
+import type { LegalDocumentType } from '@/content/legal';
 
-export type LegalDocumentType = 'terms' | 'privacy';
+export type { LegalDocumentType };
 
-export const getLegalDocumentUrl = (type: LegalDocumentType, language: string): string => {
-	const lang: AppLanguageCode = getAppLanguage(language);
-
-	return `/docs/legal/${type}-${lang}.pdf`;
-};
+export const getLegalDocumentPath = (type: LegalDocumentType): string => buildRoute(ROUTES.LEGAL, { type });

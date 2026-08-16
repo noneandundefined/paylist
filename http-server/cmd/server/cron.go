@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	"paylist.server/handler/v1/payment_handler_v1"
 	"paylist.server/infra/logger"
+	"paylist.server/pkg/yookassa"
 )
 
 const (
 	cronPaymentsClearPending          = "payments.clear-pending"
+	cronPaymentsAutoRenew             = "payments.auto-renew"
 	cronSubscriptionsAutoRenew        = "subscriptions.auto-renew"
 	cronSubscriptionsTelegramNotify   = "subscriptions.telegram-notify"
 	cronSubscriptionsMaxNotify        = "subscriptions.max-notify"
@@ -68,6 +71,18 @@ func (s *httpServer) startCronJobs() {
 		})
 	}
 
+	// YooKassa Premium auto-renew — 21:00 MSK (18:00 UTC) on the billing day.
+	s.cron.AddFunc("0 0 18 * * *", func() {
+		s.runCronJob(cronPaymentsAutoRenew, func(ctx context.Context) error {
+			client, err := yookassa.NewFromEnv()
+			if err != nil {
+				return nil
+			}
+
+			return payment_handler_v1.ChargeDueRenewals(ctx, s.store, client)
+		})
+	})
+
 	// Downgrade expired Premium SaaS plans to Free — daily 23:55 UTC.
 	s.cron.AddFunc("0 55 23 * * *", func() {
 		s.runCronJob(cronUsersResetExpiredPlans, func(ctx context.Context) error {
@@ -82,5 +97,5 @@ func (s *httpServer) startCronJobs() {
 		})
 	})
 
-	logger.Info("Cron scheduler registered: payments.clear-pending@5m, subscriptions.auto-renew@00:00, subscriptions.telegram-notify@09:00, subscriptions.max-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
+	logger.Info("Cron scheduler registered: payments.clear-pending@5m, payments.auto-renew@18:00UTC/21:00MSK, subscriptions.auto-renew@00:00, subscriptions.telegram-notify@09:00, subscriptions.max-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
 }

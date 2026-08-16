@@ -141,7 +141,7 @@ const AccountPage = () => {
 					</p>
 				</section>
 
-				{isPremium ? <AccountPremiumPlanCard validTo={loginState.valid_to} /> : <PremiumBadge />}
+				{isPremium ? <AccountPremiumPlanCard validTo={loginState.valid_to} amount={loginState.amount} currency={loginState.currency} /> : <PremiumBadge />}
 
 				<AccountSection title={t('account.settings-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">

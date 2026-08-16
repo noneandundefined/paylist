@@ -10,6 +10,7 @@ const CreateSubscriptionPage = lazy(() => import('@/pages/CreateSubscriptionPage
 const PlansPage = lazy(() => import('@/pages/PlansPage/index'));
 const AccountPage = lazy(() => import('@/pages/AccountPage/index'));
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
+const LegalPage = lazy(() => import('@/pages/LegalPage/index'));
 
 /** Auth */
 const SignInPage = lazy(() => import('@/pages/SignInPage/index'));
@@ -96,6 +97,12 @@ const config: CustomRouteConfig[] = [
 		redirectIfLogged: false,
 		component: SubscriptionInvitePage,
 		title: 'subscription.invite-title',
+	},
+	{
+		path: ROUTES.LEGAL,
+		loginRequired: false,
+		redirectIfLogged: false,
+		component: LegalPage,
 	},
 ];
 

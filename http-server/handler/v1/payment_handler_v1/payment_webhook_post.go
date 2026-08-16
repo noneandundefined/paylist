@@ -40,7 +40,7 @@ func (h *Handler) PostWebhookHandler_V1(w http.ResponseWriter, r *http.Request) 
 
 	switch notification.Event {
 	case "payment.succeeded":
-		if err := h.fulfillSucceededPayment(ctx, payment); err != nil {
+		if err := fulfillSucceededPayment(ctx, h.Store, payment); err != nil {
 			return httperr.Db(ctx, err)
 		}
 

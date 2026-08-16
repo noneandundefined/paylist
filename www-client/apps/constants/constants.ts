@@ -11,6 +11,7 @@ export const ROUTES = {
 	ACCOUNT: '/account',
 	ANALYTICS: '/analytics',
 	PLANS: '/plans',
+	LEGAL: '/legal/:type',
 
 	PAY_STATUS: '/pay',
 

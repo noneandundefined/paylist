@@ -1,6 +1,8 @@
 import Check from '@/components/@icons/check';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { getLegalDocumentPath } from '@/utils/legalDocumentUtils';
 import { ROUTES } from '@/constants/constants';
 import { basicPlanList } from '@/rest/planAPI';
 import { APP_NAME, getAppLanguage } from '@/constants/Language.constant';
@@ -61,6 +63,8 @@ const PlansPage = () => {
 
 	const { isPremium, loading: loginLoading } = useLoginState();
 	const { data: plans, loading: plansLoading } = useHandleServer([QUERY_KEYS.planList], () => basicPlanList());
+	const [acceptedOffer, setAcceptedOffer] = useState(false);
+	const offerPath = getLegalDocumentPath('offer');
 
 	const plan = plans?.[0];
 	const loading = loginLoading || plansLoading;
@@ -154,9 +158,22 @@ const PlansPage = () => {
 				)}
 
 				<div className="mt-auto pt-10">
+					{!isPremium ? (
+						<label className="mb-4 flex items-start gap-3 text-left text-[13px] leading-relaxed gu-text-muted">
+							<input type="checkbox" className="mt-1 h-4 w-4 shrink-0" checked={acceptedOffer} onChange={(event) => setAcceptedOffer(event.target.checked)} />
+							<span>
+								{t('plans.offer-accept-prefix')}{' '}
+								<Link to={offerPath} target="_blank" rel="noopener noreferrer" className="underline gu-text-primary">
+									{t('plans.offer-title')}
+								</Link>
+								{t('plans.offer-accept-suffix', { price: planAmount, days: plan.duration_days })}
+							</span>
+						</label>
+					) : null}
+
 					<GUIButton
 						type="button"
-						disabled={isPremium}
+						disabled={isPremium || !acceptedOffer}
 						onClick={onSubscribe}
 						className="w-full rounded-[18px] px-6 py-4 text-[16px] font-semibold text-white shadow-[0_10px_30px_rgba(0,133,255,0.25)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
 						style={{ background: PREMIUM_GRADIENT }}
@@ -164,7 +181,7 @@ const PlansPage = () => {
 						{isPremium ? t('plans.already-subscribed') : t('plans.subscribe-monthly')}
 					</GUIButton>
 
-					<p className="mt-3 text-center text-[12px] leading-relaxed gu-text-muted">{t('plans.disclaimer', { price: planAmount })}</p>
+					<p className="mt-3 text-center text-[12px] leading-relaxed gu-text-muted">{t('plans.disclaimer', { price: planAmount, days: plan.duration_days })}</p>
 				</div>
 			</div>
 		</div>

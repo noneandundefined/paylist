@@ -30,7 +30,7 @@ func (s *PaymentStore) Create_PaymentHistory(ctx context.Context, payment *model
 			paid_at,
 			metadata
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb)
 		RETURNING *
 	`
 
@@ -52,7 +52,7 @@ func (s *PaymentStore) Create_PaymentHistory(ctx context.Context, payment *model
 		payment.PaymentKind,
 		payment.Description,
 		payment.PaidAt,
-		payment.Metadata,
+		jsonbArg(payment.Metadata),
 	).Scan(
 		&res.ID,
 		&res.CreatedAt,
@@ -153,6 +153,45 @@ func (s *PaymentStore) Get_UserSubscriptionBillingByUserUuid(ctx context.Context
 	return billing, nil
 }
 
+func (s *PaymentStore) Get_SubscriptionsDueForAutoRenew(ctx context.Context) ([]models.UserSubscriptionRenewalDue, error) {
+	query := `
+		SELECT
+			user_subscriptions.user_uuid,
+			user_subscriptions.plan_name,
+			user_subscriptions.yookassa_payment_method_id,
+			subscriptions.amount,
+			subscriptions.currency,
+			subscriptions.duration_days
+		FROM user_subscriptions
+		JOIN subscriptions ON LOWER(subscriptions.plan_name) = LOWER(user_subscriptions.plan_name)
+		WHERE user_subscriptions.is_active = TRUE
+			AND user_subscriptions.auto_renew_enabled = TRUE
+			AND user_subscriptions.yookassa_payment_method_id IS NOT NULL
+			AND user_subscriptions.valid_to IS NOT NULL
+			AND user_subscriptions.valid_to::date <= CURRENT_DATE
+			AND LOWER(user_subscriptions.plan_name) <> 'free'
+			AND NOT EXISTS (
+				SELECT 1
+				FROM payment_history
+				WHERE payment_history.user_uuid = user_subscriptions.user_uuid
+					AND payment_history.payment_kind = 'renewal'
+					AND payment_history.status IN ('pending', 'waiting_for_capture', 'succeeded')
+					AND payment_history.created_at::date = CURRENT_DATE
+			)
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+
+	items, err := pgqx.QueryContext[models.UserSubscriptionRenewalDue](ctx, s.db, query)
+	if err != nil {
+		logger.Error("Get_SubscriptionsDueForAutoRenew req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return nil, err
+	}
+
+	return items, nil
+}
+
 func (s *PaymentStore) Get_PaymentActiveCount(ctx context.Context, userUuid string) (uint32, error) {
 	query := `
 		SELECT COUNT(*) FROM payment_history
@@ -221,7 +260,8 @@ func (s *PaymentStore) Update_YookassaPaymentMethod(ctx context.Context, userUui
 			yookassa_payment_method_id = $2,
 			payment_method_type = $3,
 			payment_method_title = $4,
-			payment_method_saved_at = timezone('UTC', now())
+			payment_method_saved_at = timezone('UTC', now()),
+			auto_renew_enabled = TRUE
 		WHERE user_uuid = $1 AND is_active = TRUE
 	`
 
@@ -306,4 +346,12 @@ func (s *PaymentStore) Delete_PaymentWithStatusPending(ctx context.Context) erro
 	}
 
 	return nil
+}
+
+func jsonbArg(raw []byte) interface{} {
+	if len(raw) == 0 {
+		return nil
+	}
+
+	return string(raw)
 }

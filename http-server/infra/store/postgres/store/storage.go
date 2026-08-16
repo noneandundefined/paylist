@@ -91,6 +91,7 @@ type Storage struct {
 		Get_PaymentHistoryListByUserUuid(ctx context.Context, userUuid string, limit int) ([]models.PaymentHistory, error)
 		Get_PaymentHistoryByYookassaPaymentID(ctx context.Context, paymentID string) (*models.PaymentHistory, error)
 		Get_UserSubscriptionBillingByUserUuid(ctx context.Context, userUuid string) (*models.UserSubscriptionBilling, error)
+		Get_SubscriptionsDueForAutoRenew(ctx context.Context) ([]models.UserSubscriptionRenewalDue, error)
 		Get_PaymentActiveCount(ctx context.Context, userUuid string) (uint32, error)
 
 		Update_PaymentHistoryStatus(ctx context.Context, yookassaPaymentID, status string, paidAt *time.Time) error

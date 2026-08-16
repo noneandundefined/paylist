@@ -33,6 +33,15 @@ type PaymentHistory struct {
 	Metadata                []byte     `json:"metadata,omitempty" db:"metadata"`
 }
 
+type UserSubscriptionRenewalDue struct {
+	UserUUID                string  `db:"user_uuid"`
+	PlanName                string  `db:"plan_name"`
+	YookassaPaymentMethodID string  `db:"yookassa_payment_method_id"`
+	Amount                  float64 `db:"amount"`
+	Currency                string  `db:"currency"`
+	DurationDays            int     `db:"duration_days"`
+}
+
 type UserSubscriptionBilling struct {
 	AutoRenewEnabled        bool       `json:"auto_renew_enabled" db:"auto_renew_enabled"`
 	YookassaPaymentMethodID *string    `json:"yookassa_payment_method_id,omitempty" db:"yookassa_payment_method_id"`
