@@ -48,9 +48,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 			},
 			{
 				heading: '6. Контакты',
-				paragraphs: [
-					'По вопросам обработки данных и cookie можно обратиться к Оператору по адресу paylist.info@gmail.com. Политика обработки персональных данных: https://paylist.site/legal/privacy.',
-				],
+				paragraphs: ['По вопросам обработки данных и cookie можно обратиться к Оператору по адресу paylist.info@gmail.com. Политика обработки персональных данных: https://paylist.site/legal/privacy.'],
 			},
 		],
 	},
@@ -101,9 +99,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 			},
 			{
 				heading: '6. Contact',
-				paragraphs: [
-					'Questions about data processing and cookies can be sent to the Operator at paylist.info@gmail.com. Personal data processing policy: https://paylist.site/legal/privacy.',
-				],
+				paragraphs: ['Questions about data processing and cookies can be sent to the Operator at paylist.info@gmail.com. Personal data processing policy: https://paylist.site/legal/privacy.'],
 			},
 		],
 	},
@@ -207,9 +203,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 			},
 			{
 				heading: '6. Contacto',
-				paragraphs: [
-					'Las consultas sobre el tratamiento de datos y las cookies pueden enviarse al Operador a paylist.info@gmail.com. Política de tratamiento de datos personales: https://paylist.site/legal/privacy.',
-				],
+				paragraphs: ['Las consultas sobre el tratamiento de datos y las cookies pueden enviarse al Operador a paylist.info@gmail.com. Política de tratamiento de datos personales: https://paylist.site/legal/privacy.'],
 			},
 		],
 	},

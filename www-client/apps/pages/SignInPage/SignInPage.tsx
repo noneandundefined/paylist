@@ -77,7 +77,7 @@ const SignInPage = () => {
 					error={errors.password?.message}
 				/>
 
-				<Link to="#" className="inline-block text-[14px] font-bold gu-text-primary no-underline hover:no-underline">
+				<Link to={ROUTES.AUTH_FORGOT_PASSWORD} className="inline-block text-[14px] font-bold gu-text-primary no-underline hover:no-underline">
 					{t('auth.forgot-password')}
 				</Link>
 

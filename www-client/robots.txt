@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /$
-Allow: /sign_in
-Allow: /sign_up
+Allow: /sign-in
+Allow: /sign-up
 Allow: /legal/
 
 Disallow: /account

@@ -7,16 +7,22 @@
 		<priority>1.0</priority>
 	</url>
 	<url>
-		<loc>https://paylist.site/sign_in</loc>
+		<loc>https://paylist.site/sign-in</loc>
 		<lastmod>2026-08-13</lastmod>
 		<changefreq>monthly</changefreq>
 		<priority>0.9</priority>
 	</url>
 	<url>
-		<loc>https://paylist.site/sign_up</loc>
+		<loc>https://paylist.site/sign-up</loc>
 		<lastmod>2026-08-13</lastmod>
 		<changefreq>monthly</changefreq>
 		<priority>0.9</priority>
+	</url>
+	<url>
+		<loc>https://paylist.site/forgot-password</loc>
+		<lastmod>2026-08-16</lastmod>
+		<changefreq>monthly</changefreq>
+		<priority>0.6</priority>
 	</url>
 	<url>
 		<loc>https://paylist.site/legal/terms</loc>

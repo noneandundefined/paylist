@@ -16,6 +16,8 @@ const LegalPage = lazy(() => import('@/pages/LegalPage/index'));
 const SignInPage = lazy(() => import('@/pages/SignInPage/index'));
 const SignUpPage = lazy(() => import('@/pages/SignUpPage/index'));
 const ConfirmEmail = lazy(() => import('@/pages/ConfirmEmailPage/index'));
+const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage/index'));
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage/index'));
 const SubscriptionInvitePage = lazy(() => import('@/pages/SubscriptionInvitePage/index'));
 
 export interface CustomRouteConfig {
@@ -90,6 +92,20 @@ const config: CustomRouteConfig[] = [
 		redirectIfLogged: true,
 		component: ConfirmEmail,
 		title: 'label.page-confirm-email',
+	},
+	{
+		path: ROUTES.AUTH_FORGOT_PASSWORD,
+		loginRequired: false,
+		redirectIfLogged: true,
+		component: ForgotPasswordPage,
+		title: 'label.page-forgot-password',
+	},
+	{
+		path: ROUTES.AUTH_RESET_PASSWORD,
+		loginRequired: false,
+		redirectIfLogged: false,
+		component: ResetPasswordPage,
+		title: 'label.page-reset-password',
 	},
 	{
 		path: ROUTES.SUBSCRIPTION_INVITE,
