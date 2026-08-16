@@ -1,4 +1,5 @@
 import type { AppLanguageCode } from '@/constants/Language.constant';
+import { cookiesDocuments } from './cookies';
 import { offerDocuments } from './offer';
 import { privacyDocuments } from './privacy';
 import { termsDocuments } from './terms';
@@ -11,6 +12,7 @@ const documents: Record<LegalDocumentType, Record<AppLanguageCode, LegalDocument
 	terms: termsDocuments,
 	privacy: privacyDocuments,
 	offer: offerDocuments,
+	cookies: cookiesDocuments,
 };
 
 export const getLegalDocument = (type: LegalDocumentType, language: AppLanguageCode): LegalDocument => documents[type][language];

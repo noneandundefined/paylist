@@ -95,6 +95,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 					'8.7. Оператор при обработке персональных данных обеспечивает конфиденциальность персональных данных.',
 					'8.8. Оператор осуществляет хранение персональных данных в форме, позволяющей определить субъекта персональных данных, не дольше, чем этого требуют цели обработки персональных данных, если срок хранения персональных данных не установлен федеральным законом, договором, стороной которого, выгодоприобретателем или поручителем по которому является субъект персональных данных.',
 					'8.9. Условием прекращения обработки персональных данных может являться достижение целей обработки персональных данных, истечение срока действия согласия субъекта персональных данных, отзыв согласия субъектом персональных данных или требование о прекращении обработки персональных данных, а также выявление неправомерной обработки персональных данных.',
+					'8.10. Для учёта посещаемости Сервиса Оператор может использовать Яндекс Метрику. Аналитические cookie включаются только с согласия Пользователя. Подробности: https://paylist.site/legal/cookies.',
 				],
 			},
 			{
@@ -221,6 +222,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 					'8.7. When processing personal data, the Operator ensures the confidentiality of personal data.',
 					'8.8. The Operator stores personal data in a form that allows the personal data subject to be identified for no longer than required by the purposes of processing of personal data, unless the storage period of personal data is established by federal law or by a contract to which the personal data subject is a party, beneficiary or guarantor.',
 					'8.9. A condition for stopping processing of personal data may be achievement of the purposes of processing of personal data, expiry of the term of the personal data subject’s consent, withdrawal of consent by the personal data subject or a request to stop processing of personal data, and also identification of unlawful processing of personal data.',
+					'8.10. To measure Service usage the Operator may use Yandex Metrica. Analytics cookies are enabled only with the User’s consent. Details: https://paylist.site/legal/cookies.',
 				],
 			},
 			{
@@ -347,6 +349,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 					'8.7. Der Betreiber gewährleistet bei der Verarbeitung personenbezogener Daten deren Vertraulichkeit.',
 					'8.8. Der Betreiber speichert personenbezogene Daten in einer Form, die die Bestimmung des Betroffenen ermöglicht, nicht länger, als es die Zwecke der Verarbeitung personenbezogener Daten erfordern, sofern die Speicherdauer personenbezogener Daten nicht durch Bundesgesetz oder durch einen Vertrag festgelegt ist, dessen Partei, Begünstigter oder Bürge der Betroffene ist.',
 					'8.9. Bedingung für die Beendigung der Verarbeitung personenbezogener Daten kann die Erreichung der Zwecke der Verarbeitung personenbezogener Daten, der Ablauf der Geltungsdauer der Einwilligung des Betroffenen, der Widerruf der Einwilligung durch den Betroffenen oder das Verlangen, die Verarbeitung personenbezogener Daten einzustellen, sowie die Feststellung einer unrechtmäßigen Verarbeitung personenbezogener Daten sein.',
+					'8.10. Zur Messung der Nutzung des Dienstes kann der Betreiber Yandex Metrica einsetzen. Analyse-Cookies werden nur mit Zustimmung des Nutzers aktiviert. Einzelheiten: https://paylist.site/legal/cookies.',
 				],
 			},
 			{
@@ -473,6 +476,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 					'8.7. El Operador, al tratar datos personales, garantiza la confidencialidad de los datos personales.',
 					'8.8. El Operador almacena los datos personales en una forma que permita identificar al interesado no más tiempo del que exijan los fines del tratamiento de datos personales, salvo que el plazo de conservación de los datos personales esté establecido por ley federal o por un contrato del que el interesado sea parte, beneficiario o fiador.',
 					'8.9. Puede ser condición de cese del tratamiento de datos personales la consecución de los fines del tratamiento de datos personales, el vencimiento del plazo de vigencia del consentimiento del interesado, la retirada del consentimiento por el interesado o la solicitud de cese del tratamiento de datos personales, así como la detección de un tratamiento ilícito de datos personales.',
+					'8.10. Para medir el uso del Servicio el Operador puede utilizar Yandex Metrica. Las cookies de analítica se activan solo con el consentimiento del Usuario. Detalles: https://paylist.site/legal/cookies.',
 				],
 			},
 			{

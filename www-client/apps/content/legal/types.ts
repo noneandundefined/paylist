@@ -1,6 +1,6 @@
 import type { AppLanguageCode } from '@/constants/Language.constant';
 
-export type LegalDocumentType = 'terms' | 'privacy' | 'offer';
+export type LegalDocumentType = 'terms' | 'privacy' | 'offer' | 'cookies';
 
 export interface LegalSection {
 	heading: string;
@@ -17,6 +17,6 @@ export interface LegalDocument {
 
 export type LegalDocumentsByLang = Record<AppLanguageCode, LegalDocument>;
 
-export const LEGAL_DOCUMENT_TYPES: LegalDocumentType[] = ['terms', 'privacy', 'offer'];
+export const LEGAL_DOCUMENT_TYPES: LegalDocumentType[] = ['terms', 'privacy', 'offer', 'cookies'];
 
 export const isLegalDocumentType = (value: string | undefined): value is LegalDocumentType => LEGAL_DOCUMENT_TYPES.includes(value as LegalDocumentType);

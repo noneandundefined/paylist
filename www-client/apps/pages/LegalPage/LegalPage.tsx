@@ -6,6 +6,7 @@ import { getLegalDocument, isLegalDocumentType } from '@/content/legal';
 import { APP_NAME, getAppLanguage } from '@/constants/Language.constant';
 import { ROUTES } from '@/constants/constants';
 import PageHeader from '@/components/common/PageHeader/PageHeader';
+import CookiePreferencesLink from '@/components/common/CookieConsent/CookiePreferencesLink';
 
 const TOKEN_PATTERN = /(https?:\/\/[^\s]+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 
@@ -166,6 +167,8 @@ const LegalPage = () => {
 
 					<aside className="sticky top-8 hidden lg:block">{toc}</aside>
 				</div>
+
+				<CookiePreferencesLink className="mt-10 block w-full text-center" />
 			</div>
 		</div>
 	);

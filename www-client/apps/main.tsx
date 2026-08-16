@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from 'react-error-boundary';
 import NotificationProvider from './components/Notification/NotificationProvider';
+import CookieConsent from './components/common/CookieConsent/CookieConsent';
 
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -45,6 +46,7 @@ const Root = () => {
 			<NotificationProvider />
 
 			<App />
+			<CookieConsent />
 		</>
 	);
 };
