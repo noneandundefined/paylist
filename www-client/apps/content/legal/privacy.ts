@@ -5,8 +5,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		title: 'Политика в отношении обработки персональных данных',
 		updated: 'Последнее обновление: 16 августа 2026 г.',
 		intro: 'Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» (далее — Закон о персональных данных) и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных, предпринимаемые Власовым Артёмом Владимировичем (далее — Оператор).',
-		callout:
-			'Политика применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/. Актуальная версия: https://paylist.site/legal/privacy. Контакт: paylist.info@gmail.com.',
+		callout: 'Политика применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/. Актуальная версия: https://paylist.site/legal/privacy. Контакт: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Общие положения',
@@ -132,8 +131,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		title: 'Personal Data Processing Policy',
 		updated: 'Last updated: August 16, 2026',
 		intro: 'This personal data processing policy is prepared in accordance with the requirements of Federal Law No. 152-FZ of 27 July 2006 “On Personal Data” (hereinafter the Personal Data Law) and determines the procedure for processing personal data and the measures to ensure the security of personal data taken by Artem Vladimirovich Vlasov (hereinafter the Operator).',
-		callout:
-			'The Policy applies to all information the Operator may obtain about visitors of the website https://paylist.site/. Current version: https://paylist.site/legal/privacy. Contact: paylist.info@gmail.com.',
+		callout: 'The Policy applies to all information the Operator may obtain about visitors of the website https://paylist.site/. Current version: https://paylist.site/legal/privacy. Contact: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. General provisions',

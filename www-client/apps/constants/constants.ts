@@ -3,8 +3,8 @@ export const PLACEHOLDER_ROUTE_ID = ':id';
 export const ROUTES = {
 	HOME: '/',
 	NOT_FOUND: '*',
-	SIGNIN: '/sign_in',
-	SIGNUP: '/sign_up',
+	SIGNIN: '/sign-in',
+	SIGNUP: '/sign-up',
 	SUBSCRIPTIONS: '/subscriptions',
 	SUBSCRIPTION_CREATE: '/subscriptions/create',
 	SUBSCRIPTION_DETAIL: `/subscriptions/${PLACEHOLDER_ROUTE_ID}`,
@@ -18,6 +18,8 @@ export const ROUTES = {
 	AUTH_AUTHORIZE_DEVICE: '/authorize',
 	AUTH_CONFIRM_EMAIL: '/paylist-confirm-email',
 	AUTH_SENT_CONFIRM_EMAIL: '/paylist-sent-confirm-email',
+	AUTH_FORGOT_PASSWORD: '/forgot-password',
+	AUTH_RESET_PASSWORD: '/paylist-reset-password',
 	SUBSCRIPTION_INVITE: '/paylist-subscription-invite',
 };
 

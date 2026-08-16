@@ -42,6 +42,11 @@ export const basicAuthConfirmPending = async (email: string): Promise<{ pending:
 
 export const basicAuthConfirmEmail = async (exp: unknown, sig: unknown, uuid: unknown): Promise<AuthConfirmResponse> => apiGet(`${apiPath}/confirm?exp=${exp}&sig=${sig}&uuid=${uuid}`);
 
+export const basicAuthPasswordResetRequest = async (email: string): Promise<string> => apiPost(`${apiPath}/password/reset/request`, { email });
+
+export const basicAuthPasswordResetConfirm = async (exp: string, sig: string, uuid: string, password: string): Promise<string> =>
+	apiPost(`${apiPath}/password/reset/confirm?exp=${encodeURIComponent(exp)}&sig=${encodeURIComponent(sig)}&uuid=${encodeURIComponent(uuid)}`, { password });
+
 export const basicAuthSignOut = async (): Promise<void> => {
 	try {
 		const message = await apiPost<string>(`${apiPath}/signout`);

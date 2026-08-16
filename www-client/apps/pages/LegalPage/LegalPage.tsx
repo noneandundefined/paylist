@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLegalDocument, isLegalDocumentType } from '@/content/legal';
-import { APP_NAME, getAppLanguage } from '@/constants/Language.constant';
+import { getAppLanguage } from '@/constants/Language.constant';
 import { ROUTES } from '@/constants/constants';
-import PageHeader from '@/components/common/PageHeader/PageHeader';
-import CookiePreferencesLink from '@/components/common/CookieConsent/CookiePreferencesLink';
+import ChevronLeft from '@/components/@icons/chevron-left';
 
 const TOKEN_PATTERN = /(https?:\/\/[^\s]+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
 
@@ -124,11 +123,9 @@ const LegalPage = () => {
 			</Helmet>
 
 			<div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-5 lg:px-8">
-				<div className="mb-6 flex items-center justify-between">
-					<Link to={ROUTES.HOME} className="text-[15px] font-semibold no-underline hover:no-underline gu-text-primary">
-						{APP_NAME}
-					</Link>
-					<PageHeader variant="close" onClose={onClose} backLabel={t('action.close')} />
+				<div className="mb-6 flex items-center gap-3 cursor-pointer" onClick={onClose}>
+					<ChevronLeft fill="currentColor" className="-mt-[1px]" size={19} />
+					<p className="font-medium">Назад</p>
 				</div>
 
 				<div className="lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start lg:gap-16">
@@ -167,8 +164,6 @@ const LegalPage = () => {
 
 					<aside className="sticky top-8 hidden lg:block">{toc}</aside>
 				</div>
-
-				<CookiePreferencesLink className="mt-10 block w-full text-center" />
 			</div>
 		</div>
 	);

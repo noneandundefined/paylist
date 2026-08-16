@@ -43,13 +43,15 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 		httpx.ErrorHandler(h.AuthEmailConfirmReqHandler_V1),
 	)).Methods(http.MethodPost)
 
-	// /* Access: ALL */
-	// /* /auth/password/reset/request?email=test@test.com */
-	// authRouter.Handle("/password/reset/request", httpx.ErrorHandler(h.AuthRequestPasswordResetHandler_V1)).Methods(http.MethodPost)
+	/* Access: ALL */
+	authRouter.Handle("/password/reset/request", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AuthPasswordResetRequestHandler_V1),
+	)).Methods(http.MethodPost)
 
-	// /* Access: ALL */
-	// /* /auth/password/reset/confirm?uuid=&exp=&sig=, {password: "new"} */
-	// authRouter.Handle("/password/reset/confirm", httpx.ErrorHandler(h.AuthPasswordResetHandler)).Methods(http.MethodPost)
+	/* Access: ALL */
+	authRouter.Handle("/password/reset/confirm", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AuthPasswordResetConfirmHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	authProtectedRouter.Handle("/signout", middleware.PowDDos()(

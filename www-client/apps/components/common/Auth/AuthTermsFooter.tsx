@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getLegalDocumentPath } from '@/utils/legalDocumentUtils';
-import CookiePreferencesLink from '@/components/common/CookieConsent/CookiePreferencesLink';
 
 const linkClassName = 'gu-text-muted underline hover:text-[var(--text-primary)]';
 
@@ -20,7 +19,6 @@ const AuthTermsFooter: React.FC = () => {
 					{t('auth.privacy-policy')}
 				</Link>
 			</p>
-			<CookiePreferencesLink />
 		</div>
 	);
 };

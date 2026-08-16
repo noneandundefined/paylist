@@ -46,9 +46,14 @@ const CookieConsent: React.FC = () => {
 	}
 
 	return (
-		<div className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--divider)] bg-[var(--surface)] shadow-[0_-8px_32px_var(--shadow-soft)]" role="dialog" aria-labelledby="cookie-consent-title" aria-describedby="cookie-consent-body">
-			<div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:px-8 lg:py-5">
-				<div className="min-w-0 max-w-3xl">
+		<div
+			className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--divider)] bg-[var(--surface)] shadow-[0_-8px_32px_var(--shadow-soft)]"
+			role="dialog"
+			aria-labelledby="cookie-consent-title"
+			aria-describedby="cookie-consent-body"
+		>
+			<div className="mx-auto flex w-full flex-col gap-4 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:px-8 lg:py-5">
+				<div className="min-w-0 lg:max-w-[70%]">
 					<p id="cookie-consent-title" className="text-[15px] leading-6 gu-text-primary">
 						<span className="font-semibold">{t('cookies.title-lead')}</span> {t('cookies.title-rest')}
 					</p>

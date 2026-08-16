@@ -24,13 +24,12 @@ import { useLoginState } from '@/hooks/useLoginState';
 import { useConfirm } from '@/hooks/useConfirm';
 import { useInvalidateSubscriptions } from '@/hooks/useInvalidateSubscriptions';
 import { getAppLanguage, SUPPORTED_LANGUAGES } from '@/constants/Language.constant';
-import { notifyPremiumRequired, notifySoon } from '@/utils/premiumUtils';
+import { notifyPremiumRequired } from '@/utils/premiumUtils';
 import { clearAuthSession } from '@/utils/authSessionUtils';
 import { basicUserAccountDelete, basicUserSettingsGet, basicUserSettingsUpdate } from '@/rest/userAPI';
 
 import Delete from '@/components/@icons/delete';
 import Cookie from '@/components/@icons/cookie';
-import FaceAgent from '@/components/@icons/face-agent';
 import LogoutVariant from '@/components/@icons/logout-variant';
 import ThemeLightDark from '@/components/@icons/theme-light-dark';
 import { openCookiePreferences } from '@/utils/cookieConsentUtils';
@@ -214,7 +213,6 @@ const AccountPage = () => {
 				<AccountSection title={t('account.content-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<AccountSettingsRow icon={<Cookie fill="currentColor" size={21} />} label={t('account.cookie-preferences')} onClick={openCookiePreferences} />
-						<AccountSettingsRow icon={<FaceAgent fill="currentColor" size={21} />} label={t('account.feedback')} onClick={() => notifySoon(t, 'account.feedback-soon')} />
 						<AccountSettingsRow
 							icon={<Delete fill="#dc2626" size={21} />}
 							label={deletingAccount ? t('account.delete-account-progress') : t('account.delete-account')}

@@ -26,6 +26,7 @@ type Storage struct {
 		Update_UserProfile(ctx context.Context, userUuid string, firstName, lastName *string) error
 		Update_UserAvatar(ctx context.Context, userUuid string, avatarURL string) error
 		Update_UserEmail(ctx context.Context, userUuid, email string) error
+		Update_UserPassword(ctx context.Context, userUuid, passwordHash string) error
 
 		Delete_UserByUuid(ctx context.Context, userUuid string) error
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { basicUserAvatarUpdate } from '@/rest/userAPI';
 import CameraPlusOutline from '@/components/@icons/camera-plus-outline';
+import Pencil from '@/components/@icons/pencil';
 
 type UserAvatarSize = 'sm' | 'lg';
 
@@ -53,7 +54,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 
 	const avatar = (
 		<div className={`rounded-full p-[2px] ${ringClass}`}>
-			<div className="rounded-full bg-[var(--bg-page)] p-1">
+			<div className={`relative rounded-full ${isSmall ? 'p-[2px]' : 'p-1'}`}>
 				<div className={`relative overflow-hidden rounded-full bg-white ${isSmall ? 'h-11 w-11' : 'h-[8rem] w-[8rem]'}`}>
 					{showImage ? (
 						<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
@@ -66,6 +67,11 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 						</div>
 					)}
 				</div>
+				{!isSmall && (
+					<div className="absolute top-3 right-2 bg-white p-1 rounded-full z-[999]">
+						<Pencil fill="#000" size={13} />
+					</div>
+				)}
 			</div>
 		</div>
 	);

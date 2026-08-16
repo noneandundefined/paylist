@@ -339,6 +339,24 @@ func (s *UserStore) Update_UserEmail(ctx context.Context, userUuid, email string
 	return nil
 }
 
+func (s *UserStore) Update_UserPassword(ctx context.Context, userUuid, passwordHash string) error {
+	query := `
+		UPDATE user_cores
+		SET password = $1, email_confirmed = TRUE
+		WHERE user_uuid = $2
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	if _, err := s.db.ExecContext(ctx, query, passwordHash, userUuid); err != nil {
+		logger.Error("Update_UserPassword req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (s *UserStore) Delete_UserByUuid(ctx context.Context, userUuid string) error {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
