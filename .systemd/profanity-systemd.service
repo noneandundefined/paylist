@@ -1,0 +1,29 @@
+[Unit]
+Description=Paylist profanity text moderation
+After=network.target
+
+[Service]
+# даём время освободить порт
+ExecStartPre=/bin/sleep 2
+
+# запуск сервера модерации текста
+ExecStart=/root/paylist/profanity-service/.venv/bin/python /root/paylist/profanity-service/server.py
+WorkingDirectory=/root/paylist/profanity-service
+
+Environment=PORT=8082
+Environment=PROFANITY_LANGUAGES=en,ru,de,sp
+Environment=PROFANITY_MATCH_THRESHOLD=0.95
+
+# настройки перезапуска
+Restart=on-failure
+RestartSec=10s
+TimeoutStopSec=10s
+KillSignal=SIGINT
+
+User=root
+Group=root
+LimitNOFILE=1048576
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

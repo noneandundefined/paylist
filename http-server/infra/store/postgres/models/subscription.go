@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/lib/pq"
+)
 
 type Subscription struct {
 	ID                        uint64              `json:"id" db:"id"`
@@ -22,6 +26,7 @@ type TrackedSubscription struct {
 	UpdatedAt          time.Time `json:"updated_at" db:"updated_at"`
 	UserUUID           string    `json:"user_uuid" db:"user_uuid"`
 	Name               string    `json:"name" db:"name"`
+	Tariff             string    `json:"tariff" db:"tariff"`
 	Price              float64   `json:"price" db:"price"`
 	Currency           string    `json:"currency" db:"currency"`
 	Period             string    `json:"period" db:"period"`
@@ -82,6 +87,7 @@ type TrackedSubscriptionInvitePreview struct {
 	Email            string     `json:"email" db:"email"`
 	SharePercent     float64    `json:"share_percent" db:"share_percent"`
 	Status           string     `json:"status" db:"status"`
+	Role             string     `json:"role" db:"role"`
 	InviteExpiresAt  *time.Time `json:"invite_expires_at,omitempty" db:"invite_expires_at"`
 }
 
@@ -101,6 +107,24 @@ type SubscriptionCategory struct {
 	Slug      string    `json:"slug" db:"slug"`
 	UserUUID  *string   `json:"user_uuid,omitempty" db:"user_uuid"`
 	Label     *string   `json:"label,omitempty" db:"label"`
+}
+
+type Service struct {
+	ID        uint64         `json:"id" db:"id"`
+	CreatedAt time.Time      `json:"created_at" db:"created_at"`
+	Slug      string         `json:"slug" db:"slug"`
+	Name      string         `json:"name" db:"name"`
+	Category  string         `json:"category" db:"category"`
+	Aliases   pq.StringArray `json:"aliases" db:"aliases"`
+}
+
+type CrowdSubscriptionPrice struct {
+	Name     string  `db:"name"`
+	Tariff   string  `db:"tariff"`
+	Price    float64 `db:"price"`
+	Currency string  `db:"currency"`
+	Period   string  `db:"period"`
+	Country  *string `db:"country"`
 }
 
 type TrackedSubscriptionHistory struct {

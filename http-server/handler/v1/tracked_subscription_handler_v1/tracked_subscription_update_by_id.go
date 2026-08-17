@@ -4,9 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"paylist.server/infra/constants"
 	"paylist.server/middleware"
 	"paylist.server/pkg/httpx"
 	"paylist.server/pkg/httpx/httperr"
+	"paylist.server/pkg/profanity"
 	"paylist.server/types"
 
 	"github.com/go-playground/validator"
@@ -34,6 +36,8 @@ func (h *Handler) EditSubscriptionHandler_V1(w http.ResponseWriter, r *http.Requ
 		return httperr.BadRequest(err.Error())
 	}
 
+	payload.Tariff = constants.NormalizeTariff(payload.Tariff)
+
 	if err := httpx.Validate.Struct(payload); err != nil {
 		if _, ok := err.(validator.ValidationErrors); ok {
 			return httperr.BadRequest(httpx.ValidateMsg(tr, err))
@@ -52,6 +56,17 @@ func (h *Handler) EditSubscriptionHandler_V1(w http.ResponseWriter, r *http.Requ
 	}
 
 	payload.AutoRenewal, payload.Notification = normalizePremiumSubscriptionFields(authToken, payload.AutoRenewal, payload.Notification)
+
+	texts := make([]string, 0, 2)
+	if existing.IsOwner {
+		texts = append(texts, payload.Name)
+	}
+	if note := normalizeNote(payload.Note); note != nil {
+		texts = append(texts, *note)
+	}
+	if err := profanity.Reject(ctx, tr, "subscription-update", texts...); err != nil {
+		return err
+	}
 
 	if existing.IsOwner {
 		if err := validateTrackedSubscriptionPayload(tr, authToken, payload.Price, payload.DatePay.Time, payload.AutoRenewal, payload.Notification); err != nil {

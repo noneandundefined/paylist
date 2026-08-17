@@ -95,7 +95,7 @@ const GUISelect: React.FC<GUISelectProps> = ({ children, value, onChange, placeh
 				<span>{getCountryLabel(String(selectedValue ?? 'US'), String(selectedValue ?? 'US'), t)}</span>
 			</span>
 		) : (
-			<span className="font-normal">{selected?.label || placeholder}</span>
+			<span className="min-w-0 flex-1 truncate font-normal">{selected?.label || placeholder}</span>
 		);
 
 	return (
@@ -113,10 +113,10 @@ const GUISelect: React.FC<GUISelectProps> = ({ children, value, onChange, placeh
 			aria-label={typeof ariaLabel === 'string' ? ariaLabel : undefined}
 			className={`gu-field cursor-pointer ${className}`}
 		>
-			<div className="flex items-center justify-between">
+			<div className="flex min-w-0 items-center justify-between gap-2">
 				{triggerLabel}
 
-				<ChevronDown fill="currentColor" className="gu-text-muted" size={19} />
+				<ChevronDown fill="currentColor" className="gu-text-muted shrink-0" size={19} />
 			</div>
 		</div>
 	);

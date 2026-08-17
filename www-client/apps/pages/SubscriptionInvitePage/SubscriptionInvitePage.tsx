@@ -113,11 +113,18 @@ const SubscriptionInvitePage = () => {
 	return (
 		<AuthPageLayout
 			title={t('subscription.invite-title')}
-			subtitle={t('subscription.invite-desc', {
-				owner: preview.owner_name,
-				name: preview.subscription_name,
-				percent: preview.share_percent,
-			})}
+			subtitle={
+				preview.role === 'observer'
+					? t('subscription.invite-desc-observer', {
+							owner: preview.owner_name,
+							name: preview.subscription_name,
+						})
+					: t('subscription.invite-desc', {
+							owner: preview.owner_name,
+							name: preview.subscription_name,
+							percent: preview.share_percent,
+						})
+			}
 		>
 			<GUIButton type="button" variant="primary" isLoading={accepting} onClick={onAccept} loadingText={t('subscription.invite-accepting')}>
 				{t('subscription.invite-accept')}

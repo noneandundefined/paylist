@@ -7,6 +7,7 @@ import (
 
 type TrackedSubscriptionCreatePayload struct {
 	Name               string    `json:"name" validate:"required,min=3"`
+	Tariff             string    `json:"tariff" validate:"omitempty,oneof=none basic standard plus pro premium max lite mini student duo family individual business"`
 	Price              float64   `json:"price" validate:"required"`
 	Currency           string    `json:"currency" validate:"omitempty,len=3"`
 	Period             string    `json:"period" validate:"omitempty,oneof=monthly yearly"`
@@ -19,6 +20,7 @@ type TrackedSubscriptionCreatePayload struct {
 
 type TrackedSubscriptionEditPayload struct {
 	Name               string    `json:"name" validate:"required,min=3"`
+	Tariff             string    `json:"tariff" validate:"omitempty,oneof=none basic standard plus pro premium max lite mini student duo family individual business"`
 	Price              float64   `json:"price" validate:"required"`
 	Currency           string    `json:"currency" validate:"omitempty,len=3"`
 	Period             string    `json:"period" validate:"omitempty,oneof=monthly yearly"`
@@ -46,7 +48,8 @@ type TrackedSubscriptionDetailResponse struct {
 
 type TrackedSubscriptionInvitePayload struct {
 	Email        string  `json:"email" validate:"required,email"`
-	SharePercent float64 `json:"share_percent" validate:"required,gt=0,lte=100"`
+	Role         string  `json:"role" validate:"omitempty,oneof=member observer"`
+	SharePercent float64 `json:"share_percent" validate:"omitempty,gte=0,lte=100"`
 }
 
 type TrackedSubscriptionInviteAcceptPayload struct {

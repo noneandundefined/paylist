@@ -28,7 +28,16 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	trackedSubscriptionRouter.Handle("/summary", httpx.ErrorHandler(h.GetSubscriptionSummaryHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/analytics", httpx.ErrorHandler(h.GetSubscriptionAnalyticsHandler_V1)).Methods(http.MethodGet)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/export", httpx.ErrorHandler(h.ExportSubscriptionsHandler_V1)).Methods(http.MethodGet)
+
+	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/categories", httpx.ErrorHandler(h.GetSubscriptionCategoriesHandler_V1)).Methods(http.MethodGet)
+
+	/* Access: ALL */
+	trackedSubscriptionRouter.Handle("/services", httpx.ErrorHandler(h.GetServicesHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: Premium */
 	trackedSubscriptionRouter.Handle("/categories", middleware.PowDDos()(

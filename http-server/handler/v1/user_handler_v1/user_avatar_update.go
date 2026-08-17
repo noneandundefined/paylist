@@ -2,6 +2,7 @@ package user_handler_v1
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"net/http"
 	"path"
@@ -11,6 +12,7 @@ import (
 	"paylist.server/middleware"
 	"paylist.server/pkg/httpx"
 	"paylist.server/pkg/httpx/httperr"
+	"paylist.server/pkg/nsfw"
 	pkgs3 "paylist.server/pkg/s3"
 	"paylist.server/types"
 )
@@ -59,6 +61,20 @@ func (h *Handler) UserAvatarUpdateHandler_V1(w http.ResponseWriter, r *http.Requ
 	ext, ok := avatarContentTypes[contentType]
 	if !ok {
 		return httperr.BadRequest(tr.TErr("error.avatar-invalid"))
+	}
+
+	if err := nsfw.CheckFromEnv(ctx, payload, contentType); err != nil {
+		switch {
+		case errors.Is(err, nsfw.ErrRejected):
+			reqID, _ := ctx.Value("XREQID").(string)
+			logger.Moderation("user_uuid=%s reason=avatar-nsfw req=%s", authToken.User.UserUUID, reqID)
+			return httperr.BadRequest(tr.TErr("error.avatar-nsfw"))
+		case errors.Is(err, nsfw.ErrInvalidImage):
+			return httperr.BadRequest(tr.TErr("error.avatar-invalid"))
+		default:
+			logger.Error("UserAvatarUpdateHandler_V1 req={%s}: nsfw check failed: %s", ctx.Value("XREQID").(string), err.Error())
+			return httperr.ServiceUnavailable(tr.TErr("error.avatar-moderation-unavailable"))
+		}
 	}
 
 	s3Client, err := pkgs3.New()

@@ -1,5 +1,5 @@
 import { notify } from '@/components/Notification/notify';
-import { apiDelete, apiGet, apiPost, apiPut } from '@/rest/apiClient';
+import { apiDelete, apiDownload, apiGet, apiPost, apiPut } from '@/rest/apiClient';
 import { config as configClient } from '@/.config/config.client';
 import type { TrackedSubscriptionPeriod } from '@/interface/trackedSubscription/trackedSubscriptionCreateRequest.interface';
 import type { TrackedSubscriptionEditRequest } from '@/interface/trackedSubscription/trackedSubscriptionEditRequest.interface';
@@ -24,6 +24,7 @@ export interface TrackedSubscriptionResponse {
 	updated_at: string;
 	user_uuid: string;
 	name: string;
+	tariff?: string;
 	price: number;
 	currency: string;
 	period: TrackedSubscriptionPeriod;
@@ -39,7 +40,7 @@ export interface TrackedSubscriptionResponse {
 }
 
 export type SharedSubscriptionMemberStatus = 'pending' | 'accepted' | 'declined';
-export type SharedSubscriptionMemberRole = 'owner' | 'member';
+export type SharedSubscriptionMemberRole = 'owner' | 'member' | 'observer';
 
 export interface SharedSubscriptionMember {
 	id: number;
@@ -92,6 +93,7 @@ export interface SharedSubscriptionInvitePreview {
 	owner_name: string;
 	email: string;
 	share_percent: number;
+	role?: SharedSubscriptionMemberRole;
 	status: SharedSubscriptionMemberStatus;
 	invite_expires_at?: string | null;
 }
@@ -113,7 +115,60 @@ export interface SubscriptionCategoryResponse {
 	is_custom?: boolean;
 }
 
+export interface ServiceResponse {
+	id: number;
+	slug: string;
+	name: string;
+	category: string;
+	aliases: string[];
+}
+
+const servicesByName = new Map<string, ServiceResponse>();
+
+export const fetchServices = async (): Promise<ServiceResponse[]> => {
+	const items = await apiGet<ServiceResponse[]>(`${apiPath}/services`);
+	return items ?? [];
+};
+
+export const loadServiceSelectOptions = async () => {
+	const items = await fetchServices();
+
+	servicesByName.clear();
+
+	return items.map((item) => {
+		servicesByName.set(item.name, item);
+
+		return {
+			value: item.name,
+			label: item.name,
+			keywords: `${item.name} ${item.slug} ${item.aliases.join(' ')}`,
+		};
+	});
+};
+
+export const getServiceByName = (name: string): ServiceResponse | undefined => servicesByName.get(name);
+
 export const basicTrackedSubscriptionSummary = async (): Promise<TrackedSubscriptionSummaryResponse> => apiGet(`${apiPath}/summary`);
+
+export type AnalyticsRecommendationType = 'yearly-save' | 'concentration' | 'excluded' | 'cluster' | 'small-subs' | 'upcoming-heavy' | 'overlap' | 'family-share' | 'crowd-overpay' | 'downgrade' | 'expensive-tariff';
+
+export interface AnalyticsRecommendation {
+	id: string;
+	type: AnalyticsRecommendationType;
+	title_key: string;
+	desc_key: string;
+	desc_values?: Record<string, string | number>;
+	subscription_id?: number;
+}
+
+export interface AnalyticsRecommendationsResponse {
+	recommendations: AnalyticsRecommendation[];
+}
+
+export const basicTrackedSubscriptionAnalytics = async (): Promise<AnalyticsRecommendationsResponse> => {
+	const payload = await apiGet<AnalyticsRecommendationsResponse>(`${apiPath}/analytics`);
+	return payload ?? { recommendations: [] };
+};
 
 export const basicSubscriptionCategoryList = async (): Promise<SubscriptionCategoryResponse[]> => {
 	const categories = await apiGet<SubscriptionCategoryResponse[]>(`${apiPath}/categories`);
@@ -135,6 +190,10 @@ export const basicTrackedSubscriptionList = async (search?: string): Promise<Tra
 	return subscriptions ?? [];
 };
 
+export const basicTrackedSubscriptionExport = async (): Promise<void> => {
+	await apiDownload(`${apiPath}/export`, 'paylist-subscriptions.csv');
+};
+
 export const basicTrackedSubscriptionGetById = async (id: number): Promise<TrackedSubscriptionDetailResponse> => apiGet(`${apiPath}/${id}`);
 
 export const basicTrackedSubscriptionCreate = async (payload: TrackedSubscriptionCreateRequest): Promise<string> => apiPost(apiPath, payload);
@@ -145,7 +204,8 @@ export const basicTrackedSubscriptionDelete = async (id: number): Promise<string
 
 export const basicTrackedSubscriptionMembers = async (id: number): Promise<SharedSubscriptionMembersResponse> => apiGet(`${apiPath}/${id}/members`);
 
-export const basicTrackedSubscriptionInvite = async (id: number, email: string, sharePercent: number): Promise<string> => apiPost(`${apiPath}/${id}/members`, { email, share_percent: sharePercent });
+export const basicTrackedSubscriptionInvite = async (id: number, email: string, sharePercent: number, role: SharedSubscriptionMemberRole = 'member'): Promise<string> =>
+	apiPost(`${apiPath}/${id}/members`, { email, share_percent: sharePercent, role });
 
 export const basicTrackedSubscriptionRemoveMember = async (id: number, memberId: number): Promise<string> => apiDelete(`${apiPath}/${id}/members/${memberId}`);
 

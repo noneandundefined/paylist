@@ -13,6 +13,7 @@ import (
 	"paylist.server/middleware"
 	"paylist.server/pkg/httpx"
 	"paylist.server/pkg/httpx/httperr"
+	"paylist.server/pkg/profanity"
 	"paylist.server/pkg/security"
 	"paylist.server/util"
 )
@@ -61,6 +62,10 @@ func (h *Handler) AuthSignupHandler_V1(w http.ResponseWriter, r *http.Request) e
 
 	if (payload.FirstName == nil || *payload.FirstName == "") && (payload.LastName == nil || *payload.LastName == "") {
 		return httperr.BadRequest(tr.TErr("error.at-least-one-name-required"))
+	}
+
+	if err := profanity.Reject(ctx, tr, "signup-name", profanity.Pointers(payload.FirstName, payload.LastName)...); err != nil {
+		return err
 	}
 
 	password := strings.TrimSpace(payload.Password)

@@ -24,6 +24,7 @@ import {
 } from '@/rest/trackedSubscriptionAPI';
 import { basicUserSearchByEmail, type UserPublicProfile } from '@/rest/userAPI';
 import { getInitialsFromName } from '@/utils/stringUtils';
+import { formatSubscriptionName } from '@/utils/TrackedSubscriptionDisplayUtils';
 
 interface SubscriptionSharingPanelProps {
 	subscription: TrackedSubscriptionResponse;
@@ -67,9 +68,13 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 	const [voting, setVoting] = useState(false);
 
 	const acceptedMembers = useMemo(() => members.filter((member) => member.status === 'accepted'), [members]);
+	const payingMembers = useMemo(() => members.filter((member) => member.role !== 'observer'), [members]);
 	const memberEmails = useMemo(() => new Set(members.map((member) => member.email.toLowerCase())), [members]);
 	const currentEmail = loginState?.email?.toLowerCase() ?? '';
+	const myMember = useMemo(() => members.find((member) => currentEmail && member.email.toLowerCase() === currentEmail), [currentEmail, members]);
+	const canVoteShares = myMember?.role !== 'observer';
 	const ownerShare = acceptedMembers.find((member) => member.role === 'owner')?.share_percent ?? sharePercent;
+	const alreadyShared = payingMembers.filter((member) => member.role !== 'owner').reduce((sum, member) => sum + member.share_percent, 0);
 	const visibleAvatars = members.slice(0, 4);
 	const extraAvatars = Math.max(members.length - visibleAvatars.length, 0);
 
@@ -157,13 +162,13 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 			<Modal title={t('subscription.share-modal-title')} width="420px">
 				<SubscriptionShareInviteModal
 					people={people}
-					subscriptionName={subscription.name}
+					subscriptionName={formatSubscriptionName(subscription.name, subscription.tariff, t)}
 					price={subscription.price}
 					currency={subscription.currency}
 					ownerShare={ownerShare}
-					alreadyShared={Math.max(0, 100 - ownerShare)}
-					onConfirm={async (shareEach) => {
-						if (shareEach < 0 || shareEach * people.length > ownerShare + 0.001) {
+					alreadyShared={Math.max(0, alreadyShared)}
+					onConfirm={async (shareEach, role) => {
+						if (role !== 'observer' && (shareEach < 0 || shareEach * people.length > ownerShare + 0.001)) {
 							notify.error(t('subscription.share-invalid'));
 							return;
 						}
@@ -172,7 +177,7 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 
 						try {
 							for (const person of people) {
-								await basicTrackedSubscriptionInvite(subscription.id, person.email, shareEach);
+								await basicTrackedSubscriptionInvite(subscription.id, person.email, role === 'observer' ? 0 : shareEach, role);
 							}
 
 							notify.success(t('subscription.invite-sent'));
@@ -300,6 +305,7 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 									<div className="flex min-w-0 items-center gap-2">
 										<p className="truncate text-[15px] font-semibold gu-text-primary">{memberName(member)}</p>
 										{member.role === 'owner' ? <AccentBadge className="shrink-0 px-2 py-0.5 rounded-full text-[13px]">{t('subscription.member-owner')}</AccentBadge> : null}
+										{member.role === 'observer' ? <AccentBadge className="shrink-0 px-2 py-0.5 rounded-full text-[13px]">{t('subscription.member-observer')}</AccentBadge> : null}
 										{/* {isCurrentUser ? <span className="shrink-0 text-[11px] gu-text-muted">{t('subscription.member-you')}</span> : null} */}
 									</div>
 									<p className="truncate text-[13px] gu-text-muted">
@@ -308,7 +314,7 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 									</p>
 								</div>
 
-								<span className="shrink-0 text-[14px] font-semibold gu-text-primary">{member.share_percent}%</span>
+								<span className="shrink-0 text-[14px] font-semibold gu-text-primary">{member.role === 'observer' ? t('subscription.observer-share') : `${member.share_percent}%`}</span>
 
 								{isOwner && member.role !== 'owner' ? (
 									<button type="button" className="shrink-0 text-[12px] font-semibold text-[#0085FF]" onClick={() => onRemove(member)}>
@@ -321,7 +327,7 @@ const SubscriptionSharingPanel: React.FC<SubscriptionSharingPanelProps> = ({ sub
 				</div>
 			) : null}
 
-			{proposal ? (
+			{proposal && canVoteShares ? (
 				<div className="space-y-2 rounded-2xl bg-[var(--surface-muted)] px-3 py-3">
 					<p className="text-[13px] gu-text-muted">{t('subscription.share-proposal-pending')}</p>
 					{proposal.my_vote == null ? (

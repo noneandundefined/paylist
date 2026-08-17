@@ -36,6 +36,43 @@ services:
     #         - db
     #         - redis
 
+    nsfw:
+        restart: unless-stopped
+        build:
+            context: ./nsfw-service
+            dockerfile: Dockerfile
+        environment:
+            PORT: '8081'
+            NSFW_THRESHOLD_PORN: '0.6'
+            NSFW_THRESHOLD_HENTAI: '0.6'
+            NSFW_THRESHOLD_SEXY: '0.8'
+        ports:
+            - '8081:8081'
+        healthcheck:
+            test: ['CMD', 'node', 'healthcheck.js']
+            interval: 5s
+            timeout: 3s
+            retries: 12
+            start_period: 40s
+
+    profanity:
+        restart: unless-stopped
+        build:
+            context: ./profanity-service
+            dockerfile: Dockerfile
+        environment:
+            PORT: '8082'
+            PROFANITY_LANGUAGES: 'en,ru,de,sp'
+            PROFANITY_MATCH_THRESHOLD: '0.95'
+        ports:
+            - '8082:8082'
+        healthcheck:
+            test: ['CMD', 'python', 'healthcheck.py']
+            interval: 5s
+            timeout: 3s
+            retries: 12
+            start_period: 15s
+
     http_server:
         restart: always
         build:
@@ -46,6 +83,8 @@ services:
             - 'host.docker.internal:host-gateway'
         environment:
             DB_ADDR: postgres://postgres:password@host.docker.internal:5432/paylist?sslmode=disable
+            NSFW_URL: http://nsfw:8081
+            PROFANITY_URL: http://profanity:8082
         volumes:
             - ./http-server:/app
         command: air
@@ -53,6 +92,10 @@ services:
             - '8080:8080'
         depends_on:
             redis:
+                condition: service_healthy
+            nsfw:
+                condition: service_healthy
+            profanity:
                 condition: service_healthy
 
 volumes:

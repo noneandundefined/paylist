@@ -1,7 +1,10 @@
+import type { SubscriptionTariff } from '@/constants/subscriptionTariffs';
+
 export type TrackedSubscriptionPeriod = 'monthly' | 'yearly';
 
 export interface TrackedSubscriptionCreateRequest {
 	name: string;
+	tariff?: SubscriptionTariff;
 	price: number;
 	currency?: string;
 	period?: TrackedSubscriptionPeriod;

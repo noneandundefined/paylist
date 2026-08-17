@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 
+	"paylist.server/infra/constants"
 	"paylist.server/infra/logger"
 	"paylist.server/infra/store/postgres/models"
 	"paylist.server/pkg/httpx/httperr"
@@ -24,6 +25,7 @@ const trackedSubscriptionSelect = `
 		tracked_subscriptions.updated_at,
 		tracked_subscriptions.user_uuid,
 		tracked_subscriptions.name,
+		tracked_subscriptions.tariff,
 		tracked_subscriptions.price,
 		tracked_subscriptions.currency,
 		tracked_subscriptions.period,
@@ -53,6 +55,11 @@ func (s *TrackedSubscriptionStore) Create_Subscription(ctx context.Context, sub 
 		period = "monthly"
 	}
 
+	tariff := sub.Tariff
+	if tariff == "" {
+		tariff = constants.TariffNone
+	}
+
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		logger.Error("Create_Subscription req={%s}: Failed to begin tx: %s", ctx.Value("XREQID").(string), err.Error())
@@ -67,14 +74,15 @@ func (s *TrackedSubscriptionStore) Create_Subscription(ctx context.Context, sub 
 		ctx,
 		`
 			INSERT INTO tracked_subscriptions (
-				user_uuid, name, price, currency, period, date_pay,
+				user_uuid, name, tariff, price, currency, period, date_pay,
 				auto_renewal, notification, include_in_analytics
 			)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 			RETURNING id
 		`,
 		sub.UserUUID,
 		sub.Name,
+		tariff,
 		sub.Price,
 		currency,
 		period,
@@ -213,6 +221,7 @@ func (s *TrackedSubscriptionStore) Get_SubscriptionsForTelegramNotify(ctx contex
 			tracked_subscriptions.updated_at,
 			tracked_subscriptions.user_uuid,
 			tracked_subscriptions.name,
+			tracked_subscriptions.tariff,
 			tracked_subscriptions.price,
 			tracked_subscriptions.currency,
 			tracked_subscriptions.period,
@@ -268,6 +277,7 @@ func (s *TrackedSubscriptionStore) Get_SubscriptionsForMaxNotify(ctx context.Con
 			tracked_subscriptions.updated_at,
 			tracked_subscriptions.user_uuid,
 			tracked_subscriptions.name,
+			tracked_subscriptions.tariff,
 			tracked_subscriptions.price,
 			tracked_subscriptions.currency,
 			tracked_subscriptions.period,
@@ -474,15 +484,16 @@ func (s *TrackedSubscriptionStore) Update_SubscriptionById(ctx context.Context, 
 		UPDATE tracked_subscriptions
 		SET
 		    name = $1,
-		    price = $2,
-		    currency = $3,
-		    period = $4,
-		    date_pay = $5,
-		    auto_renewal = $6,
-		    notification = $7,
-		    include_in_analytics = $8,
-		    note = $9
-		WHERE id = $10 AND user_uuid = $11
+		    tariff = $2,
+		    price = $3,
+		    currency = $4,
+		    period = $5,
+		    date_pay = $6,
+		    auto_renewal = $7,
+		    notification = $8,
+		    include_in_analytics = $9,
+		    note = $10
+		WHERE id = $11 AND user_uuid = $12
 	`
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -498,10 +509,16 @@ func (s *TrackedSubscriptionStore) Update_SubscriptionById(ctx context.Context, 
 		period = "monthly"
 	}
 
+	tariff := sub.Tariff
+	if tariff == "" {
+		tariff = constants.TariffNone
+	}
+
 	upd, err := s.db.ExecContext(
 		ctx,
 		query,
 		sub.Name,
+		tariff,
 		sub.Price,
 		currency,
 		period,
@@ -626,4 +643,38 @@ func (s *TrackedSubscriptionStore) Delete_SubscriptionById(ctx context.Context, 
 	}
 
 	return nil
+}
+
+func (s *TrackedSubscriptionStore) Get_CrowdSubscriptionPrices(ctx context.Context, excludeUserUUID string) ([]models.CrowdSubscriptionPrice, error) {
+	query := `
+		SELECT
+			tracked_subscriptions.name,
+			tracked_subscriptions.tariff,
+			tracked_subscriptions.price,
+			tracked_subscriptions.currency,
+			tracked_subscriptions.period,
+			user_settings.country
+		FROM tracked_subscriptions
+		JOIN tracked_subscription_members ON tracked_subscription_members.tracked_subscription_id = tracked_subscriptions.id
+			AND tracked_subscription_members.role = 'owner'
+			AND tracked_subscription_members.status = 'accepted'
+		LEFT JOIN user_settings ON user_settings.user_uuid = tracked_subscriptions.user_uuid
+		WHERE tracked_subscriptions.user_uuid <> $1
+			AND tracked_subscription_members.include_in_analytics = TRUE
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 8*time.Second)
+	defer cancel()
+
+	rows, err := pgqx.QueryContext[models.CrowdSubscriptionPrice](ctx, s.db, query, excludeUserUUID)
+	if err != nil {
+		logger.Error("Get_CrowdSubscriptionPrices req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return nil, err
+	}
+
+	if rows == nil {
+		return []models.CrowdSubscriptionPrice{}, nil
+	}
+
+	return rows, nil
 }

@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"paylist.server/infra/constants"
 	"paylist.server/infra/locale"
 	"paylist.server/infra/store/postgres/models"
 	"paylist.server/pkg/httpx/httperr"
@@ -77,6 +78,10 @@ func normalizePeriod(value string) string {
 	return value
 }
 
+func normalizeTariff(value string) string {
+	return constants.NormalizeTariff(value)
+}
+
 func normalizeNote(value *string) *string {
 	if value == nil {
 		return nil
@@ -94,6 +99,7 @@ func trackedSubscriptionFromCreatePayload(userUUID string, payload *TrackedSubsc
 	return &models.TrackedSubscription{
 		UserUUID:           userUUID,
 		Name:               payload.Name,
+		Tariff:             normalizeTariff(payload.Tariff),
 		Price:              payload.Price,
 		Currency:           normalizeCurrency(payload.Currency),
 		Period:             normalizePeriod(payload.Period),
@@ -108,6 +114,7 @@ func trackedSubscriptionFromEditPayload(userUUID string, payload *TrackedSubscri
 	return &models.TrackedSubscription{
 		UserUUID:           userUUID,
 		Name:               payload.Name,
+		Tariff:             normalizeTariff(payload.Tariff),
 		Price:              payload.Price,
 		Currency:           normalizeCurrency(payload.Currency),
 		Period:             normalizePeriod(payload.Period),

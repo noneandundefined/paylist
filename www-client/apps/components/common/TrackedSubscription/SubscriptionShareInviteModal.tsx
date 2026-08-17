@@ -4,6 +4,7 @@ import GUIButton from '@/components/ui/Button/GUIButton';
 import MemberAvatar from '@/components/common/TrackedSubscription/MemberAvatar';
 import ShareWedgeSlider from '@/components/common/TrackedSubscription/ShareWedgeSlider';
 import { formatSubscriptionPrice } from '@/utils/TrackedSubscriptionDisplayUtils';
+import type { SharedSubscriptionMemberRole } from '@/rest/trackedSubscriptionAPI';
 
 export interface ShareInvitePerson {
 	email: string;
@@ -19,7 +20,7 @@ interface SubscriptionShareInviteModalProps {
 	currency: string;
 	ownerShare: number;
 	alreadyShared: number;
-	onConfirm: (sharePercent: number) => Promise<void>;
+	onConfirm: (sharePercent: number, role: SharedSubscriptionMemberRole) => Promise<void>;
 }
 
 const MIN_SHARE = 0;
@@ -33,8 +34,13 @@ const formatShare = (value: number) => {
 
 const shareAmount = (price: number, percent: number) => Math.round(((price * percent) / 100) * 1000) / 1000;
 
+const modeButtonClass = (active: boolean) => `rounded-2xl px-3 py-2 text-[13px] font-semibold transition ${active ? 'bg-[var(--text-primary)] text-[var(--surface)]' : 'bg-[var(--surface-muted)] gu-text-primary'}`;
+
 const SubscriptionShareInviteModal: React.FC<SubscriptionShareInviteModalProps> = ({ people, subscriptionName, price, currency, ownerShare, alreadyShared, onConfirm }) => {
 	const { t, i18n } = useTranslation();
+
+	const [mode, setMode] = useState<Exclude<SharedSubscriptionMemberRole, 'owner'>>('member');
+	const isObserver = mode === 'observer';
 
 	const count = Math.max(people.length, 1);
 	const maxShare = Math.max(MIN_SHARE, roundShare(ownerShare / count));
@@ -45,7 +51,7 @@ const SubscriptionShareInviteModal: React.FC<SubscriptionShareInviteModalProps> 
 
 	const ownerRemaining = Math.max(0, roundShare(ownerShare - shareEach * count));
 	const inviteTotal = roundShare(shareEach * count);
-	const valid = shareEach >= 0 && inviteTotal <= ownerShare + 0.001;
+	const valid = isObserver || (shareEach > 0 && inviteTotal <= ownerShare + 0.001);
 
 	const levelKey = useMemo(() => {
 		if (shareEach < equalShare * 0.85) {
@@ -69,7 +75,7 @@ const SubscriptionShareInviteModal: React.FC<SubscriptionShareInviteModalProps> 
 		setSubmitting(true);
 
 		try {
-			await onConfirm(shareEach);
+			await onConfirm(isObserver ? 0 : shareEach, mode);
 		} finally {
 			setSubmitting(false);
 		}
@@ -77,6 +83,15 @@ const SubscriptionShareInviteModal: React.FC<SubscriptionShareInviteModalProps> 
 
 	return (
 		<div className="space-y-4">
+			<div className="grid grid-cols-2 gap-2">
+				<button type="button" className={modeButtonClass(!isObserver)} onClick={() => setMode('member')}>
+					{t('subscription.invite-mode-member')}
+				</button>
+				<button type="button" className={modeButtonClass(isObserver)} onClick={() => setMode('observer')}>
+					{t('subscription.invite-mode-observer')}
+				</button>
+			</div>
+
 			<div className="gu-glass-card flex items-center gap-3 px-3 py-3">
 				<div className="flex items-center">
 					{people.slice(0, 3).map((person, index) => (
@@ -91,65 +106,71 @@ const SubscriptionShareInviteModal: React.FC<SubscriptionShareInviteModalProps> 
 				</div>
 			</div>
 
-			<section className="space-y-2">
-				<div className="flex items-start justify-between gap-3">
-					<div>
-						<p className="text-[15px] font-semibold gu-text-primary">{t('subscription.share-modal-question')}</p>
-						<p className="mt-1 text-[11px] font-semibold tracking-[0.14em] text-[#f97316]">
-							{t(levelKey)} · {formatShare(shareEach)}%
-						</p>
+			{isObserver ? (
+				<p className="text-[13px] gu-text-muted">{t('subscription.invite-observer-desc')}</p>
+			) : (
+				<>
+					<section className="space-y-2">
+						<div className="flex items-start justify-between gap-3">
+							<div>
+								<p className="text-[15px] font-semibold gu-text-primary">{t('subscription.share-modal-question')}</p>
+								<p className="mt-1 text-[11px] font-semibold tracking-[0.14em] text-[#f97316]">
+									{t(levelKey)} · {formatShare(shareEach)}%
+								</p>
+							</div>
+							<p className="shrink-0 text-[13px] font-semibold gu-text-muted">{money(shareEach)}</p>
+						</div>
+
+						<div className="relative">
+							{shareEach > equalShare * 1.02 ? <p className="absolute -top-1 right-0 text-[11px] font-semibold text-[#ef4444]">{t('subscription.share-above-equal')}</p> : null}
+
+							<ShareWedgeSlider
+								value={shareEach}
+								min={MIN_SHARE}
+								max={maxShare}
+								marker={equalShare}
+								markerLabel={t('subscription.share-equal-mark')}
+								minLabel={t('subscription.share-slider-min')}
+								maxLabel={t('subscription.share-slider-max')}
+								onChange={setShareEach}
+								ariaLabel={t('subscription.share-percent')}
+							/>
+						</div>
+					</section>
+
+					<div className="space-y-2 text-[13px]">
+						{people.map((person) => (
+							<div key={person.email} className="flex items-center justify-between gap-3">
+								<p className="min-w-0 truncate gu-text-muted">{person.name}</p>
+								<p className="shrink-0 font-semibold gu-text-primary">
+									{formatShare(shareEach)}% · {money(shareEach)}
+								</p>
+							</div>
+						))}
+
+						<div className="flex items-center justify-between gap-3">
+							<p className="gu-text-muted">{t('subscription.share-you-keep')}</p>
+							<p className="shrink-0 font-semibold gu-text-primary">
+								{formatShare(ownerRemaining)}% · {money(ownerRemaining)}
+							</p>
+						</div>
+
+						{alreadyShared > 0.01 ? (
+							<div className="flex items-center justify-between gap-3">
+								<p className="gu-text-muted">{t('subscription.share-already')}</p>
+								<p className="shrink-0 font-semibold gu-text-primary">
+									{formatShare(alreadyShared)}% · {money(alreadyShared)}
+								</p>
+							</div>
+						) : null}
+
+						<div className="flex items-center justify-between gap-3 border-t border-dashed border-[var(--divider)] pt-2">
+							<p className="font-semibold gu-text-primary">{t('subscription.share-total')}</p>
+							<p className="shrink-0 font-semibold gu-text-primary">{formatSubscriptionPrice(price, currency, i18n.language)}</p>
+						</div>
 					</div>
-					<p className="shrink-0 text-[13px] font-semibold gu-text-muted">{money(shareEach)}</p>
-				</div>
-
-				<div className="relative">
-					{shareEach > equalShare * 1.02 ? <p className="absolute -top-1 right-0 text-[11px] font-semibold text-[#ef4444]">{t('subscription.share-above-equal')}</p> : null}
-
-					<ShareWedgeSlider
-						value={shareEach}
-						min={MIN_SHARE}
-						max={maxShare}
-						marker={equalShare}
-						markerLabel={t('subscription.share-equal-mark')}
-						minLabel={t('subscription.share-slider-min')}
-						maxLabel={t('subscription.share-slider-max')}
-						onChange={setShareEach}
-						ariaLabel={t('subscription.share-percent')}
-					/>
-				</div>
-			</section>
-
-			<div className="space-y-2 text-[13px]">
-				{people.map((person) => (
-					<div key={person.email} className="flex items-center justify-between gap-3">
-						<p className="min-w-0 truncate gu-text-muted">{person.name}</p>
-						<p className="shrink-0 font-semibold gu-text-primary">
-							{formatShare(shareEach)}% · {money(shareEach)}
-						</p>
-					</div>
-				))}
-
-				<div className="flex items-center justify-between gap-3">
-					<p className="gu-text-muted">{t('subscription.share-you-keep')}</p>
-					<p className="shrink-0 font-semibold gu-text-primary">
-						{formatShare(ownerRemaining)}% · {money(ownerRemaining)}
-					</p>
-				</div>
-
-				{alreadyShared > 0.01 ? (
-					<div className="flex items-center justify-between gap-3">
-						<p className="gu-text-muted">{t('subscription.share-already')}</p>
-						<p className="shrink-0 font-semibold gu-text-primary">
-							{formatShare(alreadyShared)}% · {money(alreadyShared)}
-						</p>
-					</div>
-				) : null}
-
-				<div className="flex items-center justify-between gap-3 border-t border-dashed border-[var(--divider)] pt-2">
-					<p className="font-semibold gu-text-primary">{t('subscription.share-total')}</p>
-					<p className="shrink-0 font-semibold gu-text-primary">{formatSubscriptionPrice(price, currency, i18n.language)}</p>
-				</div>
-			</div>
+				</>
+			)}
 
 			<GUIButton type="button" variant="primary" disabled={!valid} isLoading={submitting} loadingText={t('subscription.share-sending')} onClick={onSubmit}>
 				{t('subscription.share-send')}

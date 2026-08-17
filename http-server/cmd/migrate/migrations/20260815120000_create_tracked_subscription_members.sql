@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS tracked_subscription_members (
     invite_token VARCHAR(64),
     invite_expires_at TIMESTAMPTZ,
 
-    CONSTRAINT chk_tracked_subscription_members_role CHECK (role IN ('owner', 'member')),
+    CONSTRAINT chk_tracked_subscription_members_role CHECK (role IN ('owner', 'member', 'observer')),
     CONSTRAINT chk_tracked_subscription_members_status CHECK (status IN ('pending', 'accepted', 'declined')),
     CONSTRAINT chk_tracked_subscription_members_share CHECK (share_percent >= 0 AND share_percent <= 100),
     CONSTRAINT uq_tracked_subscription_members_email UNIQUE (tracked_subscription_id, email)
@@ -51,7 +51,8 @@ CREATE TRIGGER set_tracked_subscription_members_updated_at_trigger
     FOR EACH ROW
     EXECUTE FUNCTION set_tracked_subscription_members_updated_at();
 
-COMMENT ON TABLE tracked_subscription_members IS 'Shared subscription members, pending invites and per-user notification/analytics flags. Free: max 2 members (owner + 1). Premium: unlimited members.';
+COMMENT ON TABLE tracked_subscription_members IS 'Shared subscription members, pending invites and per-user notification/analytics flags. Free: max 2 members (owner + 1). Premium: unlimited members. Observers pay nothing and are excluded from share splits.';
+COMMENT ON COLUMN tracked_subscription_members.role IS 'owner pays and manages; member pays a share; observer pays nothing and is excluded from share splits';
 COMMENT ON COLUMN tracked_subscription_members.share_percent IS 'Member share of the subscription price in percent';
 COMMENT ON COLUMN tracked_subscription_members.notification IS 'Whether this member wants payment reminders';
 COMMENT ON COLUMN tracked_subscription_members.include_in_analytics IS 'Whether this member includes the share in personal analytics';

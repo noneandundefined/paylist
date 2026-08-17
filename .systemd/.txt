@@ -5,5 +5,17 @@ sudo systemctl status http-systemd-amd64    # Проверяет статус с
 
 journalctl -u http-systemd-amd64 -f   # Просмотр логов в реальном времени
 
+# nsfw (фото, :8081)
+sudo systemctl start nsfw-systemd
+sudo systemctl enable nsfw-systemd
+sudo systemctl status nsfw-systemd
+journalctl -u nsfw-systemd -f
+
+# profanity (текст, :8082)
+sudo systemctl start profanity-systemd
+sudo systemctl enable profanity-systemd
+sudo systemctl status profanity-systemd
+journalctl -u profanity-systemd -f
+
 # redis
 sudo systemctl status redis

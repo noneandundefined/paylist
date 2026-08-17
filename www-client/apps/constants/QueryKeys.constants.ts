@@ -10,4 +10,5 @@ export const QUERY_KEYS = {
 	countryList: 'respCountryList',
 	planList: 'respPlanList',
 	paymentBilling: 'respPaymentBilling',
+	trackedSubscriptionAnalytics: 'respTrackedSubscriptionAnalytics',
 } as const;

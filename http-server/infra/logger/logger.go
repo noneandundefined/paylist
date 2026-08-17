@@ -139,6 +139,10 @@ func AI(format string, args ...any) {
 	logWithLevel("AI", "ai.log", format, args...)
 }
 
+func Moderation(format string, args ...any) {
+	logWithLevel("MOD", "moderation.log", format, args...)
+}
+
 func compressWorker() {
 	compressOldDirs()
 

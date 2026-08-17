@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS tracked_subscriptions (
     user_uuid VARCHAR(255) NOT NULL REFERENCES user_cores(user_uuid) ON DELETE CASCADE,
 
     name TEXT NOT NULL,
+    tariff VARCHAR(32) NOT NULL DEFAULT 'none',
     price NUMERIC(10, 3) NOT NULL,
     currency CHAR(3) NOT NULL DEFAULT 'USD',
     period VARCHAR(10) NOT NULL DEFAULT 'monthly',
@@ -19,7 +20,25 @@ CREATE TABLE IF NOT EXISTS tracked_subscriptions (
     note TEXT,
 
     CONSTRAINT chk_tracked_subscriptions_period CHECK (period IN ('monthly', 'yearly')),
-    CONSTRAINT chk_tracked_subscriptions_currency CHECK (currency ~ '^[A-Z]{3}$')
+    CONSTRAINT chk_tracked_subscriptions_currency CHECK (currency ~ '^[A-Z]{3}$'),
+    CONSTRAINT chk_tracked_subscriptions_tariff CHECK (
+        tariff IN (
+            'none',
+            'basic',
+            'standard',
+            'plus',
+            'pro',
+            'premium',
+            'max',
+            'lite',
+            'mini',
+            'student',
+            'duo',
+            'family',
+            'individual',
+            'business'
+        )
+    )
 );
 
 CREATE INDEX IF NOT EXISTS idx_tracked_subscriptions_user_uuid ON tracked_subscriptions(user_uuid);
@@ -78,6 +97,7 @@ COMMENT ON COLUMN tracked_subscriptions.created_at IS 'Record creation timestamp
 COMMENT ON COLUMN tracked_subscriptions.updated_at IS 'Record last update timestamp';
 COMMENT ON COLUMN tracked_subscriptions.user_uuid IS 'Owner of the tracked subscription';
 COMMENT ON COLUMN tracked_subscriptions.name IS 'Subscription name (e.g. Netflix, Spotify)';
+COMMENT ON COLUMN tracked_subscriptions.tariff IS 'Service plan tier (Basic, Premium, Family, etc.); none when unspecified';
 COMMENT ON COLUMN tracked_subscriptions.price IS 'Subscription price';
 COMMENT ON COLUMN tracked_subscriptions.currency IS 'ISO 4217 currency code (USD, RUB, EUR)';
 COMMENT ON COLUMN tracked_subscriptions.period IS 'Billing period: monthly or yearly';

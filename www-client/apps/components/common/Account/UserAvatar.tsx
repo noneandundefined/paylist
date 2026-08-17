@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { basicUserAvatarUpdate } from '@/rest/userAPI';
 import CameraPlusOutline from '@/components/@icons/camera-plus-outline';
 import Pencil from '@/components/@icons/pencil';
+import Fallback from '@/components/Fallback/Fallback';
+import ImageSpinner from '@/components/ui/ImageSpinner/ImageSpinner';
+import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
 
 type UserAvatarSize = 'sm' | 'lg';
 
@@ -57,13 +60,15 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 			<div className={`relative rounded-full ${isSmall ? 'p-[2px]' : 'p-1'}`}>
 				<div className={`relative overflow-hidden rounded-full bg-white ${isSmall ? 'h-11 w-11' : 'h-[8rem] w-[8rem]'}`}>
 					{showImage ? (
-						<img src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" onError={() => setBroken(true)} />
+						<RemoteImage src={src ?? undefined} alt="" className="h-full w-full rounded-full object-cover" spinnerSize={isSmall ? 14 : 22} onError={() => setBroken(true)} />
 					) : (
 						<div className={`flex h-full w-full items-center justify-center font-semibold ${isSmall ? 'text-sm' : 'text-[20px]'} ${innerClass}`}>{initials}</div>
 					)}
-					{editable && (
-						<div className={`absolute inset-0 flex items-center justify-center rounded-full bg-black/50 transition-opacity ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100'}`}>
-							<CameraPlusOutline fill="#ffffff" size={isSmall ? 18 : 36} />
+					{(editable || uploading) && (
+						<div
+							className={`absolute inset-0 z-[2] flex items-center justify-center rounded-full bg-black/50 transition-opacity ${uploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-active:opacity-100'}`}
+						>
+							{uploading ? <ImageSpinner size={isSmall ? 16 : 28} light /> : <CameraPlusOutline fill="#ffffff" size={isSmall ? 18 : 36} />}
 						</div>
 					)}
 				</div>
@@ -86,6 +91,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 				{avatar}
 			</button>
 			<input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={onFileChange} />
+			{uploading && <Fallback text={t('account.avatar-uploading')} />}
 		</>
 	);
 };

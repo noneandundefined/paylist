@@ -5,7 +5,7 @@ import AccentBadge from '@/components/common/AccentBadge/AccentBadge';
 import SubscriptionIcon from '@/components/common/TrackedSubscription/SubscriptionIcon';
 import { getRenewalBadgeDays, isSubscriptionOverdue } from '@/utils/SubscriptionRenewalUtils';
 import type { TrackedSubscriptionResponse } from '@/rest/trackedSubscriptionAPI';
-import { formatSubscriptionPrice, getRenewOnDateLabel, getSubscriptionShareAmount } from '@/utils/TrackedSubscriptionDisplayUtils';
+import { formatSubscriptionPrice, getRenewOnDateLabel, getSubscriptionShareAmount, formatSubscriptionName } from '@/utils/TrackedSubscriptionDisplayUtils';
 
 interface TrackedSubscriptionCardProps {
 	subscription: TrackedSubscriptionResponse;
@@ -26,7 +26,9 @@ const TrackedSubscriptionCard: React.FC<TrackedSubscriptionCardProps> = ({ subsc
 
 			<div className="min-w-0 flex-1 overflow-hidden">
 				<div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-					<p className={`overflow-hidden text-ellipsis whitespace-nowrap text-[17px] -tracking-wide font-bold ${overdue ? 'gu-overdue-title' : 'gu-text-primary'}`}>{subscription.name}</p>
+					<p className={`overflow-hidden text-ellipsis whitespace-nowrap text-[17px] -tracking-wide font-bold ${overdue ? 'gu-overdue-title' : 'gu-text-primary'}`}>
+						{formatSubscriptionName(subscription.name, subscription.tariff, t)}
+					</p>
 					{renewalBadgeLabel && <AccentBadge className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${overdue ? 'gu-overdue-badge' : ''}`}>{renewalBadgeLabel}</AccentBadge>}
 				</div>
 				<p className={`mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] ${overdue ? 'gu-overdue-muted' : 'gu-text-muted'}`}>{getRenewOnDateLabel(subscription.date_pay, t, i18n.language)}</p>

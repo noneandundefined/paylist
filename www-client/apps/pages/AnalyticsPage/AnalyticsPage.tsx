@@ -15,7 +15,7 @@ import { useHandleServer } from '@/hooks/Server/useHandleServer';
 import { useLoginState } from '@/hooks/useLoginState';
 import { basicCurrencyRates } from '@/rest/currencyAPI';
 import { fetchCountries, getCountryInflationRate } from '@/rest/countryAPI';
-import { basicTrackedSubscriptionList, basicTrackedSubscriptionSummary } from '@/rest/trackedSubscriptionAPI';
+import { basicTrackedSubscriptionList, basicTrackedSubscriptionSummary, basicTrackedSubscriptionAnalytics } from '@/rest/trackedSubscriptionAPI';
 import { basicUserSettingsGet } from '@/rest/userAPI';
 import { buildAnalyticsSnapshot, buildInflationProjections, type AnalyticsPeriod } from '@/utils/analyticsUtils';
 
@@ -28,6 +28,7 @@ const AnalyticsPage = () => {
 
 	const { data: subscriptionsData, loading: subscriptionsLoading } = useHandleServer([QUERY_KEYS.trackedSubscriptionList], () => basicTrackedSubscriptionList());
 	const { data: summaryData, loading: summaryLoading } = useHandleServer([QUERY_KEYS.trackedSubscriptionSummary], () => basicTrackedSubscriptionSummary());
+	const { data: analyticsData, loading: analyticsLoading } = useHandleServer([QUERY_KEYS.trackedSubscriptionAnalytics], () => basicTrackedSubscriptionAnalytics());
 
 	const { data: userSettings, loading: settingsLoading } = useHandleServer([QUERY_KEYS.userSettings], () => basicUserSettingsGet(), {
 		enabled: isPremium,
@@ -79,7 +80,7 @@ const AnalyticsPage = () => {
 
 	const showInflation = Boolean(isPremium && userCountry && inflationPoints && inflationRate !== null);
 
-	const loading = subscriptionsLoading || summaryLoading || (isPremium && settingsLoading) || (Boolean(summaryData) && ratesLoading && uniqueCurrencies.length > 0);
+	const loading = subscriptionsLoading || summaryLoading || analyticsLoading || (isPremium && settingsLoading) || (Boolean(summaryData) && ratesLoading && uniqueCurrencies.length > 0);
 
 	if (loading || !snapshot) {
 		return <PageLoadingState />;
@@ -111,7 +112,7 @@ const AnalyticsPage = () => {
 
 				<AnalyticsBreakdown items={snapshot.topSubscriptions} currency={snapshot.displayCurrency} />
 
-				<AnalyticsRecommendations items={snapshot.recommendations} />
+				<AnalyticsRecommendations items={analyticsData?.recommendations ?? []} />
 
 				<section className="gu-glass-card p-5">
 					<h2 className="text-[15px] font-semibold gu-text-primary">{t('analytics.insights-title')}</h2>

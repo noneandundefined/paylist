@@ -35,8 +35,13 @@ func (h *Handler) ProposeSubscriptionSharesHandler_V1(w http.ResponseWriter, r *
 		return httperr.BadRequest(tr.TErr("error.fields-not-filled"))
 	}
 
-	if _, _, err := h.requireAcceptedMember(ctx, tr, uint64(id), authToken.User.UserUUID); err != nil {
+	_, current, err := h.requireAcceptedMember(ctx, tr, uint64(id), authToken.User.UserUUID)
+	if err != nil {
 		return err
+	}
+
+	if !isPayingRole(current.Role) {
+		return httperr.Forbidden(tr.TErr("error.shared-subscription-observer-read-only"))
 	}
 
 	members, err := h.Store.TrackedSubscriptions.Get_MembersBySubscriptionID(ctx, uint64(id))
@@ -51,7 +56,7 @@ func (h *Handler) ProposeSubscriptionSharesHandler_V1(w http.ResponseWriter, r *
 			return httperr.Conflict(tr.TErr("error.shared-subscription-pending-invite"))
 		}
 
-		if member.Status != "accepted" {
+		if member.Status != "accepted" || !isPayingRole(member.Role) {
 			continue
 		}
 
@@ -131,8 +136,13 @@ func (h *Handler) VoteSubscriptionSharesHandler_V1(w http.ResponseWriter, r *htt
 		return httperr.BadRequest(err.Error())
 	}
 
-	if _, _, err := h.requireAcceptedMember(ctx, tr, uint64(id), authToken.User.UserUUID); err != nil {
+	_, current, err := h.requireAcceptedMember(ctx, tr, uint64(id), authToken.User.UserUUID)
+	if err != nil {
 		return err
+	}
+
+	if !isPayingRole(current.Role) {
+		return httperr.Forbidden(tr.TErr("error.shared-subscription-observer-read-only"))
 	}
 
 	proposal, err := h.Store.TrackedSubscriptions.Get_ShareProposalByID(ctx, uint64(id), proposalID)

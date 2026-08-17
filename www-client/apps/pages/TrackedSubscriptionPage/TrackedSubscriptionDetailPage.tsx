@@ -20,9 +20,10 @@ import { useInvalidateSubscriptions } from '@/hooks/useInvalidateSubscriptions';
 import { areCategoriesEqual, isCustomCategory } from '@/utils/categoryDisplayUtils';
 import { notifyPremiumRequired } from '@/utils/premiumUtils';
 import { clampPremiumSubscriptionFlags, resolvePremiumSubscriptionFlags } from '@/utils/subscriptionPremiumUtils';
-import { getNextBillingLabel } from '@/utils/TrackedSubscriptionDisplayUtils';
+import { getNextBillingLabel, formatSubscriptionName, normalizeSubscriptionTariff } from '@/utils/TrackedSubscriptionDisplayUtils';
 import { isSubscriptionOverdue } from '@/utils/SubscriptionRenewalUtils';
 import SubscriptionSharingPanel from '@/components/common/TrackedSubscription/SubscriptionSharingPanel';
+import { SUBSCRIPTION_TARIFF_NONE, type SubscriptionTariff } from '@/constants/subscriptionTariffs';
 import { basicTrackedSubscriptionDelete, basicTrackedSubscriptionGetById, basicTrackedSubscriptionLeave, basicTrackedSubscriptionMembers, basicTrackedSubscriptionUpdate } from '@/rest/trackedSubscriptionAPI';
 import { GUITextarea } from '@/components/ui/Input/GUITextarea';
 
@@ -55,6 +56,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 	const isOwner = Boolean(subscription?.is_owner);
 
 	const [categories, setCategories] = useState<string[]>([]);
+	const [tariff, setTariff] = useState<SubscriptionTariff>(SUBSCRIPTION_TARIFF_NONE);
 	const [autoRenewal, setAutoRenewal] = useState(false);
 	const [notification, setNotification] = useState(false);
 	const [includeInAnalytics, setIncludeInAnalytics] = useState(false);
@@ -67,8 +69,8 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 			return;
 		}
 
-		document.title = subscription.name;
-	}, [subscription?.name]);
+		document.title = formatSubscriptionName(subscription.name, subscription.tariff, t);
+	}, [subscription?.name, subscription?.tariff, t]);
 
 	useEffect(() => {
 		if (!subscription) {
@@ -76,6 +78,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 		}
 
 		setCategories(subscription.categories ?? []);
+		setTariff(normalizeSubscriptionTariff(subscription.tariff));
 		const flags = clampPremiumSubscriptionFlags(subscription.auto_renewal, subscription.notification, canUseNotification);
 		setAutoRenewal(flags.autoRenewal);
 		setNotification(flags.notification);
@@ -90,7 +93,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 
 		const baseline = clampPremiumSubscriptionFlags(subscription.auto_renewal, subscription.notification, canUseNotification);
 
-		const ownerFieldsDirty = isOwner && autoRenewal !== baseline.autoRenewal;
+		const ownerFieldsDirty = isOwner && (autoRenewal !== baseline.autoRenewal || tariff !== normalizeSubscriptionTariff(subscription.tariff));
 
 		return (
 			ownerFieldsDirty ||
@@ -99,7 +102,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 			normalizeNote(note) !== normalizeNote(subscription.note) ||
 			!areCategoriesEqual(categories, subscription.categories ?? [])
 		);
-	}, [subscription, autoRenewal, notification, includeInAnalytics, note, categories, canUseNotification, isOwner]);
+	}, [subscription, autoRenewal, tariff, notification, includeInAnalytics, note, categories, canUseNotification, isOwner]);
 
 	if (!Number.isFinite(subscriptionId) || subscriptionId <= 0) {
 		return <Navigate to={ROUTES.NOT_FOUND} replace />;
@@ -143,6 +146,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 
 			await basicTrackedSubscriptionUpdate(subscription.id, {
 				name: subscription.name,
+				tariff,
 				price: subscription.price,
 				currency: subscription.currency,
 				period: subscription.period,
@@ -187,7 +191,7 @@ const TrackedSubscriptionDetailPageDetailPage = () => {
 	return (
 		<PageLayout>
 			<Helmet>
-				<title>{subscription.name}</title>
+				<title>{formatSubscriptionName(subscription.name, subscription.tariff, t)}</title>
 			</Helmet>
 			<div className="flex flex-col space-y-3">
 				<PageHeader title={t('subscription.detail-title')} backTo={ROUTES.HOME} backLabel={t('action.back')} />

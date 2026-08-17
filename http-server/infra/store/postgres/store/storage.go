@@ -52,6 +52,8 @@ type Storage struct {
 		Get_CategorySlugsMapByUserUUID(ctx context.Context, userUUID string) (map[uint64][]string, error)
 		Get_AllSubscriptionCategories(ctx context.Context) ([]models.SubscriptionCategory, error)
 		Get_SubscriptionCategoriesForUser(ctx context.Context, userUuid string) ([]models.SubscriptionCategory, error)
+		Get_Services(ctx context.Context) ([]models.Service, error)
+		Get_CrowdSubscriptionPrices(ctx context.Context, excludeUserUUID string) ([]models.CrowdSubscriptionPrice, error)
 		Create_UserSubscriptionCategory(ctx context.Context, userUuid, slug, label string) (*models.SubscriptionCategory, error)
 		Delete_UserSubscriptionCategory(ctx context.Context, userUuid string, categoryID uint64) error
 		Get_SubscriptionsForTelegramNotify(ctx context.Context) (*[]models.TrackedSubscriptionNotifyCandidate, error)

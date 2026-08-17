@@ -48,11 +48,15 @@ func (h *Handler) requireOwnerMember(ctx context.Context, tr locale.Translator, 
 		return nil, nil, err
 	}
 
-	if member.Role != "owner" {
+	if member.Role != constants.MemberRoleOwner {
 		return nil, nil, httperr.Forbidden(tr.TErr("error.shared-subscription-owner-only"))
 	}
 
 	return sub, member, nil
+}
+
+func isPayingRole(role string) bool {
+	return role != constants.MemberRoleObserver
 }
 
 func canInviteMoreMembers(authToken *types.AuthToken, activeCount int) bool {
@@ -115,9 +119,14 @@ func inviteLink(token string) string {
 	return fmt.Sprintf("%s/paylist-subscription-invite?token=%s", clientURL, token)
 }
 
-func (h *Handler) sendShareInviteEmail(tr locale.Translator, to, ownerName, subscriptionName string, sharePercent float64, token, reqID string) {
+func (h *Handler) sendShareInviteEmail(tr locale.Translator, to, ownerName, subscriptionName, role string, sharePercent float64, token, reqID string) {
 	go func() {
 		link := inviteLink(token)
+		intro := fmt.Sprintf(tr.T("invite-email-intro-observer"), ownerName, subscriptionName)
+		if isPayingRole(role) {
+			intro = fmt.Sprintf(tr.T("invite-email-intro"), ownerName, subscriptionName, formatSharePercent(sharePercent))
+		}
+
 		if err := pkg.SendEmail(to, tr.T("invite-email-title"), fmt.Sprintf(`
 				<p>%s</p>
 
@@ -127,7 +136,7 @@ func (h *Handler) sendShareInviteEmail(tr locale.Translator, to, ownerName, subs
 
 				<p>%s</p>
 			`,
-			fmt.Sprintf(tr.T("invite-email-intro"), ownerName, subscriptionName, formatSharePercent(sharePercent)),
+			intro,
 			link,
 			tr.T("invite-email-cta"),
 			tr.T("invite-email-expiry"),
@@ -185,7 +194,7 @@ func allAcceptedMembersAgreed(members []models.TrackedSubscriptionMember, votes 
 	}
 
 	for _, member := range members {
-		if member.Status != "accepted" || member.UserUUID == nil {
+		if member.Status != "accepted" || member.UserUUID == nil || !isPayingRole(member.Role) {
 			continue
 		}
 

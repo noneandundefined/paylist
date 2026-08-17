@@ -3,15 +3,6 @@ import { getSubscriptionShareAmount } from '@/utils/TrackedSubscriptionDisplayUt
 
 export type AnalyticsPeriod = '1M' | '3M' | '6M' | '1Y';
 
-export interface AnalyticsRecommendation {
-	id: string;
-	type: 'yearly-save' | 'concentration' | 'excluded' | 'cluster' | 'small-subs' | 'upcoming-heavy';
-	titleKey: string;
-	descKey: string;
-	descValues?: Record<string, string | number>;
-	subscriptionId?: number;
-}
-
 export interface MonthlyProjectionPoint {
 	label: string;
 	monthKey: string;
@@ -49,7 +40,6 @@ export interface AnalyticsSnapshot {
 	topSubscriptions: SubscriptionShare[];
 	categoryBreakdown: CategoryShare[];
 	projections: MonthlyProjectionPoint[];
-	recommendations: AnalyticsRecommendation[];
 	upcomingPayments: Array<{ subscription: TrackedSubscriptionResponse; amount: number; daysUntil: number }>;
 }
 
@@ -212,137 +202,6 @@ const buildProjections = (subscriptions: TrackedSubscriptionResponse[], months: 
 	return points;
 };
 
-const buildRecommendations = (subscriptions: TrackedSubscriptionResponse[], monthlyTotal: number, displayCurrency: string, convert: (amount: number, from: string) => number): AnalyticsRecommendation[] => {
-	const recommendations: AnalyticsRecommendation[] = [];
-
-	for (const subscription of subscriptions) {
-		if (subscription.period !== 'monthly' || !subscription.include_in_analytics) {
-			continue;
-		}
-
-		const yearlyIfMonthly = getSubscriptionShareAmount(subscription) * 12;
-		const estimatedYearlyPlan = getSubscriptionShareAmount(subscription) * 10;
-		const savings = yearlyIfMonthly - estimatedYearlyPlan;
-
-		if (savings >= getSubscriptionShareAmount(subscription) * 1.5) {
-			recommendations.push({
-				id: `yearly-${subscription.id}`,
-				type: 'yearly-save',
-				titleKey: 'analytics.rec-yearly-title',
-				descKey: 'analytics.rec-yearly-desc',
-				descValues: {
-					name: subscription.name,
-					percent: Math.round((savings / yearlyIfMonthly) * 100),
-					amount: Math.round(convert(savings, subscription.currency)),
-					currency: displayCurrency,
-				},
-				subscriptionId: subscription.id,
-			});
-		}
-	}
-
-	if (monthlyTotal > 0) {
-		const sorted = [...subscriptions]
-			.filter((item) => item.include_in_analytics)
-			.map((item) => ({
-				item,
-				monthly: convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency),
-			}))
-			.sort((left, right) => right.monthly - left.monthly);
-
-		const top = sorted[0];
-		if (top && top.monthly / monthlyTotal >= 0.4) {
-			recommendations.push({
-				id: `concentration-${top.item.id}`,
-				type: 'concentration',
-				titleKey: 'analytics.rec-concentration-title',
-				descKey: 'analytics.rec-concentration-desc',
-				descValues: {
-					name: top.item.name,
-					percent: Math.round((top.monthly / monthlyTotal) * 100),
-				},
-				subscriptionId: top.item.id,
-			});
-		}
-	}
-
-	const excluded = subscriptions.filter((item) => !item.include_in_analytics);
-	if (excluded.length > 0) {
-		recommendations.push({
-			id: 'excluded',
-			type: 'excluded',
-			titleKey: 'analytics.rec-excluded-title',
-			descKey: 'analytics.rec-excluded-desc',
-			descValues: { count: excluded.length },
-		});
-	}
-
-	const dueSoon = subscriptions.filter((item) => {
-		const days = getDaysUntil(item.date_pay, item.period);
-		return days >= 0 && days <= 7;
-	});
-
-	if (dueSoon.length >= 3) {
-		const total = dueSoon.reduce((sum, item) => sum + convert(getSubscriptionShareAmount(item), item.currency), 0);
-		recommendations.push({
-			id: 'cluster',
-			type: 'cluster',
-			titleKey: 'analytics.rec-cluster-title',
-			descKey: 'analytics.rec-cluster-desc',
-			descValues: {
-				count: dueSoon.length,
-				amount: Math.round(total * 100) / 100,
-				currency: displayCurrency,
-			},
-		});
-	}
-
-	const smallSubs = subscriptions.filter((item) => {
-		if (!item.include_in_analytics) {
-			return false;
-		}
-
-		const monthly = convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency);
-		return monthly > 0 && monthly / monthlyTotal < 0.05;
-	});
-
-	if (smallSubs.length >= 4 && monthlyTotal > 0) {
-		const total = smallSubs.reduce((sum, item) => sum + convert(getMonthlyAmount(getSubscriptionShareAmount(item), item.period), item.currency), 0);
-		recommendations.push({
-			id: 'small-subs',
-			type: 'small-subs',
-			titleKey: 'analytics.rec-small-title',
-			descKey: 'analytics.rec-small-desc',
-			descValues: {
-				count: smallSubs.length,
-				amount: Math.round(total * 100) / 100,
-				currency: displayCurrency,
-			},
-		});
-	}
-
-	const next30 = outflowWithinDays(
-		subscriptions.filter((item) => item.include_in_analytics),
-		30,
-		convert
-	);
-
-	if (next30 > monthlyTotal * 1.35 && monthlyTotal > 0) {
-		recommendations.push({
-			id: 'upcoming-heavy',
-			type: 'upcoming-heavy',
-			titleKey: 'analytics.rec-upcoming-title',
-			descKey: 'analytics.rec-upcoming-desc',
-			descValues: {
-				amount: Math.round(next30 * 100) / 100,
-				currency: displayCurrency,
-			},
-		});
-	}
-
-	return recommendations.slice(0, 6);
-};
-
 const buildCategoryBreakdown = (subscriptions: TrackedSubscriptionResponse[], monthlyTotal: number, convert: (amount: number, from: string) => number): CategoryShare[] => {
 	const buckets = new Map<string, number>();
 
@@ -437,7 +296,6 @@ export const buildAnalyticsSnapshot = (subscriptions: TrackedSubscriptionRespons
 		.sort((left, right) => left.daysUntil - right.daysUntil)
 		.slice(0, 6);
 
-	const recommendations = buildRecommendations(subscriptions, monthlyTotal, displayCurrency, convert);
 	const categoryBreakdown = buildCategoryBreakdown(analyticsSubs, monthlyTotal, convert);
 
 	return {
@@ -456,7 +314,6 @@ export const buildAnalyticsSnapshot = (subscriptions: TrackedSubscriptionRespons
 		topSubscriptions,
 		categoryBreakdown,
 		projections,
-		recommendations,
 		upcomingPayments,
 	};
 };

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getCurrencyFlagUrl } from '@/utils/currencyUtils';
+import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
 
 interface CurrencyFlagProps {
 	code: string;
@@ -16,7 +17,11 @@ const CurrencyFlag = ({ code, size = 'md' }: CurrencyFlagProps) => {
 		return <span className={`inline-flex shrink-0 items-center justify-center rounded-full bg-[#ececec] font-semibold text-[#555] ${sizeClass}`}>{code.slice(0, 2)}</span>;
 	}
 
-	return <img src={flagUrl} alt="" className={`shrink-0 rounded-full object-cover ${sizeClass}`} onError={() => setHasError(true)} />;
+	return (
+		<span className={`relative inline-flex shrink-0 overflow-hidden rounded-full ${sizeClass}`}>
+			<RemoteImage src={flagUrl} alt="" className="h-full w-full rounded-full object-cover" spinnerSize={size === 'sm' ? 10 : 12} onError={() => setHasError(true)} />
+		</span>
+	);
 };
 
 export default CurrencyFlag;

@@ -45,7 +45,7 @@ const AccountPremiumPlanCard: React.FC<AccountPremiumPlanCardProps> = ({ validTo
 	};
 
 	return (
-		<div className="flex justify-between items-center relative overflow-hidden rounded-[20px] px-5 py-4 shadow-[0_8px_24px_rgba(0,133,255,0.28)]" style={{ background: PREMIUM_GRADIENT }}>
+		<div className="flex flex-col md:flex-row justify-between md:items-center gap-3 relative overflow-hidden rounded-[20px] px-5 py-4 shadow-[0_8px_24px_rgba(0,133,255,0.28)]" style={{ background: PREMIUM_GRADIENT }}>
 			<div>
 				<p className="flex flex-wrap items-center gap-2 text-[17px] font-semibold text-white">
 					<span className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#0085FF]">

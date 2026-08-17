@@ -1,0 +1,32 @@
+[Unit]
+Description=Paylist NSFW image moderation
+After=network.target
+
+[Service]
+# даём время освободить порт
+ExecStartPre=/bin/sleep 2
+
+# запуск сервера модерации фото (node из nvm, как в scripts/env.sh)
+ExecStart=/bin/bash -c 'export NVM_DIR=/root/.nvm; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; exec node server.js'
+WorkingDirectory=/root/paylist/nsfw-service
+
+Environment=PORT=8081
+Environment=TF_CPP_MIN_LOG_LEVEL=2
+Environment=NSFW_THRESHOLD_PORN=0.6
+Environment=NSFW_THRESHOLD_HENTAI=0.6
+Environment=NSFW_THRESHOLD_SEXY=0.8
+
+# настройки перезапуска
+Restart=on-failure
+RestartSec=10s
+TimeoutStartSec=90s
+TimeoutStopSec=10s
+KillSignal=SIGINT
+
+User=root
+Group=root
+LimitNOFILE=1048576
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

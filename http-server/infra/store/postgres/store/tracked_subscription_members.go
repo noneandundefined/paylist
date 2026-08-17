@@ -38,7 +38,7 @@ func (s *TrackedSubscriptionStore) Get_MembersBySubscriptionID(ctx context.Conte
 				AND user_cores.email = tracked_subscription_members.email
 			)
 		WHERE tracked_subscription_members.tracked_subscription_id = $1
-		ORDER BY (tracked_subscription_members.role = 'owner') DESC, tracked_subscription_members.created_at ASC
+		ORDER BY (tracked_subscription_members.role = 'owner') DESC, (tracked_subscription_members.role = 'observer') ASC, tracked_subscription_members.created_at ASC
 	`
 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -175,12 +175,16 @@ func (s *TrackedSubscriptionStore) Count_ActiveMembers(ctx context.Context, subs
 }
 
 func (s *TrackedSubscriptionStore) Create_MemberInvite(ctx context.Context, member *models.TrackedSubscriptionMember) error {
+	if member.Role == "" {
+		member.Role = "member"
+	}
+
 	query := `
 		INSERT INTO tracked_subscription_members (
 			tracked_subscription_id, email, role, share_percent,
 			notification, include_in_analytics, status, invite_token, invite_expires_at
 		)
-		VALUES ($1, $2, 'member', $3, FALSE, TRUE, 'pending', $4, $5)
+		VALUES ($1, $2, $3, $4, FALSE, $5, 'pending', $6, $7)
 		RETURNING id
 	`
 
@@ -197,31 +201,33 @@ func (s *TrackedSubscriptionStore) Create_MemberInvite(ctx context.Context, memb
 		_ = tx.Rollback()
 	}()
 
-	reserve, err := tx.ExecContext(
-		ctx,
-		`
-			UPDATE tracked_subscription_members
-			SET share_percent = share_percent - $1
-			WHERE tracked_subscription_id = $2
-				AND role = 'owner'
-				AND status = 'accepted'
-				AND share_percent - $1 >= 0
-		`,
-		member.SharePercent,
-		member.TrackedSubscriptionID,
-	)
-	if err != nil {
-		logger.Error("Create_MemberInvite req={%s}: Failed to reserve owner share: %s", ctx.Value("XREQID").(string), err.Error())
-		return err
-	}
+	if member.SharePercent != 0 {
+		reserve, err := tx.ExecContext(
+			ctx,
+			`
+				UPDATE tracked_subscription_members
+				SET share_percent = share_percent - $1
+				WHERE tracked_subscription_id = $2
+					AND role = 'owner'
+					AND status = 'accepted'
+					AND share_percent - $1 >= 0
+			`,
+			member.SharePercent,
+			member.TrackedSubscriptionID,
+		)
+		if err != nil {
+			logger.Error("Create_MemberInvite req={%s}: Failed to reserve owner share: %s", ctx.Value("XREQID").(string), err.Error())
+			return err
+		}
 
-	reserved, err := reserve.RowsAffected()
-	if err != nil {
-		return err
-	}
+		reserved, err := reserve.RowsAffected()
+		if err != nil {
+			return err
+		}
 
-	if reserved == 0 {
-		return httperr.Err_NotUpdated
+		if reserved == 0 {
+			return httperr.Err_NotUpdated
+		}
 	}
 
 	if err := tx.QueryRowContext(
@@ -229,7 +235,9 @@ func (s *TrackedSubscriptionStore) Create_MemberInvite(ctx context.Context, memb
 		query,
 		member.TrackedSubscriptionID,
 		member.Email,
+		member.Role,
 		member.SharePercent,
+		member.IncludeInAnalytics,
 		member.InviteToken,
 		member.InviteExpiresAt,
 	).Scan(&member.ID); err != nil {
@@ -241,6 +249,10 @@ func (s *TrackedSubscriptionStore) Create_MemberInvite(ctx context.Context, memb
 }
 
 func (s *TrackedSubscriptionStore) Refresh_MemberInvite(ctx context.Context, member *models.TrackedSubscriptionMember, newShare float64) error {
+	if member.Role == "" {
+		member.Role = "member"
+	}
+
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -289,12 +301,16 @@ func (s *TrackedSubscriptionStore) Refresh_MemberInvite(ctx context.Context, mem
 		`
 			UPDATE tracked_subscription_members
 			SET share_percent = $1,
+				role = $2,
+				include_in_analytics = $3,
 				status = 'pending',
-				invite_token = $2,
-				invite_expires_at = $3
-			WHERE id = $4
+				invite_token = $4,
+				invite_expires_at = $5
+			WHERE id = $6
 		`,
 		newShare,
+		member.Role,
+		member.Role != "observer",
 		member.InviteToken,
 		member.InviteExpiresAt,
 		member.ID,
@@ -305,6 +321,7 @@ func (s *TrackedSubscriptionStore) Refresh_MemberInvite(ctx context.Context, mem
 
 	member.SharePercent = newShare
 	member.Status = "pending"
+	member.IncludeInAnalytics = member.Role != "observer"
 
 	return tx.Commit()
 }
@@ -379,6 +396,7 @@ func (s *TrackedSubscriptionStore) Get_InviteByToken(ctx context.Context, token 
 	member.SharePercent = preview.SharePercent
 	member.Status = preview.Status
 	member.InviteExpiresAt = preview.InviteExpiresAt
+	preview.Role = member.Role
 
 	return &preview, &member, nil
 }

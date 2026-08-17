@@ -1,10 +1,32 @@
 import type { TFunction } from 'i18next';
 
+import type { SubscriptionTariff } from '@/constants/subscriptionTariffs';
 import { getDaysUntilRenewal, isSubscriptionOverdue } from './SubscriptionRenewalUtils';
 import { getInitialsFromName } from '@/utils/stringUtils';
 import { formatCurrency } from '@/utils/currencyUtils';
 
 export const getSubscriptionIconLabel = (name: string): string => getInitialsFromName(name);
+
+export const formatSubscriptionName = (name: string, tariff?: string | null, t?: TFunction): string => {
+	if (!tariff || tariff === 'none') {
+		return name;
+	}
+
+	const label = t ? t(`subscription.tariff-${tariff}`) : `${tariff.charAt(0).toUpperCase()}${tariff.slice(1)}`;
+	if (!label || label === `subscription.tariff-${tariff}`) {
+		return name;
+	}
+
+	return `${name} ${label}`;
+};
+
+export const normalizeSubscriptionTariff = (tariff?: string | null): SubscriptionTariff => {
+	if (tariff && tariff !== 'none') {
+		return tariff as SubscriptionTariff;
+	}
+
+	return 'none';
+};
 
 export const formatSubscriptionDate = (value: string, locale?: string): string => {
 	const date = new Date(value);

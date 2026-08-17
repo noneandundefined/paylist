@@ -11,6 +11,9 @@ import PageHeader from '@/components/common/PageHeader/PageHeader';
 import CurrencySelect from '@/components/common/Currency/CurrencySelect';
 import CategoryChipGroup from '@/components/common/Category/CategoryChipGroup';
 import SubscriptionSettingsPanel from '@/components/common/TrackedSubscription/SubscriptionSettingsPanel';
+import TariffSelect from '@/components/common/TrackedSubscription/TariffSelect';
+import ServiceSelect from '@/components/common/TrackedSubscription/ServiceSelect';
+import { SUBSCRIPTION_TARIFF_NONE, type SubscriptionTariff } from '@/constants/subscriptionTariffs';
 import { usePremiumFeatureGate } from '@/hooks/usePremiumFeatureGate';
 import { useSubscriptionCategories } from '@/hooks/useSubscriptionCategories';
 import { useInvalidateSubscriptions } from '@/hooks/useInvalidateSubscriptions';
@@ -23,6 +26,7 @@ import type { TrackedSubscriptionPeriod } from '@/interface/trackedSubscription/
 
 interface CreateSubscriptionForm {
 	name: string;
+	tariff: SubscriptionTariff;
 	priceInput: string;
 	currency: string;
 	period: TrackedSubscriptionPeriod;
@@ -51,6 +55,7 @@ const CreateSubscriptionPage = () => {
 		mode: 'onChange',
 		defaultValues: {
 			name: '',
+			tariff: SUBSCRIPTION_TARIFF_NONE,
 			priceInput: '',
 			currency: 'USD',
 			period: 'monthly',
@@ -90,6 +95,7 @@ const CreateSubscriptionPage = () => {
 
 		await basicTrackedSubscriptionCreate({
 			name: data.name.trim(),
+			tariff: data.tariff,
 			price,
 			currency: data.currency,
 			period: data.period,
@@ -113,15 +119,31 @@ const CreateSubscriptionPage = () => {
 
 				<form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
 					<section className="gu-glass-card space-y-3 px-4 py-4">
-						<GUInput
-							id="subscription-name"
-							placeholder={t('subscription.name-placeholder')}
-							{...register('name', {
-								required: t('message.validation-required-field'),
-								minLength: { value: 3, message: t('subscription.name-min-length') },
-							})}
-							error={errors.name?.message}
-						/>
+						<div className="grid grid-cols-2 gap-3">
+							<div className="min-w-0 w-full">
+								<input type="hidden" {...register('name', { required: t('message.validation-required-field'), minLength: { value: 3, message: t('subscription.name-min-length') } })} />
+
+								<ServiceSelect
+									value={watch('name')}
+									onChange={(name, category) => {
+										setValue('name', name, { shouldDirty: true, shouldValidate: true });
+
+										if (!category || selectedCategories.includes(category)) {
+											return;
+										}
+
+										setValue('categories', [...selectedCategories, category], { shouldDirty: true });
+									}}
+									error={errors.name?.message}
+								/>
+							</div>
+
+							<div className="min-w-0 w-full">
+								<input type="hidden" {...register('tariff')} />
+
+								<TariffSelect value={watch('tariff')} onChange={(tariff) => setValue('tariff', tariff, { shouldDirty: true, shouldValidate: true })} />
+							</div>
+						</div>
 
 						<div className="grid grid-cols-2 gap-3">
 							<GUInput

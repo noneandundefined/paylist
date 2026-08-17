@@ -15,6 +15,7 @@ import (
 	"paylist.server/pkg/httpx"
 	"paylist.server/pkg/httpx/httperr"
 	"paylist.server/pkg/premium"
+	"paylist.server/pkg/profanity"
 	"paylist.server/types"
 )
 
@@ -46,6 +47,10 @@ func (h *Handler) CreateSubscriptionCategoryHandler_V1(w http.ResponseWriter, r 
 
 	if slug == "" {
 		return httperr.BadRequest(tr.TErr("error.category-label-invalid"))
+	}
+
+	if err := profanity.Reject(ctx, tr, "category-label", label); err != nil {
+		return err
 	}
 
 	category, err := h.Store.TrackedSubscriptions.Create_UserSubscriptionCategory(ctx, authToken.User.UserUUID, slug, label)

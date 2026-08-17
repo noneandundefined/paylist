@@ -27,9 +27,12 @@ import { getAppLanguage, SUPPORTED_LANGUAGES } from '@/constants/Language.consta
 import { notifyPremiumRequired } from '@/utils/premiumUtils';
 import { clearAuthSession } from '@/utils/authSessionUtils';
 import { basicUserAccountDelete, basicUserSettingsGet, basicUserSettingsUpdate } from '@/rest/userAPI';
+import { basicTrackedSubscriptionExport } from '@/rest/trackedSubscriptionAPI';
+import { notify } from '@/components/Notification/notify';
 
 import Delete from '@/components/@icons/delete';
 import Cookie from '@/components/@icons/cookie';
+import ExportVariant from '@/components/@icons/export-variant';
 import LogoutVariant from '@/components/@icons/logout-variant';
 import ThemeLightDark from '@/components/@icons/theme-light-dark';
 import { openCookiePreferences } from '@/utils/cookieConsentUtils';
@@ -44,6 +47,7 @@ const AccountPage = () => {
 	const [displayCurrency, setDisplayCurrency] = useState('USD');
 	const [country, setCountry] = useState('US');
 	const [deletingAccount, setDeletingAccount] = useState(false);
+	const [exportingSubscriptions, setExportingSubscriptions] = useState(false);
 
 	const currentLanguage = getAppLanguage(i18n.language);
 
@@ -106,6 +110,23 @@ const AccountPage = () => {
 		}
 
 		await basicAuthSignOut();
+	};
+
+	const onExportSubscriptions = async () => {
+		if (exportingSubscriptions) {
+			return;
+		}
+
+		setExportingSubscriptions(true);
+
+		try {
+			await basicTrackedSubscriptionExport();
+			notify.success(t('account.export-subscriptions-done'));
+		} catch {
+			// apiDownload already shows the error
+		} finally {
+			setExportingSubscriptions(false);
+		}
 	};
 
 	const onDeleteAccount = async () => {
@@ -212,6 +233,12 @@ const AccountPage = () => {
 
 				<AccountSection title={t('account.content-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
+						<AccountSettingsRow
+							icon={<ExportVariant fill="currentColor" size={21} />}
+							label={exportingSubscriptions ? t('account.export-subscriptions-progress') : t('account.export-subscriptions')}
+							onClick={() => void onExportSubscriptions()}
+							disabled={exportingSubscriptions}
+						/>
 						<AccountSettingsRow icon={<Cookie fill="currentColor" size={21} />} label={t('account.cookie-preferences')} onClick={openCookiePreferences} />
 						<AccountSettingsRow
 							icon={<Delete fill="#dc2626" size={21} />}

@@ -9,6 +9,7 @@ import (
 	"paylist.server/middleware"
 	"paylist.server/pkg/httpx"
 	"paylist.server/pkg/httpx/httperr"
+	"paylist.server/pkg/profanity"
 	"paylist.server/types"
 )
 
@@ -49,6 +50,10 @@ func (h *Handler) UserProfileUpdateHandler_V1(w http.ResponseWriter, r *http.Req
 		if !valid.MatchString(trimmed) {
 			return httperr.BadRequest(tr.TErr("error.invalid-characters-lastname"))
 		}
+	}
+
+	if err := profanity.Reject(ctx, tr, "profile-name", profanity.Pointers(payload.FirstName, payload.LastName)...); err != nil {
+		return err
 	}
 
 	if err := h.Store.Users.Update_UserProfile(ctx, authToken.User.UserUUID, payload.FirstName, payload.LastName); err != nil {

@@ -25,6 +25,7 @@ interface ModalSelectProps {
 	loadingText?: string;
 	errorText?: string;
 	optionVariant?: 'default' | 'currency' | 'country';
+	allowCustom?: boolean;
 }
 
 const getOptionSearchText = (option: ModalSelectOption): string => {
@@ -39,7 +40,7 @@ const getOptionSearchText = (option: ModalSelectOption): string => {
 	return String(option.value).toLowerCase();
 };
 
-const ModalSelect = ({ options: initialOptions, loadOptions, value, onChange, searchPlaceholder, emptyText, loadingText, errorText, optionVariant = 'default' }: ModalSelectProps) => {
+const ModalSelect = ({ options: initialOptions, loadOptions, value, onChange, searchPlaceholder, emptyText, loadingText, errorText, optionVariant = 'default', allowCustom = false }: ModalSelectProps) => {
 	const { t } = useTranslation();
 	const { close } = useModalContext();
 
@@ -88,6 +89,20 @@ const ModalSelect = ({ options: initialOptions, loadOptions, value, onChange, se
 		return options.filter((option) => getOptionSearchText(option).includes(query) || String(option.value).toLowerCase().includes(query));
 	}, [options, search]);
 
+	const visibleOptions = useMemo(() => {
+		const query = search.trim();
+
+		if (allowCustom && !query) {
+			return [];
+		}
+
+		if (!allowCustom || !query || filteredOptions.length > 0) {
+			return filteredOptions;
+		}
+
+		return [{ value: query, label: query }];
+	}, [allowCustom, filteredOptions, search]);
+
 	const handleSelect = (option: ModalSelectOption) => {
 		if (option.disabled) {
 			return;
@@ -99,18 +114,18 @@ const ModalSelect = ({ options: initialOptions, loadOptions, value, onChange, se
 
 	return (
 		<div className="space-y-3">
-			<GUInput type="text" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={searchPlaceholder ?? t('label.search')} autoComplete="off" />
+			<GUInput type="text" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={searchPlaceholder ?? t('label.search')} autoComplete="off" autoFocus />
 
 			<ul className="max-h-[320px] space-y-3 overflow-y-auto">
 				{loading && <li className="list-none py-6 text-center text-sm gu-text-muted">{loadingText ?? t('action.loading')}</li>}
 
 				{error && !loading && <li className="list-none py-6 text-center text-sm text-red-500">{errorText ?? t('subscription.currencies-load-error')}</li>}
 
-				{!loading && !error && filteredOptions.length === 0 && <li className="list-none py-6 text-center text-sm gu-text-muted">{emptyText ?? t('message.options-not-found')}</li>}
+				{!loading && !error && visibleOptions.length === 0 && search.trim() !== '' && <li className="list-none py-6 text-center text-sm gu-text-muted">{emptyText ?? t('message.options-not-found')}</li>}
 
 				{!loading &&
 					!error &&
-					filteredOptions.map((option) => {
+					visibleOptions.map((option) => {
 						const isSelected = option.value === value;
 
 						return (
