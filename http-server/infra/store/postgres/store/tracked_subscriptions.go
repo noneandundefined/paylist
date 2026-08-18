@@ -579,6 +579,39 @@ func (s *TrackedSubscriptionStore) Update_MemberPreferences(ctx context.Context,
 	return nil
 }
 
+func (s *TrackedSubscriptionStore) Enable_NotificationsForUser(ctx context.Context, userUUID string) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	if _, err := s.db.ExecContext(
+		ctx,
+		`
+			UPDATE tracked_subscription_members
+			SET notification = TRUE
+			WHERE user_uuid = $1 AND status = 'accepted'
+		`,
+		userUUID,
+	); err != nil {
+		logger.Error("Enable_NotificationsForUser req={%s}: Failed to update members: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	if _, err := s.db.ExecContext(
+		ctx,
+		`
+			UPDATE tracked_subscriptions
+			SET notification = TRUE
+			WHERE user_uuid = $1
+		`,
+		userUUID,
+	); err != nil {
+		logger.Error("Enable_NotificationsForUser req={%s}: Failed to update subscriptions: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func (s *TrackedSubscriptionStore) Update_SubscriptionsMounth(ctx context.Context) error {
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()

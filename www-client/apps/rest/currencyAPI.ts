@@ -1,4 +1,6 @@
 import { apiGet } from '@/rest/apiClient';
+import { CACHEKEYs } from '@/constants/CacheKeys.constants';
+import { DAY_MS, withTtlCache } from '@/utils/ttlStorage';
 
 export interface CurrencyItem {
 	code: string;
@@ -17,10 +19,11 @@ export interface CurrencyRatesResponse {
 	rates: Record<string, number>;
 }
 
-export const fetchCurrencies = async (): Promise<CurrencyItem[]> => {
-	const items = await apiGet<CurrencyItem[]>('/currency/currencies');
-	return items ?? [];
-};
+const isCurrencyList = (value: unknown): value is CurrencyItem[] =>
+	Array.isArray(value) && value.length > 0 && value.every((item) => Boolean(item) && typeof item === 'object' && typeof (item as CurrencyItem).code === 'string' && typeof (item as CurrencyItem).name === 'string');
+
+export const fetchCurrencies = async (): Promise<CurrencyItem[]> =>
+	withTtlCache(CACHEKEYs.CURRENCY_LIST, DAY_MS, async () => (await apiGet<CurrencyItem[]>('/currency/currencies')) ?? [], isCurrencyList);
 
 export const loadCurrencySelectOptions = async () => {
 	const items = await fetchCurrencies();

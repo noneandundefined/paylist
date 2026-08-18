@@ -18,7 +18,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	deviceProtectedRouter.Use(middleware.IsAuthenticatedMiddleware(h.BaseHandler))
 
 	/* Access: ALL */
-	deviceRouter.Handle("/create-session", httpx.ErrorHandler(h.DeviceCreateAuthSessionHandler_V1)).Methods(http.MethodPost)
+	deviceRouter.Handle("/create-session", middleware.PowDDos()(
+		httpx.ErrorHandler(h.DeviceCreateAuthSessionHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	deviceProtectedRouter.Handle("/session/{session_id}", middleware.PowDDos()(

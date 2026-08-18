@@ -57,6 +57,12 @@ func fulfillSucceededPayment(ctx context.Context, storage store.Storage, payment
 		return err
 	}
 
+	if plan.NotificationSubscriptions {
+		if err := storage.TrackedSubscriptions.Enable_NotificationsForUser(ctx, userUUID); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

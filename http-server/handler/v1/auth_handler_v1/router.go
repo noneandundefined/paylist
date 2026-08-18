@@ -18,10 +18,14 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	authProtectedRouter.Use(middleware.IsAuthenticatedMiddleware(h.BaseHandler))
 
 	/* Access: ALL */
-	authRouter.Handle("/signin", httpx.ErrorHandler(h.AuthSigninHandler_V1)).Methods(http.MethodPost)
+	authRouter.Handle("/signin", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AuthSigninHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
-	authRouter.Handle("/signup", httpx.ErrorHandler(h.AuthSignupHandler_V1)).Methods(http.MethodPost)
+	authRouter.Handle("/signup", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AuthSignupHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	authRouter.Handle("/check", middleware.PowDDos()(

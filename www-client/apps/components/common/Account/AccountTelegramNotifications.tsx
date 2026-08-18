@@ -37,7 +37,7 @@ const AccountTelegramNotifications: React.FC<AccountTelegramNotificationsProps> 
 			username,
 			onConnect: async () => {
 				const response = await basicUserTelegramLink();
-				window.open(response.bot_url, '_blank', 'noopener,noreferrer');
+				return response.bot_url;
 			},
 			onDisconnect: async () => {
 				await basicUserTelegramDisconnect();

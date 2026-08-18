@@ -62,10 +62,11 @@ func (c *Client) Upload(ctx context.Context, key, contentType string, body io.Re
 	defer cancel()
 
 	_, err := c.api.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String(c.bucket),
-		Key:         aws.String(key),
-		Body:        body,
-		ContentType: aws.String(contentType),
+		Bucket:       aws.String(c.bucket),
+		Key:          aws.String(key),
+		Body:         body,
+		ContentType:  aws.String(contentType),
+		CacheControl: aws.String("public, max-age=31536000, immutable"),
 	})
 	if err != nil {
 		return "", err

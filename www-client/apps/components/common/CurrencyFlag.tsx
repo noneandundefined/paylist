@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCurrencyFlagUrl } from '@/utils/currencyUtils';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
 
 interface CurrencyFlagProps {
@@ -9,7 +10,11 @@ interface CurrencyFlagProps {
 
 const CurrencyFlag = ({ code, size = 'md' }: CurrencyFlagProps) => {
 	const flagUrl = getCurrencyFlagUrl(code);
-	const [hasError, setHasError] = useState(false);
+	const [hasError, setHasError] = useState(() => isImageFailed(flagUrl));
+
+	useEffect(() => {
+		setHasError(isImageFailed(flagUrl));
+	}, [flagUrl]);
 
 	const sizeClass = size === 'sm' ? 'h-6 w-6 text-[10px]' : 'h-8 w-8 text-[11px]';
 

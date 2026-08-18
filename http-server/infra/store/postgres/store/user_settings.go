@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 	"time"
 
 	"paylist.server/infra/logger"
@@ -85,4 +86,12 @@ func (s *UserStore) Upsert_UserCountry(ctx context.Context, userUuid, country st
 	}
 
 	return nil
+}
+
+func nullIfEmpty(value string) any {
+	if strings.TrimSpace(value) == "" {
+		return nil
+	}
+
+	return value
 }

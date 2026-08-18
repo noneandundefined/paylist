@@ -6,6 +6,7 @@ import Pencil from '@/components/@icons/pencil';
 import Fallback from '@/components/Fallback/Fallback';
 import ImageSpinner from '@/components/ui/ImageSpinner/ImageSpinner';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 
 type UserAvatarSize = 'sm' | 'lg';
 
@@ -25,11 +26,11 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ initials, isPremium = false, si
 	const { t } = useTranslation();
 
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [broken, setBroken] = useState(false);
+	const [broken, setBroken] = useState(() => isImageFailed(src));
 	const [uploading, setUploading] = useState(false);
 
 	useEffect(() => {
-		setBroken(false);
+		setBroken(isImageFailed(src));
 	}, [src]);
 
 	const ringClass = isPremium ? premiumGradientClass : freeRingClass;

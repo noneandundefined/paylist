@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTrackedSubscriptionImageUrl } from '@/rest/trackedSubscriptionAPI';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 import { useTheme } from '@/context/ThemeContext';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
 import SubscriptionFallbackGlyph from './SubscriptionFallbackGlyph';
@@ -31,14 +32,19 @@ const glyphSizes: Record<NonNullable<SubscriptionIconProps['size']>, number> = {
 
 const SubscriptionIcon = ({ name, categories, size = 'sm', className = '' }: SubscriptionIconProps) => {
 	const { isDark } = useTheme();
-	const [hasImageError, setHasImageError] = useState(false);
+	const imageUrl = getTrackedSubscriptionImageUrl(name);
+	const [hasImageError, setHasImageError] = useState(() => isImageFailed(imageUrl));
 	const sizeClass = sizeClasses[size];
 	const fill = isDark ? '#f1f5f9' : '#0f172a';
+
+	useEffect(() => {
+		setHasImageError(isImageFailed(imageUrl));
+	}, [imageUrl]);
 
 	if (!hasImageError) {
 		return (
 			<div className={`relative shrink-0 overflow-hidden rounded-xl ${sizeClass} ${className}`}>
-				<RemoteImage src={getTrackedSubscriptionImageUrl(name)} alt="" className="h-full w-full object-cover" spinnerSize={spinnerSizes[size]} onError={() => setHasImageError(true)} />
+				<RemoteImage src={imageUrl} alt="" className="h-full w-full object-cover" spinnerSize={spinnerSizes[size]} onError={() => setHasImageError(true)} />
 			</div>
 		);
 	}

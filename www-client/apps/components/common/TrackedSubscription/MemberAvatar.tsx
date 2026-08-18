@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 
 interface MemberAvatarProps {
 	initials: string;
@@ -9,10 +10,10 @@ interface MemberAvatarProps {
 }
 
 const MemberAvatar: React.FC<MemberAvatarProps> = ({ initials, src, size = 40, className = '' }) => {
-	const [broken, setBroken] = useState(false);
+	const [broken, setBroken] = useState(() => isImageFailed(src));
 
 	useEffect(() => {
-		setBroken(false);
+		setBroken(isImageFailed(src));
 	}, [src]);
 
 	const showImage = Boolean(src) && !broken;

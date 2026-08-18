@@ -36,7 +36,7 @@ const AccountMaxNotifications: React.FC<AccountMaxNotificationsProps> = ({ canUs
 			username,
 			onConnect: async () => {
 				const response = await basicUserMaxLink();
-				window.open(response.bot_url, '_blank', 'noopener,noreferrer');
+				return response.bot_url;
 			},
 			onDisconnect: async () => {
 				await basicUserMaxDisconnect();

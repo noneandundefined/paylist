@@ -97,6 +97,7 @@ func (h *Handler) GetCurrenciesHandler_V1(w http.ResponseWriter, r *http.Request
 		return httperr.BadRequest(err.Error())
 	}
 
+	httpx.HttpCache(w, 86400)
 	httpx.HttpResponseWithETag(w, r, http.StatusOK, items)
 	return nil
 }

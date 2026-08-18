@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ImageSpinner from '@/components/ui/ImageSpinner/ImageSpinner';
+import { getCachedObjectUrl, isImageFailed, isImageReady, markImageFailed, resolveCachedImage } from '@/utils/imageCacheUtils';
 
 interface RemoteImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 	spinnerSize?: number;
@@ -7,30 +8,76 @@ interface RemoteImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 const RemoteImage: React.FC<RemoteImageProps> = ({ className = '', src, spinnerSize = 16, spinnerLight = false, onLoad, onError, alt = '', ...props }) => {
-	const imageRef = useRef<HTMLImageElement>(null);
-	const [loaded, setLoaded] = useState(false);
+	const [displaySrc, setDisplaySrc] = useState(() => getCachedObjectUrl(src) ?? src);
+	const [loaded, setLoaded] = useState(() => isImageReady(src));
+	const [failed, setFailed] = useState(() => isImageFailed(src));
 
 	useEffect(() => {
-		setLoaded(false);
-
-		const image = imageRef.current;
-		if (image?.complete && image.naturalWidth > 0) {
-			setLoaded(true);
+		if (!src) {
+			setDisplaySrc(undefined);
+			setLoaded(false);
+			setFailed(false);
+			return;
 		}
+
+		if (isImageFailed(src)) {
+			setFailed(true);
+			setLoaded(true);
+			return;
+		}
+
+		const cached = getCachedObjectUrl(src);
+		if (cached) {
+			setDisplaySrc(cached);
+			setLoaded(true);
+			setFailed(false);
+			return;
+		}
+
+		let cancelled = false;
+		setFailed(false);
+		setLoaded(isImageReady(src));
+		setDisplaySrc(src);
+
+		void resolveCachedImage(src)
+			.then((url) => {
+				if (cancelled) {
+					return;
+				}
+
+				setDisplaySrc(url);
+				setLoaded(true);
+			})
+			.catch(() => {
+				if (cancelled) {
+					return;
+				}
+
+				setFailed(true);
+				setLoaded(true);
+				onError?.({} as React.SyntheticEvent<HTMLImageElement, Event>);
+			});
+
+		return () => {
+			cancelled = true;
+		};
 	}, [src]);
+
+	if (!src || failed) {
+		return null;
+	}
 
 	return (
 		<>
-			{!loaded && src ? (
+			{!loaded ? (
 				<span className="absolute inset-0 z-[1] flex items-center justify-center">
 					<ImageSpinner size={spinnerSize} light={spinnerLight} />
 				</span>
 			) : null}
 			<img
 				{...props}
-				ref={imageRef}
 				alt={alt}
-				src={src}
+				src={displaySrc}
 				draggable={false}
 				onDragStart={(event) => event.preventDefault()}
 				className={className}
@@ -39,6 +86,8 @@ const RemoteImage: React.FC<RemoteImageProps> = ({ className = '', src, spinnerS
 					onLoad?.(event);
 				}}
 				onError={(event) => {
+					markImageFailed(src);
+					setFailed(true);
 					setLoaded(true);
 					onError?.(event);
 				}}

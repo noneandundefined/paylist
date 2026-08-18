@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"paylist.server/infra/locale"
@@ -85,8 +86,13 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 		return nil
 	}
 
-	token := ParseStartToken(update.Message.Text)
+	text := strings.TrimSpace(update.Message.Text)
+	token := ParseStartToken(text)
 	if token == "" {
+		if strings.HasPrefix(text, "/start") {
+			return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.link-missing"))
+		}
+
 		return nil
 	}
 
@@ -96,7 +102,7 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	}
 
 	if userUuid == "" {
-		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("en").T("telegram.link-expired"))
+		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.link-expired"))
 	}
 
 	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, update.Message.Chat.ID)
@@ -105,14 +111,14 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	}
 
 	if existingUserUuid != "" && existingUserUuid != userUuid {
-		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("en").T("telegram.already-linked-other-account"))
+		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.already-linked-other-account"))
 	}
 
 	username := ""
-	language := "en"
+	language := "ru"
 
 	if update.Message.From != nil {
-		username = update.Message.From.Username
+		username = strings.TrimSpace(update.Message.From.Username)
 		if len(update.Message.From.LanguageCode) >= 2 {
 			language = update.Message.From.LanguageCode[:2]
 		}

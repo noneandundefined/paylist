@@ -85,6 +85,7 @@ type Storage struct {
 		Update_SubscriptionsMounth(ctx context.Context) error
 		Update_SubscriptionById(ctx context.Context, sub *models.TrackedSubscription, id int) error
 		Update_MemberPreferences(ctx context.Context, subscriptionID uint64, userUUID string, notification, includeInAnalytics bool, note *string) error
+		Enable_NotificationsForUser(ctx context.Context, userUUID string) error
 		Replace_SubscriptionCategories(ctx context.Context, id uint64, userUUID string, slugs []string) error
 		Delete_SubscriptionById(ctx context.Context, id int, uuid string) error
 	}

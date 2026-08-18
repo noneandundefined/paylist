@@ -13,6 +13,7 @@ import (
 func (h *Handler) GetCountriesHandler_V1(w http.ResponseWriter, r *http.Request) error {
 	items := country.GetCountries()
 
+	httpx.HttpCache(w, 86400)
 	httpx.HttpResponseWithETag(w, r, http.StatusOK, items)
 	return nil
 }

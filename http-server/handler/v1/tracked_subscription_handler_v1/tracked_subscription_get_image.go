@@ -2,8 +2,11 @@ package tracked_subscription_handler_v1
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"paylist.server/middleware"
 	"paylist.server/pkg/analytics"
@@ -27,12 +30,38 @@ func (h *Handler) GetSubscriptionImageHandler_V1(w http.ResponseWriter, r *http.
 	}
 
 	filePath := "media/subscriptions/" + img
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return httperr.NotFound(tr.TErr("error.tracked-subscription-image-not-found"))
+	info, err := os.Stat(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return httperr.NotFound(tr.TErr("error.tracked-subscription-image-not-found"))
+		}
+
+		return httperr.InternalServerError(tr.TErr("error.server-error"))
 	}
+
+	etag := fmt.Sprintf(`"%d-%d"`, info.ModTime().Unix(), info.Size())
+	if r.Header.Get("If-None-Match") == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return nil
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=2592000, immutable")
+	w.Header().Set("Content-Type", catalogImageContentType(img))
+	w.Header().Set("ETag", etag)
 
 	http.ServeFile(w, r, filePath)
 	return nil
+}
+
+func catalogImageContentType(filename string) string {
+	switch strings.ToLower(filepath.Ext(filename)) {
+	case ".jpg", ".jpeg":
+		return "image/jpeg"
+	case ".webp":
+		return "image/webp"
+	default:
+		return "image/png"
+	}
 }
 
 func (h *Handler) lookupCatalogImage(ctx context.Context, name string) string {

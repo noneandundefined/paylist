@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 import Check from '@/components/@icons/check';
-import GUIButton from '@/components/ui/Button/GUIButton';
 import { ROUTES } from '@/constants/constants';
+import { useTranslation } from 'react-i18next';
 import { basicPaymentConfirm } from '@/rest/paymentAPI';
-import { hasPaidPageGrant, writePaidPageGrant } from '@/utils/paidPageAccessUtils';
+import GUIButton from '@/components/ui/Button/GUIButton';
 import { trackPaidPageConversion } from '@/utils/yandexMetrika';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { hasPaidPageGrant, writePaidPageGrant } from '@/utils/paidPageAccessUtils';
 
 const POLL_ATTEMPTS = 12;
 const POLL_INTERVAL_MS = 1500;
@@ -100,7 +100,7 @@ const PaidPage = () => {
 					<p className="mt-3 max-w-xs text-[16px] leading-relaxed gu-text-muted">{t('paid.subtitle')}</p>
 				</div>
 
-				<div className="w-[30rem]">
+				<div className="w-[25rem]">
 					<GUIButton type="button" onClick={() => navigate(ROUTES.HOME)} className="w-full rounded-full bg-[var(--surface-muted)] py-4 text-[16px] font-semibold gu-text-primary transition hover:opacity-90">
 						{t('paid.cta')}
 					</GUIButton>

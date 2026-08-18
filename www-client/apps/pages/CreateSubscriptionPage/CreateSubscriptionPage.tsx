@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import PageLayout from '../PageLayout';
 import { useForm } from 'react-hook-form';
 import { ROUTES } from '@/constants/constants';
@@ -71,6 +72,10 @@ const CreateSubscriptionPage = () => {
 	const autoRenewal = watch('auto_renewal');
 	const notificationEnabled = watch('notification');
 	const includeInAnalytics = watch('include_in_analytics');
+
+	useEffect(() => {
+		setValue('notification', canUseNotification);
+	}, [canUseNotification, setValue]);
 
 	const toggleCategory = (slug: string) => {
 		const category = categories.find((item) => item.slug === slug);

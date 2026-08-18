@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCountryFlagUrl } from '@/utils/countryUtils';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
 
 interface CountryFlagProps {
@@ -9,7 +10,11 @@ interface CountryFlagProps {
 
 const CountryFlag = ({ code, size = 'md' }: CountryFlagProps) => {
 	const flagUrl = getCountryFlagUrl(code);
-	const [hasError, setHasError] = useState(false);
+	const [hasError, setHasError] = useState(() => isImageFailed(flagUrl));
+
+	useEffect(() => {
+		setHasError(isImageFailed(flagUrl));
+	}, [flagUrl]);
 
 	const sizeClass = size === 'sm' ? 'h-6 w-6 text-[10px]' : 'h-8 w-8 text-[11px]';
 

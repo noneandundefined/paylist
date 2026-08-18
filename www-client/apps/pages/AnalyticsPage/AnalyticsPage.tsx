@@ -34,7 +34,10 @@ const AnalyticsPage = () => {
 		enabled: isPremium,
 	});
 
-	const { data: countriesData } = useHandleServer([QUERY_KEYS.countryList], () => fetchCountries());
+	const { data: countriesData } = useHandleServer([QUERY_KEYS.countryList], () => fetchCountries(), {
+		staleTime: 24 * 60 * 60 * 1000,
+		gcTime: 24 * 60 * 60 * 1000,
+	});
 
 	const displayCurrency = summaryData?.display_currency ?? 'USD';
 	const userCountry = userSettings?.country ?? null;

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '@/components/Modal/Modal';
 import { useTranslation } from 'react-i18next';
 import { useLoginState } from '@/hooks/useLoginState';
 import { useModalContext } from '@/context/useModalContext';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
+import { isImageFailed } from '@/utils/imageCacheUtils';
 import InformationOutline from '@/components/@icons/information-outline';
 
 export interface MessengerConnectConfig {
@@ -18,7 +19,7 @@ interface AccountMessengerConnectModalProps {
 	config: MessengerConnectConfig;
 	connected: boolean;
 	username?: string | null;
-	onConnect: () => Promise<void>;
+	onConnect: () => Promise<string>;
 	onDisconnect: () => Promise<void>;
 }
 
@@ -27,31 +28,61 @@ const AccountMessengerConnectModal: React.FC<AccountMessengerConnectModalProps> 
 	const { close } = useModalContext();
 	const { displayName, initials, avatar } = useLoginState();
 	const [busy, setBusy] = useState(false);
-	const [avatarBroken, setAvatarBroken] = useState(false);
+	const [botUrl, setBotUrl] = useState('');
+	const [avatarBroken, setAvatarBroken] = useState(() => isImageFailed(avatar));
+
+	useEffect(() => {
+		setAvatarBroken(isImageFailed(avatar));
+	}, [avatar]);
 
 	const bannerLabel = connected ? t('account.messenger-connected-banner') : t('account.messenger-connection-request');
 	const primaryLabel = connected ? t('account.messenger-disconnect') : t('account.connect');
 	const accentSoft = `color-mix(in srgb, ${config.accent} 16%, transparent)`;
 	const showAvatar = Boolean(avatar) && !avatarBroken;
 
+	useEffect(() => {
+		if (connected) {
+			return;
+		}
+
+		let cancelled = false;
+
+		void onConnect().then((url) => {
+			if (!cancelled) {
+				setBotUrl(url);
+			}
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	}, [connected, onConnect]);
+
 	const onPrimary = async () => {
 		if (busy) {
 			return;
 		}
 
-		setBusy(true);
+		if (connected) {
+			setBusy(true);
 
-		try {
-			if (connected) {
+			try {
 				await onDisconnect();
-			} else {
-				await onConnect();
+				close();
+			} finally {
+				setBusy(false);
 			}
 
-			close();
-		} finally {
-			setBusy(false);
+			return;
 		}
+
+		const url = botUrl || (await onConnect());
+		if (!url) {
+			return;
+		}
+
+		window.open(url, '_blank', 'noopener,noreferrer');
+		close();
 	};
 
 	return (
@@ -95,12 +126,12 @@ const AccountMessengerConnectModal: React.FC<AccountMessengerConnectModalProps> 
 			<div className="mt-8 flex flex-1">
 				<button
 					type="button"
-					disabled={busy}
+					disabled={busy || (!connected && !botUrl)}
 					onClick={() => void onPrimary()}
 					className={`flex flex-1 items-center justify-center text-center rounded-[16px] py-3.5 text-[15px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 ${connected ? 'bg-red-500' : ''}`}
 					style={connected ? undefined : { backgroundColor: config.accent }}
 				>
-					{busy ? t('action.loading') : primaryLabel}
+					{busy || (!connected && !botUrl) ? t('action.loading') : primaryLabel}
 				</button>
 			</div>
 		</div>

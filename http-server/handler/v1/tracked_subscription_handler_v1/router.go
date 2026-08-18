@@ -22,7 +22,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	trackedSubscriptionRouter.Handle("", httpx.ErrorHandler(h.GetSubscriptionsHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("", httpx.ErrorHandler(h.CreateSubscriptionHandler_V1)).Methods(http.MethodPost)
+	trackedSubscriptionRouter.Handle("", middleware.PowDDos()(
+		httpx.ErrorHandler(h.CreateSubscriptionHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/summary", httpx.ErrorHandler(h.GetSubscriptionSummaryHandler_V1)).Methods(http.MethodGet)
@@ -31,7 +33,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	trackedSubscriptionRouter.Handle("/analytics", httpx.ErrorHandler(h.GetSubscriptionAnalyticsHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/export", httpx.ErrorHandler(h.ExportSubscriptionsHandler_V1)).Methods(http.MethodGet)
+	trackedSubscriptionRouter.Handle("/export", middleware.PowDDos()(
+		httpx.ErrorHandler(h.ExportSubscriptionsHandler_V1),
+	)).Methods(http.MethodGet)
 
 	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/categories", httpx.ErrorHandler(h.GetSubscriptionCategoriesHandler_V1)).Methods(http.MethodGet)
@@ -50,34 +54,50 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	)).Methods(http.MethodDelete)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/invites/accept", httpx.ErrorHandler(h.AcceptSubscriptionInviteHandler_V1)).Methods(http.MethodPost)
+	trackedSubscriptionRouter.Handle("/invites/accept", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AcceptSubscriptionInviteHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members", httpx.ErrorHandler(h.GetSubscriptionMembersHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members", httpx.ErrorHandler(h.InviteSubscriptionMemberHandler_V1)).Methods(http.MethodPost)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members", middleware.PowDDos()(
+		httpx.ErrorHandler(h.InviteSubscriptionMemberHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/me", httpx.ErrorHandler(h.LeaveSubscriptionHandler_V1)).Methods(http.MethodDelete)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/me", middleware.PowDDos()(
+		httpx.ErrorHandler(h.LeaveSubscriptionHandler_V1),
+	)).Methods(http.MethodDelete)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/{memberId:[0-9]+}", httpx.ErrorHandler(h.DeleteSubscriptionMemberHandler_V1)).Methods(http.MethodDelete)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/members/{memberId:[0-9]+}", middleware.PowDDos()(
+		httpx.ErrorHandler(h.DeleteSubscriptionMemberHandler_V1),
+	)).Methods(http.MethodDelete)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares", httpx.ErrorHandler(h.ProposeSubscriptionSharesHandler_V1)).Methods(http.MethodPost)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares", middleware.PowDDos()(
+		httpx.ErrorHandler(h.ProposeSubscriptionSharesHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares/{proposalId:[0-9]+}/vote", httpx.ErrorHandler(h.VoteSubscriptionSharesHandler_V1)).Methods(http.MethodPost)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}/shares/{proposalId:[0-9]+}/vote", middleware.PowDDos()(
+		httpx.ErrorHandler(h.VoteSubscriptionSharesHandler_V1),
+	)).Methods(http.MethodPost)
 
 	/* Access: ALL */
 	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", httpx.ErrorHandler(h.GetSubscriptionByIdHandler_V1)).Methods(http.MethodGet)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", httpx.ErrorHandler(h.EditSubscriptionHandler_V1)).Methods(http.MethodPut)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", middleware.PowDDos()(
+		httpx.ErrorHandler(h.EditSubscriptionHandler_V1),
+	)).Methods(http.MethodPut)
 
 	/* Access: ALL */
-	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", httpx.ErrorHandler(h.DeleteSubscriptionHandler_V1)).Methods(http.MethodDelete)
+	trackedSubscriptionRouter.Handle("/{id:[0-9]+}", middleware.PowDDos()(
+		httpx.ErrorHandler(h.DeleteSubscriptionHandler_V1),
+	)).Methods(http.MethodDelete)
 
 	/* Access: ALL */
 	trackedSubscriptionFreeRouter.Handle("/invites", httpx.ErrorHandler(h.GetSubscriptionInviteHandler_V1)).Methods(http.MethodGet)

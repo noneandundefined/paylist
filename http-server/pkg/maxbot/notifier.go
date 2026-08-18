@@ -82,8 +82,16 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 }
 
 func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
-	userID, username, token := linkPayload(update)
-	if userID == 0 || token == "" {
+	userID, username, token, isStart := linkPayload(update)
+	if userID == 0 {
+		return nil
+	}
+
+	if token == "" {
+		if isStart {
+			return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-missing"))
+		}
+
 		return nil
 	}
 
@@ -93,7 +101,7 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	}
 
 	if userUuid == "" {
-		return n.client.SendMessage(userID, locale.NewTranslator("en").T("max.link-expired"))
+		return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-expired"))
 	}
 
 	existingUserUuid, err := n.store.Users.Get_UserUuidByMaxUserID(ctx, userID)
@@ -106,7 +114,7 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	}
 
 	if language == "" {
-		language = "en"
+		language = "ru"
 	}
 
 	if len(language) > 2 {
@@ -120,23 +128,37 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	return n.client.SendMessage(userID, locale.NewTranslator(language).T("max.link-success"))
 }
 
-func linkPayload(update Update) (int64, string, string) {
+func linkPayload(update Update) (int64, string, string, bool) {
 	switch update.UpdateType {
 	case "bot_started":
 		if update.User == nil {
-			return 0, "", ""
+			return 0, "", "", false
 		}
 
-		return update.User.UserID, update.User.Username, strings.TrimSpace(update.Payload)
+		return update.User.UserID, maxDisplayName(update.User), strings.TrimSpace(update.Payload), true
 	case "message_created":
 		if update.Message == nil || update.Message.Sender == nil || update.Message.Body == nil {
-			return 0, "", ""
+			return 0, "", "", false
 		}
 
-		return update.Message.Sender.UserID, update.Message.Sender.Username, ParseStartToken(update.Message.Body.Text)
+		text := strings.TrimSpace(update.Message.Body.Text)
+
+		return update.Message.Sender.UserID, maxDisplayName(update.Message.Sender), ParseStartToken(text), strings.HasPrefix(text, "/start")
 	default:
-		return 0, "", ""
+		return 0, "", "", false
 	}
+}
+
+func maxDisplayName(user *User) string {
+	if user == nil {
+		return ""
+	}
+
+	if username := strings.TrimSpace(user.Username); username != "" {
+		return username
+	}
+
+	return strings.TrimSpace(user.Name)
 }
 
 func formatPrice(price float64, currency string) string {

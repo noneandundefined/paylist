@@ -42,15 +42,11 @@ func startMaxPolling(notifier *maxbot.Notifier, client *maxbot.Client) {
 }
 
 func maxPollingEnabled() bool {
-	if strings.TrimSpace(os.Getenv("MAX_POLLING")) == "false" {
+	if strings.TrimSpace(os.Getenv("MAX_WEBHOOK_SECRET")) != "" {
 		return false
 	}
 
-	if strings.TrimSpace(os.Getenv("MAX_WEBHOOK_SECRET")) != "" {
-		return strings.TrimSpace(os.Getenv("MAX_POLLING")) == "true"
-	}
-
-	return true
+	return strings.TrimSpace(os.Getenv("MAX_POLLING")) != "false"
 }
 
 func maxWebhookURL(secret string) string {

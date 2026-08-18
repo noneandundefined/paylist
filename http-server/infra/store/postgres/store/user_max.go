@@ -23,7 +23,7 @@ func (s *UserStore) Upsert_UserMax(ctx context.Context, userUuid string, userID 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	if _, err := s.db.ExecContext(ctx, query, userUuid, userID, username, language); err != nil {
+	if _, err := s.db.ExecContext(ctx, query, userUuid, userID, nullIfEmpty(username), language); err != nil {
 		logger.Error("Upsert_UserMax req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
 		return err
 	}
