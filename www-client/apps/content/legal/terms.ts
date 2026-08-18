@@ -5,16 +5,16 @@ const ru: LegalDocumentsByLang['ru'] = {
 	updated: 'Последнее обновление: 16 августа 2026 г.',
 	intro: 'Настоящее Пользовательское соглашение (далее — Соглашение) определяет условия использования веб-сайта https://paylist.site/ и сервиса Paylist, предоставляемых Власовым Артёмом Владимировичем (далее — Оператор).',
 	callout:
-		'Создавая аккаунт или используя Сервис, Пользователь принимает настоящее Соглашение. Если вы не согласны с Соглашением, не используйте Сервис. Актуальная версия: https://paylist.site/legal/terms. Контакт: paylist.info@gmail.com.',
+		'Создавая аккаунт или используя Сервис, Пользователь принимает настоящее Соглашение. Если вы не согласны с Соглашением, не используйте Сервис. Актуальная версия: https://paylist.site/legal/terms Контакт: paylist.info@gmail.com.',
 	sections: [
 		{
 			heading: '1. Общие положения',
 			paragraphs: [
 				'1.1. Соглашение является публичной офертой в смысле статей 435 и 437 Гражданского кодекса Российской Федерации. Акцептом Соглашения признаются регистрация аккаунта, авторизация и/или фактическое использование Сервиса.',
 				'1.2. Соглашение применяется ко всем посетителям и Пользователям веб-сайта https://paylist.site/',
-				'1.3. Оператор вправе изменять Соглашение. Новая редакция вступает в силу с момента размещения по адресу https://paylist.site/legal/terms, если иной срок не указан в самой редакции.',
-				'1.4. Обработка персональных данных осуществляется в соответствии с Политикой в отношении обработки персональных данных, размещённой по адресу https://paylist.site/legal/privacy.',
-				'1.5. Условия оплаты тарифа Premium и автоплатежей определяются публичной офертой, размещённой по адресу https://paylist.site/legal/offer.',
+				'1.3. Оператор вправе изменять Соглашение. Новая редакция вступает в силу с момента размещения по адресу https://paylist.site/legal/terms , если иной срок не указан в самой редакции.',
+				'1.4. Обработка персональных данных осуществляется в соответствии с Политикой в отношении обработки персональных данных, размещённой по адресу https://paylist.site/legal/privacy',
+				'1.5. Условия оплаты тарифа Premium и автоплатежей определяются публичной офертой, размещённой по адресу https://paylist.site/legal/offer',
 			],
 		},
 		{
@@ -55,7 +55,7 @@ const ru: LegalDocumentsByLang['ru'] = {
 				'5.2. Стоимость, период списания и состав функций тарифа Premium отображаются на странице тарифов до оплаты.',
 				'5.3. Платежи обрабатываются сторонним платёжным провайдером ЮKassa (ООО НКО «ЮМани»). Оператор не хранит полный номер банковской карты Пользователя.',
 				'5.4. Возвраты осуществляются в соответствии с применимым законодательством Российской Федерации и правилами, указанными при оплате.',
-				'5.5. Автоматические списания за тариф Premium регулируются публичной офертой https://paylist.site/legal/offer.',
+				'5.5. Автоматические списания за тариф Premium регулируются публичной офертой https://paylist.site/legal/offer',
 			],
 		},
 		{
@@ -99,7 +99,7 @@ const ru: LegalDocumentsByLang['ru'] = {
 				'10.2. Споры разрешаются в претензионном порядке. Претензия направляется на адрес электронной почты paylist.info@gmail.com. Срок рассмотрения претензии — 30 календарных дней.',
 				'10.3. Пользователь может получить разъяснения по Соглашению, направив обращение на paylist.info@gmail.com.',
 				'10.4. Соглашение действует бессрочно до замены его новой версией.',
-				'10.5. Актуальная версия Соглашения в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/terms.',
+				'10.5. Актуальная версия Соглашения в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/terms',
 			],
 		},
 	],
@@ -112,7 +112,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 		updated: 'Last updated: August 16, 2026',
 		intro: 'This User Agreement (the “Agreement”) sets the terms of use of the website https://paylist.site/ and the Paylist service provided by Artem Vladimirovich Vlasov (the “Operator”).',
 		callout:
-			'By creating an account or using the Service, the User accepts this Agreement. If you do not agree with the Agreement, do not use the Service. Current version: https://paylist.site/legal/terms. Contact: paylist.info@gmail.com.',
+			'By creating an account or using the Service, the User accepts this Agreement. If you do not agree with the Agreement, do not use the Service. Current version: https://paylist.site/legal/terms Contact: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. General provisions',
@@ -162,7 +162,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'5.2. The price, billing period and features of the Premium plan are shown on the plans page before payment.',
 					'5.3. Payments are processed by the third-party payment provider YooKassa (NCO YooMoney LLC). The Operator does not store the User’s full bank card number.',
 					'5.4. Refunds are made in accordance with the applicable laws of the Russian Federation and the rules stated at checkout.',
-					'5.5. Automatic charges for the Premium plan are governed by the public offer at https://paylist.site/legal/offer.',
+					'5.5. Automatic charges for the Premium plan are governed by the public offer at https://paylist.site/legal/offer',
 				],
 			},
 			{
@@ -206,7 +206,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'10.2. Disputes are resolved under a claims procedure. A claim is sent to paylist.info@gmail.com. The period for considering a claim is 30 calendar days.',
 					'10.3. The User may obtain explanations of the Agreement by sending a request to paylist.info@gmail.com.',
 					'10.4. The Agreement remains in force indefinitely until replaced by a new version.',
-					'10.5. The current version of the Agreement is freely available on the internet at https://paylist.site/legal/terms.',
+					'10.5. The current version of the Agreement is freely available on the internet at https://paylist.site/legal/terms',
 				],
 			},
 		],
@@ -216,7 +216,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 		updated: 'Zuletzt aktualisiert: 16. August 2026',
 		intro: 'Diese Nutzervereinbarung (im Folgenden die „Vereinbarung“) bestimmt die Bedingungen für die Nutzung der Website https://paylist.site/ und des Dienstes Paylist, bereitgestellt von Artem Wladimirowitsch Wlassow (im Folgenden der „Betreiber“).',
 		callout:
-			'Mit der Erstellung eines Kontos oder der Nutzung des Dienstes nimmt der Nutzer diese Vereinbarung an. Wenn Sie mit der Vereinbarung nicht einverstanden sind, nutzen Sie den Dienst nicht. Aktuelle Fassung: https://paylist.site/legal/terms. Kontakt: paylist.info@gmail.com.',
+			'Mit der Erstellung eines Kontos oder der Nutzung des Dienstes nimmt der Nutzer diese Vereinbarung an. Wenn Sie mit der Vereinbarung nicht einverstanden sind, nutzen Sie den Dienst nicht. Aktuelle Fassung: https://paylist.site/legal/terms Kontakt: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Allgemeine Bestimmungen',
@@ -225,7 +225,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'1.2. Die Vereinbarung gilt für alle Besucher und Nutzer der Website https://paylist.site/',
 					'1.3. Der Betreiber darf die Vereinbarung ändern. Eine neue Fassung tritt mit der Veröffentlichung unter https://paylist.site/legal/terms in Kraft, sofern in der Fassung kein anderer Termin angegeben ist.',
 					'1.4. Die Verarbeitung personenbezogener Daten erfolgt gemäß der Richtlinie zur Verarbeitung personenbezogener Daten unter https://paylist.site/legal/privacy',
-					'1.5. Die Bedingungen der Zahlung für den Tarif Premium und der Autozahlungen werden durch das öffentliche Angebot unter https://paylist.site/legal/offer bestimmt.',
+					'1.5. Die Bedingungen der Zahlung für den Tarif Premium und der Autozahlungen werden durch das öffentliche Angebot unter https://paylist.site/legal/offer bestimmt',
 				],
 			},
 			{
@@ -310,7 +310,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'10.2. Streitigkeiten werden im Reklamationsverfahren beigelegt. Die Reklamation ist an paylist.info@gmail.com zu richten. Die Prüfungsfrist beträgt 30 Kalendertage.',
 					'10.3. Der Nutzer kann Erläuterungen zur Vereinbarung erhalten, indem er eine Anfrage an paylist.info@gmail.com sendet.',
 					'10.4. Die Vereinbarung gilt unbefristet, bis sie durch eine neue Fassung ersetzt wird.',
-					'10.5. Die aktuelle Fassung der Vereinbarung ist im Internet frei zugänglich unter https://paylist.site/legal/terms.',
+					'10.5. Die aktuelle Fassung der Vereinbarung ist im Internet frei zugänglich unter https://paylist.site/legal/terms',
 				],
 			},
 		],
@@ -320,7 +320,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 		updated: 'Última actualización: 16 de agosto de 2026',
 		intro: 'El presente Acuerdo de usuario (en adelante, el «Acuerdo») determina las condiciones de uso del sitio web https://paylist.site/ y del servicio Paylist, prestados por Artem Vladimirovich Vlasov (en adelante, el «Operador»).',
 		callout:
-			'Al crear una cuenta o usar el Servicio, el Usuario acepta el presente Acuerdo. Si no está de acuerdo con el Acuerdo, no utilice el Servicio. Versión vigente: https://paylist.site/legal/terms. Contacto: paylist.info@gmail.com.',
+			'Al crear una cuenta o usar el Servicio, el Usuario acepta el presente Acuerdo. Si no está de acuerdo con el Acuerdo, no utilice el Servicio. Versión vigente: https://paylist.site/legal/terms Contacto: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Disposiciones generales',

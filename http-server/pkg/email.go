@@ -42,7 +42,7 @@ func SendEmail(to, title, content string, tr locale.Translator) error {
 
 func BuildEmailTemplate(html string, tr locale.Translator) string {
 	clientURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
-	logoURL := clientURL + "/images/paylist-logo.png"
+	logoURL := clientURL + "/local/images/favicon-512.jpg"
 
 	return fmt.Sprintf(`
 		<!DOCTYPE html>

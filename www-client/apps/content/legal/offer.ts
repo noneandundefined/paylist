@@ -6,13 +6,13 @@ export const offerDocuments: LegalDocumentsByLang = {
 		updated: 'Последнее обновление: 16 августа 2026 г.',
 		intro: 'Настоящая публичная оферта (далее — Оферта) определяет условия автоматических периодических списаний («Автоплатежи») за тариф Paylist Premium, предоставляемый Власовым Артёмом Владимировичем (далее — Оператор) через веб-сайт https://paylist.site/',
 		callout:
-			'Отмечая согласие на странице тарифов и совершая первый платёж, Пользователь принимает Оферту. Автоплатежи можно отключить в разделе «Аккаунт» — кнопка «Отмена подписки». Актуальная версия: https://paylist.site/legal/offer. Контакт: paylist.info@gmail.com.',
+			'Отмечая согласие на странице тарифов и совершая первый платёж, Пользователь принимает Оферту. Автоплатежи можно отключить в разделе «Аккаунт» — кнопка «Отмена подписки». Актуальная версия: https://paylist.site/legal/offer Контакт: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Общие положения',
 				paragraphs: [
 					'1.1. Оферта является публичной офертой в смысле статей 435 и 437 Гражданского кодекса Российской Федерации и адресована неопределённому кругу лиц.',
-					'1.2. Оферта применяется совместно с Пользовательским соглашением https://paylist.site/legal/terms и Политикой в отношении обработки персональных данных https://paylist.site/legal/privacy.',
+					'1.2. Оферта применяется совместно с Пользовательским соглашением https://paylist.site/legal/terms и Политикой в отношении обработки персональных данных https://paylist.site/legal/privacy',
 					'1.3. Оператор вправе изменять Оферту. Новая редакция вступает в силу с момента размещения по адресу https://paylist.site/legal/offer, если иной срок не указан в самой редакции.',
 					'1.4. Платежи обрабатывает ЮKassa (ООО НКО «ЮМани»). Оператор не хранит полный номер банковской карты Пользователя.',
 				],
@@ -103,7 +103,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 					'11.2. Споры разрешаются в претензионном порядке. Претензия направляется на paylist.info@gmail.com. Срок рассмотрения — 30 календарных дней.',
 					'11.3. Пользователь может получить разъяснения по Оферте, направив обращение на paylist.info@gmail.com.',
 					'11.4. Оферта действует бессрочно до замены её новой версией либо до отключения Автоплатежей Пользователем.',
-					'11.5. Актуальная версия Оферты в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/offer.',
+					'11.5. Актуальная версия Оферты в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/offer',
 				],
 			},
 		],
@@ -113,14 +113,14 @@ export const offerDocuments: LegalDocumentsByLang = {
 		updated: 'Last updated: August 16, 2026',
 		intro: 'This public offer (the “Offer”) sets the terms of automatic recurring charges (“Autopayments”) for the Paylist Premium plan provided by Artem Vladimirovich Vlasov (the “Operator”) via the website https://paylist.site/',
 		callout:
-			'By checking consent on the plans page and making the first payment, the User accepts the Offer. Autopayments can be disabled in Account — the Cancel subscription button. Current version: https://paylist.site/legal/offer. Contact: paylist.info@gmail.com.',
+			'By checking consent on the plans page and making the first payment, the User accepts the Offer. Autopayments can be disabled in Account — the Cancel subscription button. Current version: https://paylist.site/legal/offer Contact: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. General provisions',
 				paragraphs: [
 					'1.1. The Offer is a public offer within the meaning of Articles 435 and 437 of the Civil Code of the Russian Federation and is addressed to an indefinite number of persons.',
-					'1.2. The Offer applies together with the User Agreement https://paylist.site/legal/terms and the Personal Data Processing Policy https://paylist.site/legal/privacy.',
-					'1.3. The Operator may amend the Offer. A new version takes effect when posted at https://paylist.site/legal/offer, unless another effective date is stated in that version.',
+					'1.2. The Offer applies together with the User Agreement https://paylist.site/legal/terms and the Personal Data Processing Policy https://paylist.site/legal/privacy',
+					'1.3. The Operator may amend the Offer. A new version takes effect when posted at https://paylist.site/legal/offer , unless another effective date is stated in that version.',
 					'1.4. Payments are processed by YooKassa (NCO YooMoney LLC). The Operator does not store the User’s full bank card number.',
 				],
 			},
@@ -210,7 +210,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 					'11.2. Disputes are resolved under a claims procedure. A claim is sent to paylist.info@gmail.com. The review period is 30 calendar days.',
 					'11.3. The User may obtain explanations of the Offer by sending a request to paylist.info@gmail.com.',
 					'11.4. The Offer remains in force indefinitely until replaced by a new version or until the User disables Autopayments.',
-					'11.5. The current version of the Offer is freely available on the internet at https://paylist.site/legal/offer.',
+					'11.5. The current version of the Offer is freely available on the internet at https://paylist.site/legal/offer',
 				],
 			},
 		],
@@ -220,13 +220,13 @@ export const offerDocuments: LegalDocumentsByLang = {
 		updated: 'Zuletzt aktualisiert: 16. August 2026',
 		intro: 'Dieses öffentliche Angebot (im Folgenden das „Angebot“) bestimmt die Bedingungen automatischer wiederkehrender Abbuchungen („Autozahlungen“) für den Tarif Paylist Premium, bereitgestellt von Artem Wladimirowitsch Wlassow (im Folgenden der „Betreiber“) über die Website https://paylist.site/',
 		callout:
-			'Mit dem Setzen des Häkchens auf der Tarifseite und der ersten Zahlung nimmt der Nutzer das Angebot an. Autozahlungen können im Bereich „Konto“ deaktiviert werden — Schaltfläche „Abo kündigen“. Aktuelle Fassung: https://paylist.site/legal/offer. Kontakt: paylist.info@gmail.com.',
+			'Mit dem Setzen des Häkchens auf der Tarifseite und der ersten Zahlung nimmt der Nutzer das Angebot an. Autozahlungen können im Bereich „Konto“ deaktiviert werden — Schaltfläche „Abo kündigen“. Aktuelle Fassung: https://paylist.site/legal/offer Kontakt: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Allgemeine Bestimmungen',
 				paragraphs: [
 					'1.1. Das Angebot ist ein öffentliches Angebot im Sinne der Artikel 435 und 437 des Zivilgesetzbuchs der Russischen Föderation und richtet sich an einen unbestimmten Personenkreis.',
-					'1.2. Das Angebot gilt gemeinsam mit der Nutzervereinbarung https://paylist.site/legal/terms und der Richtlinie zur Verarbeitung personenbezogener Daten https://paylist.site/legal/privacy.',
+					'1.2. Das Angebot gilt gemeinsam mit der Nutzervereinbarung https://paylist.site/legal/terms und der Richtlinie zur Verarbeitung personenbezogener Daten https://paylist.site/legal/privacy',
 					'1.3. Der Betreiber darf das Angebot ändern. Eine neue Fassung tritt mit der Veröffentlichung unter https://paylist.site/legal/offer in Kraft, sofern in der Fassung kein anderer Termin angegeben ist.',
 					'1.4. Zahlungen verarbeitet YooKassa (ООО НКО «ЮМани»). Der Betreiber speichert nicht die vollständige Bankkartennummer des Nutzers.',
 				],
@@ -317,7 +317,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 					'11.2. Streitigkeiten werden im Reklamationsverfahren beigelegt. Die Reklamation ist an paylist.info@gmail.com zu richten. Die Prüfungsfrist beträgt 30 Kalendertage.',
 					'11.3. Der Nutzer kann Erläuterungen zum Angebot erhalten, indem er eine Anfrage an paylist.info@gmail.com sendet.',
 					'11.4. Das Angebot gilt unbefristet, bis es durch eine neue Fassung ersetzt oder bis Autozahlungen vom Nutzer deaktiviert werden.',
-					'11.5. Die aktuelle Fassung des Angebots ist im Internet frei zugänglich unter https://paylist.site/legal/offer.',
+					'11.5. Die aktuelle Fassung des Angebots ist im Internet frei zugänglich unter https://paylist.site/legal/offer',
 				],
 			},
 		],
@@ -327,14 +327,14 @@ export const offerDocuments: LegalDocumentsByLang = {
 		updated: 'Última actualización: 16 de agosto de 2026',
 		intro: 'La presente oferta pública (en adelante, la «Oferta») determina las condiciones de los cobros periódicos automáticos («Pagos automáticos») del plan Paylist Premium, prestado por Artem Vladimirovich Vlasov (en adelante, el «Operador») a través del sitio web https://paylist.site/',
 		callout:
-			'Al marcar el consentimiento en la página de planes y realizar el primer pago, el Usuario acepta la Oferta. Los pagos automáticos pueden desactivarse en «Cuenta» — botón «Cancelar suscripción». Versión vigente: https://paylist.site/legal/offer. Contacto: paylist.info@gmail.com.',
+			'Al marcar el consentimiento en la página de planes y realizar el primer pago, el Usuario acepta la Oferta. Los pagos automáticos pueden desactivarse en «Cuenta» — botón «Cancelar suscripción». Versión vigente: https://paylist.site/legal/offer Contacto: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Disposiciones generales',
 				paragraphs: [
 					'1.1. La Oferta es una oferta pública en el sentido de los artículos 435 y 437 del Código Civil de la Federación de Rusia y se dirige a un círculo indeterminado de personas.',
-					'1.2. La Oferta se aplica juntamente con el Acuerdo de usuario https://paylist.site/legal/terms y la Política de tratamiento de datos personales https://paylist.site/legal/privacy.',
-					'1.3. El Operador puede modificar la Oferta. La nueva redacción entra en vigor desde el momento de su publicación en https://paylist.site/legal/offer, salvo que en la propia redacción se indique otro plazo.',
+					'1.2. La Oferta se aplica juntamente con el Acuerdo de usuario https://paylist.site/legal/terms y la Política de tratamiento de datos personales https://paylist.site/legal/privacy',
+					'1.3. El Operador puede modificar la Oferta. La nueva redacción entra en vigor desde el momento de su publicación en https://paylist.site/legal/offer , salvo que en la propia redacción se indique otro plazo.',
 					'1.4. Los pagos los procesa YooKassa (ООО НКО «ЮМани»). El Operador no almacena el número completo de la tarjeta bancaria del Usuario.',
 				],
 			},
@@ -424,7 +424,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 					'11.2. Las controversias se resuelven en vía de reclamación. La reclamación se envía a paylist.info@gmail.com. El plazo de examen es de 30 días naturales.',
 					'11.3. El Usuario puede obtener aclaraciones sobre la Oferta enviando una consulta a paylist.info@gmail.com.',
 					'11.4. La Oferta rige de forma indefinida hasta que se sustituya por una nueva versión o hasta que el Usuario desactive los Pagos automáticos.',
-					'11.5. La versión vigente de la Oferta está disponible libremente en internet en https://paylist.site/legal/offer.',
+					'11.5. La versión vigente de la Oferta está disponible libremente en internet en https://paylist.site/legal/offer',
 				],
 			},
 		],
