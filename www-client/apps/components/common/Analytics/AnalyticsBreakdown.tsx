@@ -26,7 +26,7 @@ const AnalyticsBreakdown: React.FC<AnalyticsBreakdownProps> = ({ items, currency
 				{items.map((item) => (
 					<li key={item.subscription.id}>
 						<Link to={buildRoute(ROUTES.SUBSCRIPTION_DETAIL, { id: item.subscription.id })} className="flex items-center gap-3 no-underline hover:no-underline">
-							<SubscriptionIcon name={item.subscription.name} size="sm" />
+							<SubscriptionIcon name={item.subscription.name} categories={item.subscription.categories} size="sm" />
 							<div className="min-w-0 flex-1">
 								<div className="flex items-center justify-between gap-2">
 									<p className="truncate text-[14px] font-medium gu-text-primary">{formatSubscriptionName(item.subscription.name, item.subscription.tariff, t)}</p>

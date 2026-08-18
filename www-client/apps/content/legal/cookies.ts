@@ -27,7 +27,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 				heading: '3. Яндекс Метрика',
 				paragraphs: [
 					'3.1. Поставщик аналитики — ООО «ЯНДЕКС» (Яндекс Метрика). Сервис может передавать Метрике технические данные: IP-адрес в сокращённом виде, данные браузера, адрес посещённой страницы и действия на сайте.',
-					'3.2. Обработка данных Яндексом осуществляется в соответствии с политикой конфиденциальности Яндекса: https://yandex.ru/legal/confidential/.',
+					'3.2. Обработка данных Яндексом осуществляется в соответствии с политикой конфиденциальности Яндекса: https://yandex.ru/legal/confidential/',
 					'3.3. Запись сессий (вебвизор) в Paylist отключена.',
 				],
 			},
@@ -78,7 +78,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 				heading: '3. Yandex Metrica',
 				paragraphs: [
 					'3.1. The analytics provider is YANDEX LLC (Yandex Metrica). The Service may send Metrica technical data: a truncated IP address, browser data, the visited page URL, and on-site actions.',
-					'3.2. Yandex processes data in accordance with its privacy policy: https://yandex.com/legal/confidential/.',
+					'3.2. Yandex processes data in accordance with its privacy policy: https://yandex.com/legal/confidential/',
 					'3.3. Session replay (Webvisor) is disabled in Paylist.',
 				],
 			},
@@ -129,7 +129,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 				heading: '3. Yandex Metrica',
 				paragraphs: [
 					'3.1. Anbieter der Analyse ist YANDEX LLC (Yandex Metrica). Der Dienst kann Metrica technische Daten übermitteln: eine gekürzte IP-Adresse, Browserdaten, die URL der besuchten Seite und Aktionen auf der Website.',
-					'3.2. Yandex verarbeitet Daten gemäß seiner Datenschutzrichtlinie: https://yandex.com/legal/confidential/.',
+					'3.2. Yandex verarbeitet Daten gemäß seiner Datenschutzrichtlinie: https://yandex.com/legal/confidential/',
 					'3.3. Sitzungsaufzeichnung (Webvisor) ist in Paylist deaktiviert.',
 				],
 			},
@@ -182,7 +182,7 @@ export const cookiesDocuments: LegalDocumentsByLang = {
 				heading: '3. Yandex Metrica',
 				paragraphs: [
 					'3.1. El proveedor de analítica es YANDEX LLC (Yandex Metrica). El Servicio puede enviar a Metrica datos técnicos: una dirección IP truncada, datos del navegador, la URL de la página visitada y acciones en el sitio.',
-					'3.2. Yandex trata los datos de conformidad con su política de privacidad: https://yandex.com/legal/confidential/.',
+					'3.2. Yandex trata los datos de conformidad con su política de privacidad: https://yandex.com/legal/confidential/',
 					'3.3. La grabación de sesiones (Webvisor) está desactivada en Paylist.',
 				],
 			},

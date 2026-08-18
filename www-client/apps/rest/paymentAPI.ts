@@ -32,7 +32,14 @@ export interface PaymentCheckoutResponse {
 	confirmation_url: string;
 }
 
+export interface PaymentConfirmResponse {
+	paid: boolean;
+	status: string;
+}
+
 export const basicPaymentCheckout = async (payload: PaymentCheckoutRequest): Promise<PaymentCheckoutResponse> => apiPost(`${apiPath}/checkout`, payload);
+
+export const basicPaymentConfirm = async (paymentId: string): Promise<PaymentConfirmResponse> => apiGet(`${apiPath}/confirm`, { params: { payment_id: paymentId }, skipErrorHandler: true });
 
 export const basicPaymentBilling = async (): Promise<PaymentBillingResponse> => apiGet(`${apiPath}/billing`);
 

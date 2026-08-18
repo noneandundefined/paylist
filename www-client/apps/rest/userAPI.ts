@@ -1,6 +1,7 @@
 import { notify } from '@/components/Notification/notify';
 import { apiDelete, apiGet, apiPatch, apiPost } from '@/rest/apiClient';
 import type { UserMeUpdateRequest } from '@/interface/user/userMeUpdateRequest.interface';
+import { compressImageForUpload } from '@/utils/imageUploadUtils';
 
 const apiPath = '/users';
 
@@ -80,7 +81,7 @@ export const basicUserProfileUpdate = async (payload: UserMeUpdateRequest): Prom
 
 export const basicUserAvatarUpdate = async (file: File): Promise<void> => {
 	const payload = new FormData();
-	payload.append('avatar', file);
+	payload.append('avatar', await compressImageForUpload(file));
 
 	const message = await apiPost<string>(`${apiPath}/me/avatar`, payload);
 	notify.success(message);

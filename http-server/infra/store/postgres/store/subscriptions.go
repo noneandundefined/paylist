@@ -118,3 +118,32 @@ func (s *SubscriptionStore) Get_Subscriptions(ctx context.Context) ([]models.Sub
 
 	return subs, nil
 }
+
+func (s *SubscriptionStore) Update_PlanAmount(ctx context.Context, planName string, amount float64, currency string) error {
+	query := `
+		UPDATE subscriptions
+		SET amount = $2, currency = $3
+		WHERE LOWER(plan_name) = LOWER($1)
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	result, err := s.db.ExecContext(ctx, query, planName, amount, currency)
+	if err != nil {
+		logger.Error("Update_PlanAmount req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		logger.Error("Update_PlanAmount req={%s}: Failed to read rows: %s", ctx.Value("XREQID").(string), err.Error())
+		return err
+	}
+
+	if affected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}

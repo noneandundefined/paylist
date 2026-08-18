@@ -6,7 +6,7 @@ import { formatSubscriptionDate, formatSubscriptionPrice, formatSubscriptionName
 import type { TrackedSubscriptionResponse } from '@/rest/trackedSubscriptionAPI';
 
 interface SubscriptionSummaryCardProps {
-	subscription: Pick<TrackedSubscriptionResponse, 'name' | 'tariff' | 'price' | 'currency' | 'period' | 'created_at' | 'share_price' | 'share_percent'>;
+	subscription: Pick<TrackedSubscriptionResponse, 'name' | 'tariff' | 'price' | 'currency' | 'period' | 'created_at' | 'share_price' | 'share_percent' | 'categories'>;
 	periodLabel: string;
 	overdue?: boolean;
 	trailing?: ReactNode;
@@ -18,7 +18,7 @@ const SubscriptionSummaryCard: React.FC<SubscriptionSummaryCardProps> = ({ subsc
 
 	return (
 		<div className={`gu-glass-card flex items-center gap-3 p-4 ${overdue ? 'gu-overdue-surface' : ''}`}>
-			<SubscriptionIcon name={subscription.name} />
+			<SubscriptionIcon name={subscription.name} categories={subscription.categories} />
 
 			<div className="min-w-0 flex-1">
 				<div className="flex items-center gap-2">

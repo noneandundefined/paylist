@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /$
+Allow: /start
 Allow: /sign-in
 Allow: /sign-up
 Allow: /legal/
@@ -8,7 +9,7 @@ Disallow: /account
 Disallow: /analytics
 Disallow: /plans
 Disallow: /subscriptions
-Disallow: /pay
+Disallow: /paid
 Disallow: /authorize
 Disallow: /paylist-confirm-email
 Disallow: /paylist-sent-confirm-email

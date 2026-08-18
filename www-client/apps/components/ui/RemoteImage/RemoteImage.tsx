@@ -31,6 +31,8 @@ const RemoteImage: React.FC<RemoteImageProps> = ({ className = '', src, spinnerS
 				ref={imageRef}
 				alt={alt}
 				src={src}
+				draggable={false}
+				onDragStart={(event) => event.preventDefault()}
 				className={className}
 				onLoad={(event) => {
 					setLoaded(true);

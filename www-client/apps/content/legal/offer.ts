@@ -4,7 +4,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 	ru: {
 		title: 'Публичная оферта на автоплатежи',
 		updated: 'Последнее обновление: 16 августа 2026 г.',
-		intro: 'Настоящая публичная оферта (далее — Оферта) определяет условия автоматических периодических списаний («Автоплатежи») за тариф Paylist Premium, предоставляемый Власовым Артёмом Владимировичем (далее — Оператор) через веб-сайт https://paylist.site/.',
+		intro: 'Настоящая публичная оферта (далее — Оферта) определяет условия автоматических периодических списаний («Автоплатежи») за тариф Paylist Premium, предоставляемый Власовым Артёмом Владимировичем (далее — Оператор) через веб-сайт https://paylist.site/',
 		callout:
 			'Отмечая согласие на странице тарифов и совершая первый платёж, Пользователь принимает Оферту. Автоплатежи можно отключить в разделе «Аккаунт» — кнопка «Отмена подписки». Актуальная версия: https://paylist.site/legal/offer. Контакт: paylist.info@gmail.com.',
 		sections: [
@@ -22,7 +22,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Оператор — Власов Артём Владимирович, лицо, предоставляющее сервис Paylist.',
 					'2.2. Пользователь — физическое лицо, принявшее Оферту.',
-					'2.3. Веб-сайт — сайт Оператора в сети интернет по адресу https://paylist.site/.',
+					'2.3. Веб-сайт — сайт Оператора в сети интернет по адресу https://paylist.site/',
 					'2.4. Сервис (Paylist) — веб-приложение Оператора для учёта подписок, аналитики расходов и напоминаний об оплате.',
 					'2.5. Тариф Premium — возмездный тариф Сервиса, стоимость, период и состав функций которого отображаются на странице тарифов до оплаты.',
 					'2.6. Автоплатежи — автоматические периодические списания денежных средств за тариф Premium с сохранённого способа оплаты Пользователя без дополнительного подтверждения каждого списания.',
@@ -111,7 +111,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 	en: {
 		title: 'Public Autopayment Offer',
 		updated: 'Last updated: August 16, 2026',
-		intro: 'This public offer (the “Offer”) sets the terms of automatic recurring charges (“Autopayments”) for the Paylist Premium plan provided by Artem Vladimirovich Vlasov (the “Operator”) via the website https://paylist.site/.',
+		intro: 'This public offer (the “Offer”) sets the terms of automatic recurring charges (“Autopayments”) for the Paylist Premium plan provided by Artem Vladimirovich Vlasov (the “Operator”) via the website https://paylist.site/',
 		callout:
 			'By checking consent on the plans page and making the first payment, the User accepts the Offer. Autopayments can be disabled in Account — the Cancel subscription button. Current version: https://paylist.site/legal/offer. Contact: paylist.info@gmail.com.',
 		sections: [
@@ -129,7 +129,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Operator — Artem Vladimirovich Vlasov, the person providing the Paylist service.',
 					'2.2. User — a natural person who has accepted the Offer.',
-					'2.3. Website — the Operator’s website on the internet at https://paylist.site/.',
+					'2.3. Website — the Operator’s website on the internet at https://paylist.site/',
 					'2.4. Service (Paylist) — the Operator’s web application for tracking subscriptions, spending analytics and payment reminders.',
 					'2.5. Premium plan — the paid plan of the Service whose price, period and features are shown on the plans page before payment.',
 					'2.6. Autopayments — automatic recurring charges for the Premium plan from the User’s saved payment method without additional confirmation of each charge.',
@@ -218,7 +218,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 	de: {
 		title: 'Öffentliches Angebot für Autozahlungen',
 		updated: 'Zuletzt aktualisiert: 16. August 2026',
-		intro: 'Dieses öffentliche Angebot (im Folgenden das „Angebot“) bestimmt die Bedingungen automatischer wiederkehrender Abbuchungen („Autozahlungen“) für den Tarif Paylist Premium, bereitgestellt von Artem Wladimirowitsch Wlassow (im Folgenden der „Betreiber“) über die Website https://paylist.site/.',
+		intro: 'Dieses öffentliche Angebot (im Folgenden das „Angebot“) bestimmt die Bedingungen automatischer wiederkehrender Abbuchungen („Autozahlungen“) für den Tarif Paylist Premium, bereitgestellt von Artem Wladimirowitsch Wlassow (im Folgenden der „Betreiber“) über die Website https://paylist.site/',
 		callout:
 			'Mit dem Setzen des Häkchens auf der Tarifseite und der ersten Zahlung nimmt der Nutzer das Angebot an. Autozahlungen können im Bereich „Konto“ deaktiviert werden — Schaltfläche „Abo kündigen“. Aktuelle Fassung: https://paylist.site/legal/offer. Kontakt: paylist.info@gmail.com.',
 		sections: [
@@ -236,7 +236,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Betreiber — Artem Wladimirowitsch Wlassow, die Person, die den Dienst Paylist bereitstellt.',
 					'2.2. Nutzer — eine natürliche Person, die das Angebot angenommen hat.',
-					'2.3. Website — die Website des Betreibers im Internet unter https://paylist.site/.',
+					'2.3. Website — die Website des Betreibers im Internet unter https://paylist.site/',
 					'2.4. Dienst (Paylist) — die Webanwendung des Betreibers zur Erfassung von Abonnements, zur Ausgabenanalyse und für Zahlungserinnerungen.',
 					'2.5. Tarif Premium — der entgeltliche Tarif des Dienstes, dessen Preis, Zeitraum und Funktionsumfang vor der Zahlung auf der Tarifseite angezeigt werden.',
 					'2.6. Autozahlungen — automatische wiederkehrende Abbuchungen für den Tarif Premium von der gespeicherten Zahlungsmethode des Nutzers ohne zusätzliche Bestätigung jeder Abbuchung.',
@@ -325,7 +325,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 	es: {
 		title: 'Oferta pública de pagos automáticos',
 		updated: 'Última actualización: 16 de agosto de 2026',
-		intro: 'La presente oferta pública (en adelante, la «Oferta») determina las condiciones de los cobros periódicos automáticos («Pagos automáticos») del plan Paylist Premium, prestado por Artem Vladimirovich Vlasov (en adelante, el «Operador») a través del sitio web https://paylist.site/.',
+		intro: 'La presente oferta pública (en adelante, la «Oferta») determina las condiciones de los cobros periódicos automáticos («Pagos automáticos») del plan Paylist Premium, prestado por Artem Vladimirovich Vlasov (en adelante, el «Operador») a través del sitio web https://paylist.site/',
 		callout:
 			'Al marcar el consentimiento en la página de planes y realizar el primer pago, el Usuario acepta la Oferta. Los pagos automáticos pueden desactivarse en «Cuenta» — botón «Cancelar suscripción». Versión vigente: https://paylist.site/legal/offer. Contacto: paylist.info@gmail.com.',
 		sections: [
@@ -343,7 +343,7 @@ export const offerDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Operador — Artem Vladimirovich Vlasov, la persona que presta el servicio Paylist.',
 					'2.2. Usuario — la persona física que ha aceptado la Oferta.',
-					'2.3. Sitio web — el sitio del Operador en internet en la dirección https://paylist.site/.',
+					'2.3. Sitio web — el sitio del Operador en internet en la dirección https://paylist.site/',
 					'2.4. Servicio (Paylist) — la aplicación web del Operador para el registro de suscripciones, la analítica de gastos y los recordatorios de pago.',
 					'2.5. Plan Premium — el plan oneroso del Servicio cuyo precio, periodo y conjunto de funciones se muestran en la página de planes antes del pago.',
 					'2.6. Pagos automáticos — cobros periódicos automáticos del plan Premium desde el método de pago guardado del Usuario sin confirmación adicional de cada cobro.',

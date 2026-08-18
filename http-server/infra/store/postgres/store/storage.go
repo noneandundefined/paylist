@@ -93,6 +93,7 @@ type Storage struct {
 
 		Get_PaymentHistoryListByUserUuid(ctx context.Context, userUuid string, limit int) ([]models.PaymentHistory, error)
 		Get_PaymentHistoryByYookassaPaymentID(ctx context.Context, paymentID string) (*models.PaymentHistory, error)
+		Get_PaymentHistoryByUserAndRef(ctx context.Context, userUuid, ref string) (*models.PaymentHistory, error)
 		Get_UserSubscriptionBillingByUserUuid(ctx context.Context, userUuid string) (*models.UserSubscriptionBilling, error)
 		Get_SubscriptionsDueForAutoRenew(ctx context.Context) ([]models.UserSubscriptionRenewalDue, error)
 		Get_PaymentActiveCount(ctx context.Context, userUuid string) (uint32, error)
@@ -108,6 +109,7 @@ type Storage struct {
 	Subscriptions interface { //nolint
 		Get_Subscriptions(ctx context.Context) ([]models.Subscription, error)
 		Get_SubscriptionByPlanName(ctx context.Context, planName string) (*models.Subscription, error)
+		Update_PlanAmount(ctx context.Context, planName string, amount float64, currency string) error
 	}
 }
 

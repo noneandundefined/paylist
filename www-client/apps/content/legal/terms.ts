@@ -11,7 +11,7 @@ const ru: LegalDocumentsByLang['ru'] = {
 			heading: '1. Общие положения',
 			paragraphs: [
 				'1.1. Соглашение является публичной офертой в смысле статей 435 и 437 Гражданского кодекса Российской Федерации. Акцептом Соглашения признаются регистрация аккаунта, авторизация и/или фактическое использование Сервиса.',
-				'1.2. Соглашение применяется ко всем посетителям и Пользователям веб-сайта https://paylist.site/.',
+				'1.2. Соглашение применяется ко всем посетителям и Пользователям веб-сайта https://paylist.site/',
 				'1.3. Оператор вправе изменять Соглашение. Новая редакция вступает в силу с момента размещения по адресу https://paylist.site/legal/terms, если иной срок не указан в самой редакции.',
 				'1.4. Обработка персональных данных осуществляется в соответствии с Политикой в отношении обработки персональных данных, размещённой по адресу https://paylist.site/legal/privacy.',
 				'1.5. Условия оплаты тарифа Premium и автоплатежей определяются публичной офертой, размещённой по адресу https://paylist.site/legal/offer.',
@@ -20,7 +20,7 @@ const ru: LegalDocumentsByLang['ru'] = {
 		{
 			heading: '2. Основные понятия, используемые в Соглашении',
 			paragraphs: [
-				'2.1. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу https://paylist.site/.',
+				'2.1. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу https://paylist.site/',
 				'2.2. Сервис (Paylist) — веб-приложение Оператора, предназначенное для учёта подписок Пользователя, аналитики расходов и направления необязательных напоминаний об оплате.',
 				'2.3. Оператор — Власов Артём Владимирович, лицо, предоставляющее Сервис.',
 				'2.4. Пользователь — любое физическое лицо, посетившее Веб-сайт и/или прошедшее регистрацию в Сервисе.',
@@ -118,16 +118,16 @@ export const termsDocuments: LegalDocumentsByLang = {
 				heading: '1. General provisions',
 				paragraphs: [
 					'1.1. The Agreement is a public offer within the meaning of Articles 435 and 437 of the Civil Code of the Russian Federation. Acceptance of the Agreement is registration of an account, authorization and/or actual use of the Service.',
-					'1.2. The Agreement applies to all visitors and Users of the website https://paylist.site/.',
-					'1.3. The Operator may amend the Agreement. A new version takes effect when posted at https://paylist.site/legal/terms, unless another effective date is stated in that version.',
-					'1.4. Personal data is processed in accordance with the Personal Data Processing Policy posted at https://paylist.site/legal/privacy.',
-					'1.5. The terms of payment for the Premium plan and autopayments are set by the public offer posted at https://paylist.site/legal/offer.',
+					'1.2. The Agreement applies to all visitors and Users of the website https://paylist.site/',
+					'1.3. The Operator may amend the Agreement. A new version takes effect when posted at https://paylist.site/legal/terms , unless another effective date is stated in that version.',
+					'1.4. Personal data is processed in accordance with the Personal Data Processing Policy posted at https://paylist.site/legal/privacy',
+					'1.5. The terms of payment for the Premium plan and autopayments are set by the public offer posted at https://paylist.site/legal/offer',
 				],
 			},
 			{
 				heading: '2. Key terms used in the Agreement',
 				paragraphs: [
-					'2.1. Website — the set of graphic and informational materials, as well as computer programs and databases, that make them available on the internet at https://paylist.site/.',
+					'2.1. Website — the set of graphic and informational materials, as well as computer programs and databases, that make them available on the internet at https://paylist.site/',
 					'2.2. Service (Paylist) — the Operator’s web application intended for tracking the User’s subscriptions, spending analytics and sending optional payment reminders.',
 					'2.3. Operator — Artem Vladimirovich Vlasov, the person providing the Service.',
 					'2.4. User — any natural person who has visited the Website and/or registered in the Service.',
@@ -222,9 +222,9 @@ export const termsDocuments: LegalDocumentsByLang = {
 				heading: '1. Allgemeine Bestimmungen',
 				paragraphs: [
 					'1.1. Die Vereinbarung ist ein öffentliches Angebot im Sinne der Artikel 435 und 437 des Zivilgesetzbuchs der Russischen Föderation. Als Annahme der Vereinbarung gelten die Registrierung eines Kontos, die Anmeldung und/oder die tatsächliche Nutzung des Dienstes.',
-					'1.2. Die Vereinbarung gilt für alle Besucher und Nutzer der Website https://paylist.site/.',
+					'1.2. Die Vereinbarung gilt für alle Besucher und Nutzer der Website https://paylist.site/',
 					'1.3. Der Betreiber darf die Vereinbarung ändern. Eine neue Fassung tritt mit der Veröffentlichung unter https://paylist.site/legal/terms in Kraft, sofern in der Fassung kein anderer Termin angegeben ist.',
-					'1.4. Die Verarbeitung personenbezogener Daten erfolgt gemäß der Richtlinie zur Verarbeitung personenbezogener Daten unter https://paylist.site/legal/privacy.',
+					'1.4. Die Verarbeitung personenbezogener Daten erfolgt gemäß der Richtlinie zur Verarbeitung personenbezogener Daten unter https://paylist.site/legal/privacy',
 					'1.5. Die Bedingungen der Zahlung für den Tarif Premium und der Autozahlungen werden durch das öffentliche Angebot unter https://paylist.site/legal/offer bestimmt.',
 				],
 			},
@@ -326,16 +326,16 @@ export const termsDocuments: LegalDocumentsByLang = {
 				heading: '1. Disposiciones generales',
 				paragraphs: [
 					'1.1. El Acuerdo es una oferta pública en el sentido de los artículos 435 y 437 del Código Civil de la Federación de Rusia. Se reconoce como aceptación del Acuerdo el registro de una cuenta, la autorización y/o el uso efectivo del Servicio.',
-					'1.2. El Acuerdo se aplica a todos los visitantes y Usuarios del sitio web https://paylist.site/.',
-					'1.3. El Operador puede modificar el Acuerdo. La nueva redacción entra en vigor desde el momento de su publicación en https://paylist.site/legal/terms, salvo que en la propia redacción se indique otro plazo.',
-					'1.4. El tratamiento de datos personales se realiza de conformidad con la Política de tratamiento de datos personales publicada en https://paylist.site/legal/privacy.',
-					'1.5. Las condiciones de pago del plan Premium y de los pagos automáticos se determinan por la oferta pública publicada en https://paylist.site/legal/offer.',
+					'1.2. El Acuerdo se aplica a todos los visitantes y Usuarios del sitio web https://paylist.site/',
+					'1.3. El Operador puede modificar el Acuerdo. La nueva redacción entra en vigor desde el momento de su publicación en https://paylist.site/legal/terms , salvo que en la propia redacción se indique otro plazo.',
+					'1.4. El tratamiento de datos personales se realiza de conformidad con la Política de tratamiento de datos personales publicada en https://paylist.site/legal/privacy',
+					'1.5. Las condiciones de pago del plan Premium y de los pagos automáticos se determinan por la oferta pública publicada en https://paylist.site/legal/offer',
 				],
 			},
 			{
 				heading: '2. Conceptos principales utilizados en el Acuerdo',
 				paragraphs: [
-					'2.1. Sitio web — el conjunto de materiales gráficos e informativos, así como de programas informáticos y bases de datos, que garantizan su disponibilidad en internet en la dirección https://paylist.site/.',
+					'2.1. Sitio web — el conjunto de materiales gráficos e informativos, así como de programas informáticos y bases de datos, que garantizan su disponibilidad en internet en la dirección https://paylist.site/',
 					'2.2. Servicio (Paylist) — la aplicación web del Operador destinada al registro de las suscripciones del Usuario, a la analítica de gastos y al envío de recordatorios opcionales de pago.',
 					'2.3. Operador — Artem Vladimirovich Vlasov, la persona que presta el Servicio.',
 					'2.4. Usuario — cualquier persona física que haya visitado el Sitio web y/o se haya registrado en el Servicio.',
@@ -370,7 +370,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'5.2. El precio, el periodo de cobro y el conjunto de funciones del plan Premium se muestran en la página de planes antes del pago.',
 					'5.3. Los pagos los procesa el proveedor de pagos externo YooKassa (ООО НКО «ЮМани»). El Operador no almacena el número completo de la tarjeta bancaria del Usuario.',
 					'5.4. Los reembolsos se realizan de conformidad con la legislación aplicable de la Federación de Rusia y las normas indicadas al pagar.',
-					'5.5. Los cobros automáticos del plan Premium se rigen por la oferta pública https://paylist.site/legal/offer.',
+					'5.5. Los cobros automáticos del plan Premium se rigen por la oferta pública https://paylist.site/legal/offer',
 				],
 			},
 			{
@@ -414,7 +414,7 @@ export const termsDocuments: LegalDocumentsByLang = {
 					'10.2. Las controversias se resuelven en vía de reclamación. La reclamación se envía a paylist.info@gmail.com. El plazo de examen de la reclamación es de 30 días naturales.',
 					'10.3. El Usuario puede obtener aclaraciones sobre el Acuerdo enviando una consulta a paylist.info@gmail.com.',
 					'10.4. El Acuerdo rige de forma indefinida hasta que se sustituya por una nueva versión.',
-					'10.5. La versión vigente del Acuerdo está disponible libremente en internet en https://paylist.site/legal/terms.',
+					'10.5. La versión vigente del Acuerdo está disponible libremente en internet en https://paylist.site/legal/terms',
 				],
 			},
 		],

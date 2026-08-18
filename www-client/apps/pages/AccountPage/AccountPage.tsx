@@ -139,7 +139,7 @@ const AccountPage = () => {
 		try {
 			await basicUserAccountDelete();
 			clearAuthSession();
-			window.location.replace(ROUTES.SIGNIN);
+			window.location.replace(ROUTES.START);
 		} finally {
 			setDeletingAccount(false);
 		}
@@ -195,11 +195,12 @@ const AccountPage = () => {
 				<AccountSection title={t('account.subscriptions-section')}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<PremiumGatedSection title={t('account.notifications-settings')} isPremium={isPremium && canUseNotification}>
-							<div className="space-y-3">
+							<div>
 								<AccountTelegramNotifications
 									canUseNotification={canUseNotification}
 									connected={Boolean(userSettings?.telegram_connected)}
 									username={userSettings?.telegram_username}
+									showDivider
 									onChanged={() => {
 										void reloadSettings();
 									}}

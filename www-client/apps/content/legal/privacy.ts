@@ -5,13 +5,13 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		title: 'Политика в отношении обработки персональных данных',
 		updated: 'Последнее обновление: 16 августа 2026 г.',
 		intro: 'Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» (далее — Закон о персональных данных) и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных, предпринимаемые Власовым Артёмом Владимировичем (далее — Оператор).',
-		callout: 'Политика применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/. Актуальная версия: https://paylist.site/legal/privacy. Контакт: paylist.info@gmail.com.',
+		callout: 'Политика применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/ Актуальная версия: https://paylist.site/legal/privacy. Контакт: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Общие положения',
 				paragraphs: [
 					'1.1. Оператор ставит своей важнейшей целью и условием осуществления своей деятельности соблюдение прав и свобод человека и гражданина при обработке его персональных данных, в том числе защиты прав на неприкосновенность частной жизни, личную и семейную тайну.',
-					'1.2. Настоящая политика Оператора в отношении обработки персональных данных (далее — Политика) применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/.',
+					'1.2. Настоящая политика Оператора в отношении обработки персональных данных (далее — Политика) применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://paylist.site/',
 				],
 			},
 			{
@@ -19,14 +19,14 @@ export const privacyDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Автоматизированная обработка персональных данных — обработка персональных данных с помощью средств вычислительной техники.',
 					'2.2. Блокирование персональных данных — временное прекращение обработки персональных данных (за исключением случаев, если обработка необходима для уточнения персональных данных).',
-					'2.3. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу https://paylist.site/.',
+					'2.3. Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу https://paylist.site/',
 					'2.4. Информационная система персональных данных — совокупность содержащихся в базах данных персональных данных и обеспечивающих их обработку информационных технологий и технических средств.',
 					'2.5. Обезличивание персональных данных — действия, в результате которых невозможно определить без использования дополнительной информации принадлежность персональных данных конкретному Пользователю или иному субъекту персональных данных.',
 					'2.6. Обработка персональных данных — любое действие (операция) или совокупность действий (операций), совершаемых с использованием средств автоматизации или без использования таких средств с персональными данными, включая сбор, запись, систематизацию, накопление, хранение, уточнение (обновление, изменение), извлечение, использование, передачу (распространение, предоставление, доступ), обезличивание, блокирование, удаление, уничтожение персональных данных.',
 					'2.7. Оператор — государственный орган, муниципальный орган, юридическое или физическое лицо, самостоятельно или совместно с другими лицами организующие и/или осуществляющие обработку персональных данных, а также определяющие цели обработки персональных данных, состав персональных данных, подлежащих обработке, действия (операции), совершаемые с персональными данными.',
-					'2.8. Персональные данные — любая информация, относящаяся прямо или косвенно к определенному или определяемому Пользователю веб-сайта https://paylist.site/.',
+					'2.8. Персональные данные — любая информация, относящаяся прямо или косвенно к определенному или определяемому Пользователю веб-сайта https://paylist.site/',
 					'2.9. Персональные данные, разрешенные субъектом персональных данных для распространения, — персональные данные, доступ неограниченного круга лиц к которым предоставлен субъектом персональных данных путем дачи согласия на обработку персональных данных, разрешенных субъектом персональных данных для распространения в порядке, предусмотренном Законом о персональных данных (далее — персональные данные, разрешенные для распространения).',
-					'2.10. Пользователь — любой посетитель веб-сайта https://paylist.site/.',
+					'2.10. Пользователь — любой посетитель веб-сайта https://paylist.site/',
 					'2.11. Предоставление персональных данных — действия, направленные на раскрытие персональных данных определенному лицу или определенному кругу лиц.',
 					'2.12. Распространение персональных данных — любые действия, направленные на раскрытие персональных данных неопределенному кругу лиц (передача персональных данных) или на ознакомление с персональными данными неограниченного круга лиц, в том числе обнародование персональных данных в средствах массовой информации, размещение в информационно-телекоммуникационных сетях или предоставление доступа к персональным данным каким-либо иным способом.',
 					'2.13. Трансграничная передача персональных данных — передача персональных данных на территорию иностранного государства органу власти иностранного государства, иностранному физическому или иностранному юридическому лицу.',
@@ -122,7 +122,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'12.1. Пользователь может получить любые разъяснения по интересующим вопросам, касающимся обработки его персональных данных, обратившись к Оператору с помощью электронной почты paylist.info@gmail.com.',
 					'12.2. В данном документе будут отражены любые изменения политики обработки персональных данных Оператором. Политика действует бессрочно до замены ее новой версией.',
-					'12.3. Актуальная версия Политики в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/privacy.',
+					'12.3. Актуальная версия Политики в свободном доступе расположена в сети Интернет по адресу https://paylist.site/legal/privacy',
 				],
 			},
 		],
@@ -131,13 +131,13 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		title: 'Personal Data Processing Policy',
 		updated: 'Last updated: August 16, 2026',
 		intro: 'This personal data processing policy is prepared in accordance with the requirements of Federal Law No. 152-FZ of 27 July 2006 “On Personal Data” (hereinafter the Personal Data Law) and determines the procedure for processing personal data and the measures to ensure the security of personal data taken by Artem Vladimirovich Vlasov (hereinafter the Operator).',
-		callout: 'The Policy applies to all information the Operator may obtain about visitors of the website https://paylist.site/. Current version: https://paylist.site/legal/privacy. Contact: paylist.info@gmail.com.',
+		callout: 'The Policy applies to all information the Operator may obtain about visitors of the website https://paylist.site/ Current version: https://paylist.site/legal/privacy. Contact: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. General provisions',
 				paragraphs: [
 					'1.1. The Operator treats as an essential aim and condition of its activity the observance of human and civil rights and freedoms when processing personal data, including protection of the rights to privacy and to personal and family secrets.',
-					'1.2. This Operator policy on personal data processing (hereinafter the Policy) applies to all information the Operator may obtain about visitors of the website https://paylist.site/.',
+					'1.2. This Operator policy on personal data processing (hereinafter the Policy) applies to all information the Operator may obtain about visitors of the website https://paylist.site/',
 				],
 			},
 			{
@@ -145,14 +145,14 @@ export const privacyDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Automated processing of personal data — processing of personal data by means of computer equipment.',
 					'2.2. Blocking of personal data — temporary cessation of processing of personal data (except where processing is necessary to clarify personal data).',
-					'2.3. Website — the set of graphic and informational materials, as well as computer programs and databases, that make them available on the internet at https://paylist.site/.',
+					'2.3. Website — the set of graphic and informational materials, as well as computer programs and databases, that make them available on the internet at https://paylist.site/',
 					'2.4. Personal data information system — the set of personal data contained in databases and the information technologies and technical means that ensure their processing.',
 					'2.5. Depersonalization of personal data — actions as a result of which it is impossible, without additional information, to determine that personal data belong to a particular User or other personal data subject.',
 					'2.6. Processing of personal data — any action (operation) or set of actions (operations) performed with or without automation means with personal data, including collection, recording, systematization, accumulation, storage, clarification (updating, alteration), retrieval, use, transfer (dissemination, provision, access), depersonalization, blocking, deletion and destruction of personal data.',
 					'2.7. Operator — a state body, municipal body, legal entity or natural person that independently or jointly with others organizes and/or carries out processing of personal data and also determines the purposes of processing, the composition of personal data to be processed and the actions (operations) performed with personal data.',
-					'2.8. Personal data — any information relating directly or indirectly to an identified or identifiable User of the website https://paylist.site/.',
+					'2.8. Personal data — any information relating directly or indirectly to an identified or identifiable User of the website https://paylist.site/',
 					'2.9. Personal data authorized by the personal data subject for dissemination — personal data to which an unlimited circle of persons is granted access by the personal data subject by giving consent to processing of personal data authorized for dissemination in the manner provided by the Personal Data Law (hereinafter personal data authorized for dissemination).',
-					'2.10. User — any visitor of the website https://paylist.site/.',
+					'2.10. User — any visitor of the website https://paylist.site/',
 					'2.11. Provision of personal data — actions aimed at disclosing personal data to a particular person or a particular circle of persons.',
 					'2.12. Dissemination of personal data — any actions aimed at disclosing personal data to an indefinite circle of persons (transfer of personal data) or at making personal data known to an unlimited circle of persons, including publication of personal data in the mass media, posting in information and telecommunications networks or otherwise granting access to personal data.',
 					'2.13. Cross-border transfer of personal data — transfer of personal data to the territory of a foreign state to a foreign public authority, a foreign natural person or a foreign legal entity.',
@@ -279,7 +279,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 					'2.7. Betreiber — ein staatliches Organ, ein kommunales Organ, eine juristische oder natürliche Person, die selbstständig oder gemeinsam mit anderen die Verarbeitung personenbezogener Daten organisiert und/oder durchführt sowie die Zwecke der Verarbeitung, den Umfang der zu verarbeitenden personenbezogenen Daten und die mit personenbezogenen Daten vorgenommenen Handlungen (Operationen) bestimmt.',
 					'2.8. Personenbezogene Daten — alle Informationen, die sich direkt oder indirekt auf einen bestimmten oder bestimmbaren Nutzer der Website https://paylist.site/ beziehen.',
 					'2.9. Personenbezogene Daten, deren Verbreitung der Betroffene zugelassen hat — personenbezogene Daten, zu denen ein unbegrenzter Personenkreis Zugang erhalten hat, indem der Betroffene die Einwilligung in die Verarbeitung personenbezogener Daten erteilt hat, die zur Verbreitung zugelassen sind, in der im Gesetz über personenbezogene Daten vorgesehenen Weise (im Folgenden zur Verbreitung zugelassene personenbezogene Daten).',
-					'2.10. Nutzer — jeder Besucher der Website https://paylist.site/.',
+					'2.10. Nutzer — jeder Besucher der Website https://paylist.site/',
 					'2.11. Bereitstellung personenbezogener Daten — Handlungen, die auf die Offenlegung personenbezogener Daten gegenüber einer bestimmten Person oder einem bestimmten Personenkreis gerichtet sind.',
 					'2.12. Verbreitung personenbezogener Daten — alle Handlungen, die auf die Offenlegung personenbezogener Daten gegenüber einem unbestimmten Personenkreis (Übermittlung personenbezogener Daten) oder auf die Kenntnisnahme personenbezogener Daten durch einen unbegrenzten Personenkreis gerichtet sind, einschließlich der Veröffentlichung personenbezogener Daten in den Massenmedien, der Einstellung in Informations- und Telekommunikationsnetzen oder der Gewährung des Zugangs zu personenbezogenen Daten auf andere Weise.',
 					'2.13. Grenzüberschreitende Übermittlung personenbezogener Daten — Übermittlung personenbezogener Daten in das Hoheitsgebiet eines ausländischen Staates an eine Behörde eines ausländischen Staates, eine ausländische natürliche oder eine ausländische juristische Person.',
@@ -385,13 +385,13 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		updated: 'Última actualización: 16 de agosto de 2026',
 		intro: 'La presente política de tratamiento de datos personales se elabora de conformidad con los requisitos de la Ley Federal n.º 152-FZ de 27.07.2006 «Sobre datos personales» (en adelante, la Ley de datos personales) y determina el procedimiento de tratamiento de datos personales y las medidas para garantizar la seguridad de los datos personales adoptadas por Artem Vladimirovich Vlasov (en adelante, el Operador).',
 		callout:
-			'La Política se aplica a toda la información que el Operador pueda obtener sobre los visitantes del sitio web https://paylist.site/. Versión vigente: https://paylist.site/legal/privacy. Contacto: paylist.info@gmail.com.',
+			'La Política se aplica a toda la información que el Operador pueda obtener sobre los visitantes del sitio web https://paylist.site/ Versión vigente: https://paylist.site/legal/privacy. Contacto: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Disposiciones generales',
 				paragraphs: [
 					'1.1. El Operador considera como objetivo esencial y condición de su actividad el respeto de los derechos y libertades de la persona y del ciudadano al tratar sus datos personales, incluida la protección de los derechos a la intimidad y al secreto personal y familiar.',
-					'1.2. La presente política del Operador relativa al tratamiento de datos personales (en adelante, la Política) se aplica a toda la información que el Operador pueda obtener sobre los visitantes del sitio web https://paylist.site/.',
+					'1.2. La presente política del Operador relativa al tratamiento de datos personales (en adelante, la Política) se aplica a toda la información que el Operador pueda obtener sobre los visitantes del sitio web https://paylist.site/',
 				],
 			},
 			{
@@ -399,14 +399,14 @@ export const privacyDocuments: LegalDocumentsByLang = {
 				paragraphs: [
 					'2.1. Tratamiento automatizado de datos personales — el tratamiento de datos personales mediante medios informáticos.',
 					'2.2. Bloqueo de datos personales — la cesación temporal del tratamiento de datos personales (salvo cuando el tratamiento sea necesario para precisar los datos personales).',
-					'2.3. Sitio web — el conjunto de materiales gráficos e informativos, así como de programas informáticos y bases de datos, que garantizan su disponibilidad en internet en la dirección https://paylist.site/.',
+					'2.3. Sitio web — el conjunto de materiales gráficos e informativos, así como de programas informáticos y bases de datos, que garantizan su disponibilidad en internet en la dirección https://paylist.site/',
 					'2.4. Sistema de información de datos personales — el conjunto de datos personales contenidos en bases de datos y de las tecnologías de la información y medios técnicos que garantizan su tratamiento.',
 					'2.5. Disociación de datos personales — las acciones a resultas de las cuales no es posible determinar, sin información adicional, la pertenencia de los datos personales a un Usuario concreto u otro interesado.',
 					'2.6. Tratamiento de datos personales — cualquier acción (operación) o conjunto de acciones (operaciones) realizadas con o sin medios de automatización con datos personales, incluida la recogida, el registro, la sistematización, la acumulación, el almacenamiento, la precisión (actualización, modificación), la extracción, el uso, la transmisión (difusión, comunicación, acceso), la disociación, el bloqueo, la supresión y la destrucción de datos personales.',
 					'2.7. Operador — un órgano estatal, un órgano municipal, una persona jurídica o física que, de forma independiente o conjunta con otras, organiza y/o realiza el tratamiento de datos personales, y también determina los fines del tratamiento de datos personales, el conjunto de datos personales objeto de tratamiento y las acciones (operaciones) realizadas con los datos personales.',
-					'2.8. Datos personales — cualquier información que se refiera directa o indirectamente a un Usuario determinado o determinable del sitio web https://paylist.site/.',
+					'2.8. Datos personales — cualquier información que se refiera directa o indirectamente a un Usuario determinado o determinable del sitio web https://paylist.site/',
 					'2.9. Datos personales cuya difusión ha autorizado el interesado — los datos personales a los que un círculo ilimitado de personas tiene acceso porque el interesado ha prestado consentimiento al tratamiento de datos personales autorizados para su difusión en la forma prevista por la Ley de datos personales (en adelante, datos personales autorizados para su difusión).',
-					'2.10. Usuario — cualquier visitante del sitio web https://paylist.site/.',
+					'2.10. Usuario — cualquier visitante del sitio web https://paylist.site/',
 					'2.11. Comunicación de datos personales — las acciones dirigidas a revelar datos personales a una persona determinada o a un círculo determinado de personas.',
 					'2.12. Difusión de datos personales — cualesquiera acciones dirigidas a revelar datos personales a un círculo indeterminado de personas (transmisión de datos personales) o a dar a conocer los datos personales a un círculo ilimitado de personas, incluida la publicación de datos personales en los medios de comunicación, su colocación en redes de información y telecomunicaciones o la concesión de acceso a los datos personales de cualquier otro modo.',
 					'2.13. Transferencia transfronteriza de datos personales — la transferencia de datos personales al territorio de un Estado extranjero a un órgano de autoridad de un Estado extranjero, a una persona física extranjera o a una persona jurídica extranjera.',

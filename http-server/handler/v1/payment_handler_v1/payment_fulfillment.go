@@ -12,6 +12,31 @@ import (
 	"paylist.server/pkg/yookassa"
 )
 
+func applyYookassaPayment(ctx context.Context, storage store.Storage, payment *yookassa.Payment) (string, error) {
+	status := mapYookassaStatus(payment.Status, payment.Paid)
+
+	existing, err := storage.Payments.Get_PaymentHistoryByYookassaPaymentID(ctx, payment.ID)
+	if err != nil {
+		return status, err
+	}
+
+	if existing != nil && existing.Status == models.PaymentStatusSucceeded && status != models.PaymentStatusSucceeded {
+		return existing.Status, nil
+	}
+
+	if err := storage.Payments.Update_PaymentHistoryStatus(ctx, payment.ID, status, paidAtFromPayment(payment)); err != nil {
+		return status, err
+	}
+
+	if status == models.PaymentStatusSucceeded {
+		if err := fulfillSucceededPayment(ctx, storage, payment); err != nil {
+			return status, err
+		}
+	}
+
+	return status, nil
+}
+
 func fulfillSucceededPayment(ctx context.Context, storage store.Storage, payment *yookassa.Payment) error {
 	userUUID := strings.TrimSpace(payment.Metadata["user_uuid"])
 	planName := strings.TrimSpace(payment.Metadata["plan_name"])
@@ -30,14 +55,6 @@ func fulfillSucceededPayment(ctx context.Context, storage store.Storage, payment
 
 	if err := storage.Payments.Update_ActivateUserSubscriptionPlan(ctx, userUUID, plan.PlanName, plan.DurationDays); err != nil {
 		return err
-	}
-
-	if payment.PaymentMethod.ID != "" && payment.PaymentMethod.Saved {
-		title := paymentMethodDisplayTitle(payment.PaymentMethod)
-
-		if err := storage.Payments.Update_YookassaPaymentMethod(ctx, userUUID, payment.PaymentMethod.ID, payment.PaymentMethod.Type, title); err != nil {
-			return err
-		}
 	}
 
 	return nil

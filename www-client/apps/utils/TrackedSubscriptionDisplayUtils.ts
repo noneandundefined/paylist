@@ -2,10 +2,7 @@ import type { TFunction } from 'i18next';
 
 import type { SubscriptionTariff } from '@/constants/subscriptionTariffs';
 import { getDaysUntilRenewal, isSubscriptionOverdue } from './SubscriptionRenewalUtils';
-import { getInitialsFromName } from '@/utils/stringUtils';
 import { formatCurrency } from '@/utils/currencyUtils';
-
-export const getSubscriptionIconLabel = (name: string): string => getInitialsFromName(name);
 
 export const formatSubscriptionName = (name: string, tariff?: string | null, t?: TFunction): string => {
 	if (!tariff || tariff === 'none') {

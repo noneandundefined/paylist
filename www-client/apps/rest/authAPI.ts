@@ -53,6 +53,6 @@ export const basicAuthSignOut = async (): Promise<void> => {
 		notify.success(message);
 	} finally {
 		clearAuthSession();
-		window.location.replace(ROUTES.SIGNIN);
+		window.location.replace(ROUTES.START);
 	}
 };

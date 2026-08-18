@@ -21,6 +21,8 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 		httpx.ErrorHandler(h.PostCheckoutHandler_V1),
 	)).Methods(http.MethodPost)
 
+	paymentRouter.Handle("/confirm", httpx.ErrorHandler(h.GetPaymentConfirmHandler_V1)).Methods(http.MethodGet)
+
 	paymentRouter.Handle("/billing", httpx.ErrorHandler(h.GetBillingHandler_V1)).Methods(http.MethodGet)
 
 	paymentRouter.Handle("/history", middleware.PowDDos()(

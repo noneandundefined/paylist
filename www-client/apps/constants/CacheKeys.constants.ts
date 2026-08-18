@@ -11,5 +11,7 @@ export const CACHEKEYs = {
 	DISPLAY_CURRENCY: `${indexKey}:settings:display-currency`,
 	THEME: `${indexKey}:settings:theme`,
 	COOKIE_CONSENT: `${indexKey}:settings:cookie-consent`,
+	PAID_PAGE_GRANT: `${indexKey}:paid:grant`,
+	PAID_PAGE_GOAL: `${indexKey}:paid:goal`,
 	SUBSCRIPTION_INVITE_TOKEN: `${indexKey}:subscription:invite-token`,
 };

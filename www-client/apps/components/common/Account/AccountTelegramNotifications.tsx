@@ -1,64 +1,62 @@
-import BellOutline from '@/components/@icons/bell-outline';
-import ChevronRight from '@/components/@icons/chevron-right';
-import GUIButton from '@/components/ui/Button/GUIButton';
-import { basicUserTelegramDisconnect, basicUserTelegramLink } from '@/rest/userAPI';
 import { useTranslation } from 'react-i18next';
+import { useModalContext } from '@/context/useModalContext';
+import { basicUserTelegramDisconnect, basicUserTelegramLink } from '@/rest/userAPI';
+import AccountMessengerRow from '@/components/common/Account/AccountMessengerRow';
+import { openMessengerConnectModal } from '@/components/common/Account/AccountMessengerConnectModal';
+
+const TELEGRAM_ICON = '/local/images/social-network/tg-ico.png';
 
 interface AccountTelegramNotificationsProps {
 	canUseNotification: boolean;
 	connected: boolean;
 	username?: string | null;
+	showDivider?: boolean;
 	onChanged: () => void | Promise<void>;
 }
 
-const AccountTelegramNotifications: React.FC<AccountTelegramNotificationsProps> = ({ canUseNotification, connected, username, onChanged }) => {
+const AccountTelegramNotifications: React.FC<AccountTelegramNotificationsProps> = ({ canUseNotification, connected, username, showDivider = false, onChanged }) => {
 	const { t } = useTranslation();
+	const { open } = useModalContext();
 
-	const onConnect = async () => {
+	const status = connected ? 'connected' : 'disconnected';
+	const statusLabel = connected ? (username ? `@${username}` : t('account.messenger-connected-status')) : t('account.messenger-not-connected');
+
+	const onClick = () => {
 		if (!canUseNotification) {
 			return;
 		}
 
-		const response = await basicUserTelegramLink();
-		window.open(response.bot_url, '_blank', 'noopener,noreferrer');
+		openMessengerConnectModal(open, {
+			config: {
+				name: t('account.telegram-name'),
+				iconSrc: TELEGRAM_ICON,
+				host: 'telegram.org',
+				accent: '#2AABEE',
+			},
+			connected,
+			username,
+			onConnect: async () => {
+				const response = await basicUserTelegramLink();
+				window.open(response.bot_url, '_blank', 'noopener,noreferrer');
+			},
+			onDisconnect: async () => {
+				await basicUserTelegramDisconnect();
+				await onChanged();
+			},
+		});
 	};
-
-	const onDisconnect = async () => {
-		await basicUserTelegramDisconnect();
-		await onChanged();
-	};
-
-	if (connected) {
-		return (
-			<div className="flex items-center justify-between gap-3 py-3">
-				<div className="flex min-w-0 items-center gap-3">
-					<span className="inline-flex h-9 w-9 shrink-0 items-center justify-center gu-text-primary">
-						<BellOutline fill="currentColor" size={21} />
-					</span>
-					<div className="min-w-0">
-						<p className="text-[15px] font-medium gu-text-primary">{t('account.telegram-connected')}</p>
-						<p className="truncate text-[13px] gu-text-muted">{username ? `@${username}` : t('account.telegram-connected-desc')}</p>
-					</div>
-				</div>
-				<GUIButton type="button" onClick={onDisconnect} className="shrink-0 text-[13px]">
-					{t('account.telegram-disconnect')}
-				</GUIButton>
-			</div>
-		);
-	}
 
 	return (
-		<div className="space-y-2">
-			{/* <p className="text-[13px] gu-text-muted">{t('account.telegram-connect-desc')}</p> */}
-			<div className="flex items-center justify-between">
-				<p className="text-[15px] gu-text-primary">{t('account.telegram-title')}</p>
-
-				<button type="button" className="flex cursor-pointer items-center gap-2 rounded-md bg-[#d7ff00] px-3 py-1" onClick={onConnect}>
-					<p className="text-black">{t('account.connect')}</p>
-					<ChevronRight fill="#000" size={19} />
-				</button>
-			</div>
-		</div>
+		<AccountMessengerRow
+			name={t('account.telegram-name')}
+			iconSrc={TELEGRAM_ICON}
+			iconAlt={t('account.telegram-name')}
+			status={status}
+			statusLabel={statusLabel}
+			showDivider={showDivider}
+			disabled={!canUseNotification}
+			onClick={onClick}
+		/>
 	);
 };
 

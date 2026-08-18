@@ -22,7 +22,7 @@ const TrackedSubscriptionCard: React.FC<TrackedSubscriptionCardProps> = ({ subsc
 			to={buildRoute(ROUTES.SUBSCRIPTION_DETAIL, { id: subscription.id })}
 			className={`gu-glass-card flex min-w-0 w-full items-center gap-3 overflow-hidden px-4 py-5 text-left no-underline transition hover:no-underline ${overdue ? 'gu-overdue-surface' : 'hover:bg-[var(--surface-muted)] gu-text-primary'}`}
 		>
-			<SubscriptionIcon name={subscription.name} />
+			<SubscriptionIcon name={subscription.name} categories={subscription.categories} />
 
 			<div className="min-w-0 flex-1 overflow-hidden">
 				<div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">

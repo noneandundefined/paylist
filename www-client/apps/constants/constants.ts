@@ -2,6 +2,7 @@ export const PLACEHOLDER_ROUTE_ID = ':id';
 
 export const ROUTES = {
 	HOME: '/',
+	START: '/start',
 	NOT_FOUND: '*',
 	SIGNIN: '/sign-in',
 	SIGNUP: '/sign-up',
@@ -11,9 +12,8 @@ export const ROUTES = {
 	ACCOUNT: '/account',
 	ANALYTICS: '/analytics',
 	PLANS: '/plans',
+	PAID: '/paid',
 	LEGAL: '/legal/:type',
-
-	PAY_STATUS: '/pay',
 
 	AUTH_AUTHORIZE_DEVICE: '/authorize',
 	AUTH_CONFIRM_EMAIL: '/paylist-confirm-email',

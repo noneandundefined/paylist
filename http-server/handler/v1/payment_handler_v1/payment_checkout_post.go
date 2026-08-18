@@ -1,6 +1,7 @@
 package payment_handler_v1
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -89,16 +90,17 @@ func (h *Handler) PostCheckoutHandler_V1(w http.ResponseWriter, r *http.Request)
 		},
 		Description: yookassaPremiumDescription(false, plan.DurationDays),
 		Metadata: map[string]string{
-			"user_uuid": authToken.User.UserUUID,
-			"plan_name": plan.PlanName,
+			"user_uuid":       authToken.User.UserUUID,
+			"plan_name":       plan.PlanName,
+			"idempotence_key": idempotenceKey,
 		},
-		SavePaymentMethod: true,
 	})
 	if err != nil {
 		logger.Error("PostCheckoutHandler_V1: %s", err.Error())
 		return httperr.InternalServerError(tr.TErr("error.payment-create-failed"))
 	}
 
+	historyMeta, _ := json.Marshal(map[string]string{"idempotence_key": idempotenceKey})
 	description := ykPayment.Description
 	_, err = h.Store.Payments.Create_PaymentHistory(ctx, &models.PaymentHistory{
 		UserUUID:          authToken.User.UserUUID,
@@ -109,6 +111,7 @@ func (h *Handler) PostCheckoutHandler_V1(w http.ResponseWriter, r *http.Request)
 		Status:            mapYookassaStatus(ykPayment.Status, ykPayment.Paid),
 		PaymentKind:       models.PaymentKindInitial,
 		Description:       &description,
+		Metadata:          historyMeta,
 	})
 	if err != nil {
 		return httperr.Db(ctx, err)

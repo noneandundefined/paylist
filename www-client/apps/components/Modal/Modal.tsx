@@ -8,11 +8,12 @@ interface ModalProps {
 	title: string;
 	argv?: number[] | string[];
 	width?: string;
+	panelClassName?: string;
 	children: React.ReactNode;
 }
 
 /* Global component for create modal components */
-const Modal: React.FC<ModalProps> = ({ title, argv, width = '600px', children }) => {
+const Modal: React.FC<ModalProps> = ({ title, argv, width = '600px', panelClassName = '', children }) => {
 	const { t } = useTranslation();
 
 	const { close } = useModalContext();
@@ -50,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({ title, argv, width = '600px', children })
 			<div
 				ref={modalRef}
 				style={{ width }}
-				className={`gu-modal-surface relative max-w-[96%] rounded-lg p-3 shadow-lg sm:max-w-[90%] sm:p-4 transition-transform duration-100 ${animationClasses}`}
+				className={`gu-modal-surface relative max-w-[96%] rounded-lg p-3 shadow-lg sm:max-w-[90%] sm:p-4 transition-transform duration-100 ${animationClasses} ${panelClassName}`}
 				role="dialog"
 				aria-modal="true"
 				aria-label={title || undefined}

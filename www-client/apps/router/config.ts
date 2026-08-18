@@ -2,12 +2,14 @@ import { ROUTES } from '@/constants/constants';
 import { lazy, LazyExoticComponent } from 'react';
 
 const HomePage = lazy(() => import('@/pages/HomePage/index'));
+const StartPage = lazy(() => import('@/pages/StartPage/index'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/index'));
 
 const SubscriptionDetailPage = lazy(() => import('@/pages/TrackedSubscriptionPage/index'));
 const CreateSubscriptionPage = lazy(() => import('@/pages/CreateSubscriptionPage/index'));
 
 const PlansPage = lazy(() => import('@/pages/PlansPage/index'));
+const PaidPage = lazy(() => import('@/pages/PaidPage/index'));
 const AccountPage = lazy(() => import('@/pages/AccountPage/index'));
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
 const LegalPage = lazy(() => import('@/pages/LegalPage/index'));
@@ -34,6 +36,13 @@ const config: CustomRouteConfig[] = [
 		loginRequired: true,
 		component: HomePage,
 		title: 'label.page-home',
+	},
+	{
+		path: ROUTES.START,
+		loginRequired: false,
+		redirectIfLogged: false,
+		component: StartPage,
+		title: 'label.page-start',
 	},
 	{
 		path: ROUTES.SUBSCRIPTION_CREATE,
@@ -63,6 +72,12 @@ const config: CustomRouteConfig[] = [
 		loginRequired: true,
 		component: PlansPage,
 		title: 'label.page-plans',
+	},
+	{
+		path: ROUTES.PAID,
+		loginRequired: true,
+		component: PaidPage,
+		title: 'label.page-paid',
 	},
 	{
 		path: ROUTES.NOT_FOUND,

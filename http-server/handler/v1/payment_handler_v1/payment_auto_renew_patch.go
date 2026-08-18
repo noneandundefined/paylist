@@ -26,7 +26,7 @@ func (h *Handler) PatchAutoRenewHandler_V1(w http.ResponseWriter, r *http.Reques
 	}
 
 	state := models.BillingStateFromSubscription(billing)
-	if payload.Enabled && !state.HasPaymentMethod {
+	if payload.Enabled {
 		return httperr.BadRequest(tr.TErr("error.payment-method-required"))
 	}
 

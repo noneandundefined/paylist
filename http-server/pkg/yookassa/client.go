@@ -33,7 +33,7 @@ func NewFromEnv() (*Client, error) {
 	if returnURL == "" {
 		clientURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
 		if clientURL != "" {
-			returnURL = clientURL + "/pay"
+			returnURL = clientURL + "/paid"
 		}
 	}
 

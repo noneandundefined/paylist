@@ -319,7 +319,11 @@ INSERT INTO services (slug, name, category, aliases) VALUES
     ('samokat', 'Самокат', 'utilities', ARRAY['samokat', 'самокат', 'samokat.ru']),
     ('kuper', 'Купер', 'utilities', ARRAY['sbermarket', 'сбермаркет', 'kuper', 'купер', 'kuper.ru']),
     ('delivery-club', 'Delivery Club', 'utilities', ARRAY['deliveryclub', 'деливери клаб', 'деливери', 'delivery club']),
-    ('yandex-eda', 'Яндекс Еда', 'utilities', ARRAY['yandex eda', 'яндекс еда', 'eda yandex', 'yandex food'])
+    ('yandex-eda', 'Яндекс Еда', 'utilities', ARRAY['yandex eda', 'яндекс еда', 'eda yandex', 'yandex food']),
+    ('vpn', 'VPN', 'utilities', ARRAY['vpn', 'впн', 'vpn подписка', 'впн подписка', 'vpn сервис']),
+    ('vps', 'VPS', 'utilities', ARRAY['vps', 'впс', 'vps сервер', 'виртуальный сервер', 'virtual private server']),
+    ('vds', 'VDS', 'utilities', ARRAY['vds', 'вдс', 'vds сервер', 'выделенный сервер', 'virtual dedicated server']),
+    ('media-station-x', 'Media Station X', 'streaming', ARRAY['media station x', 'mediastationx', 'msx', 'media station', 'медиа стейшн', 'медиастейшн', 'медиа стейшн икс'])
 ON CONFLICT (slug) DO NOTHING;
 -- +goose StatementEnd
 

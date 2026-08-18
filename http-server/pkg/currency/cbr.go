@@ -28,6 +28,13 @@ var (
 	cbrCacheTTL = 6 * time.Hour
 )
 
+func InvalidateCBRCache() {
+	cbrCacheMu.Lock()
+	cbrCache = nil
+	cbrCacheExp = time.Time{}
+	cbrCacheMu.Unlock()
+}
+
 func rubPerUnit(code string) (float64, error) {
 	code = strings.ToUpper(strings.TrimSpace(code))
 	if code == "RUB" {

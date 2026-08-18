@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { getLegalDocumentPath } from '@/utils/legalDocumentUtils';
 import { COOKIE_PREFERENCES_EVENT, getCookieConsent, setCookieConsent, type CookieConsentValue } from '@/utils/cookieConsentUtils';
-import { clearYandexMetrikaCookies, hitYandexMetrika, initYandexMetrika } from '@/utils/yandexMetrika';
+import { clearYandexMetrikaCookies, hitYandexMetrika, initYandexMetrika, isYandexMetrikaDeferredPath } from '@/utils/yandexMetrika';
 
 const CookieConsent: React.FC = () => {
 	const { t } = useTranslation();
@@ -24,6 +24,10 @@ const CookieConsent: React.FC = () => {
 			return;
 		}
 
+		if (isYandexMetrikaDeferredPath(pathname)) {
+			return;
+		}
+
 		initYandexMetrika();
 		hitYandexMetrika(`${pathname}${search}`);
 	}, [consent, pathname, search]);
@@ -34,7 +38,9 @@ const CookieConsent: React.FC = () => {
 		setBannerOpen(false);
 
 		if (value === 'accepted') {
-			initYandexMetrika();
+			if (!isYandexMetrikaDeferredPath(pathname)) {
+				initYandexMetrika();
+			}
 			return;
 		}
 

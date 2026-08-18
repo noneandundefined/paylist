@@ -101,6 +101,34 @@ func (s *PaymentStore) Get_PaymentHistoryListByUserUuid(ctx context.Context, use
 	return rows, nil
 }
 
+func (s *PaymentStore) Get_PaymentHistoryByUserAndRef(ctx context.Context, userUuid, ref string) (*models.PaymentHistory, error) {
+	query := `
+		SELECT * FROM payment_history
+		WHERE user_uuid = $1
+			AND (
+				yookassa_payment_id = $2
+				OR COALESCE(metadata->>'idempotence_key', '') = $2
+			)
+		ORDER BY created_at DESC
+		LIMIT 1
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	payment, err := pgqx.QueryRowContext[models.PaymentHistory](ctx, s.db, query, userUuid, ref)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		logger.Error("Get_PaymentHistoryByUserAndRef req={%s}: Failed to exec sql: %s", ctx.Value("XREQID").(string), err.Error())
+		return nil, err
+	}
+
+	return payment, nil
+}
+
 func (s *PaymentStore) Get_PaymentHistoryByYookassaPaymentID(ctx context.Context, paymentID string) (*models.PaymentHistory, error) {
 	query := `
 		SELECT * FROM payment_history
@@ -289,6 +317,7 @@ func (s *PaymentStore) Update_ActivateUserSubscriptionPlan(ctx context.Context, 
 			valid_from = timezone('UTC', now()),
 			valid_to = timezone('UTC', now()) + ($3::text || ' days')::interval,
 			is_active = TRUE,
+			auto_renew_enabled = FALSE,
 			updated_at = timezone('UTC', now())
 		WHERE user_uuid = $1 AND is_active = TRUE
 	`

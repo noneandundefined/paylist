@@ -13,6 +13,11 @@ type CheckoutResponse struct {
 	ConfirmationURL string `json:"confirmation_url"`
 }
 
+type PaymentConfirmResponse struct {
+	Paid   bool   `json:"paid"`
+	Status string `json:"status"`
+}
+
 type PaymentHistoryResponse struct {
 	ID          uint64  `json:"id"`
 	CreatedAt   string  `json:"created_at"`

@@ -3,22 +3,49 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 
-	"paylist.server/handler/v1/payment_handler_v1"
 	"paylist.server/infra/logger"
-	"paylist.server/pkg/yookassa"
+	"paylist.server/pkg/currency"
 )
 
 const (
 	cronPaymentsClearPending          = "payments.clear-pending"
-	cronPaymentsAutoRenew             = "payments.auto-renew"
 	cronSubscriptionsAutoRenew        = "subscriptions.auto-renew"
 	cronSubscriptionsTelegramNotify   = "subscriptions.telegram-notify"
 	cronSubscriptionsMaxNotify        = "subscriptions.max-notify"
 	cronSubscriptionsNotifyLogCleanup = "subscriptions.notify-log-cleanup"
 	cronUsersResetExpiredPlans        = "users.reset-expired-plans"
+	cronPremiumPlanPrice              = "plans.premium-price"
 )
+
+const (
+	premiumPlanName = "Premium"
+	premiumPriceUSD = 2.0
+	premiumCurrency = "RUB"
+)
+
+func (s *httpServer) refreshPremiumPlanPrice(ctx context.Context) error {
+	currency.InvalidateCBRCache()
+
+	amount, err := currency.Convert(ctx, "USD", premiumCurrency, premiumPriceUSD)
+	if err != nil {
+		return err
+	}
+
+	amount = math.Round(amount*100) / 100
+	if amount <= 0 {
+		return fmt.Errorf("invalid CBR premium amount: %.2f", amount)
+	}
+
+	if err := s.store.Subscriptions.Update_PlanAmount(ctx, premiumPlanName, amount, premiumCurrency); err != nil {
+		return err
+	}
+
+	logger.Info("[%s] Premium amount set to %.2f %s (from %.2f USD)", cronPremiumPlanPrice, amount, premiumCurrency, premiumPriceUSD)
+	return nil
+}
 
 func cronContext(job string) context.Context {
 	return context.WithValue(context.Background(), "XREQID", fmt.Sprintf("cron:%s", job))
@@ -71,16 +98,9 @@ func (s *httpServer) startCronJobs() {
 		})
 	}
 
-	// YooKassa Premium auto-renew — 21:00 MSK (18:00 UTC) on the billing day.
-	s.cron.AddFunc("0 0 18 * * *", func() {
-		s.runCronJob(cronPaymentsAutoRenew, func(ctx context.Context) error {
-			client, err := yookassa.NewFromEnv()
-			if err != nil {
-				return nil
-			}
-
-			return payment_handler_v1.ChargeDueRenewals(ctx, s.store, client)
-		})
+	// Premium RUB price from $2 via CBR daily rate — 12:00 MSK (09:00 UTC).
+	s.cron.AddFunc("0 0 9 * * *", func() {
+		s.runCronJob(cronPremiumPlanPrice, s.refreshPremiumPlanPrice)
 	})
 
 	// Downgrade expired Premium SaaS plans to Free — daily 23:55 UTC.
@@ -97,5 +117,5 @@ func (s *httpServer) startCronJobs() {
 		})
 	})
 
-	logger.Info("Cron scheduler registered: payments.clear-pending@5m, payments.auto-renew@18:00UTC/21:00MSK, subscriptions.auto-renew@00:00, subscriptions.telegram-notify@09:00, subscriptions.max-notify@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
+	logger.Info("Cron scheduler registered: payments.clear-pending@5m, subscriptions.auto-renew@00:00, subscriptions.telegram-notify@09:00, subscriptions.max-notify@09:00, plans.premium-price@09:00, users.reset-expired-plans@23:55, subscriptions.notify-log-cleanup@Sun03:30")
 }

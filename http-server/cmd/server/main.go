@@ -91,6 +91,7 @@ func main() {
 	server.startCronJobs()
 
 	server.cron.Start()
+	server.runCronJob(cronPremiumPlanPrice, server.refreshPremiumPlanPrice)
 
 	/* Started HTTPx server */
 	if err := server.httpStart(); err != nil {

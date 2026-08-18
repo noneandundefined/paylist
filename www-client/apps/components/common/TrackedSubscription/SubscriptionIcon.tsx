@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { getTrackedSubscriptionImageUrl } from '@/rest/trackedSubscriptionAPI';
-import { getSubscriptionIconLabel } from '@/utils/TrackedSubscriptionDisplayUtils';
+import { useTheme } from '@/context/ThemeContext';
 import RemoteImage from '@/components/ui/RemoteImage/RemoteImage';
+import SubscriptionFallbackGlyph from './SubscriptionFallbackGlyph';
 
 interface SubscriptionIconProps {
 	name: string;
+	categories?: string[];
 	size?: 'sm' | 'md' | 'xs';
 	className?: string;
 }
@@ -21,10 +23,17 @@ const spinnerSizes: Record<NonNullable<SubscriptionIconProps['size']>, number> =
 	md: 20,
 };
 
-const SubscriptionIcon = ({ name, size = 'sm', className = '' }: SubscriptionIconProps) => {
+const glyphSizes: Record<NonNullable<SubscriptionIconProps['size']>, number> = {
+	xs: 18,
+	sm: 26,
+	md: 36,
+};
+
+const SubscriptionIcon = ({ name, categories, size = 'sm', className = '' }: SubscriptionIconProps) => {
+	const { isDark } = useTheme();
 	const [hasImageError, setHasImageError] = useState(false);
-	const label = getSubscriptionIconLabel(name);
 	const sizeClass = sizeClasses[size];
+	const fill = isDark ? '#f1f5f9' : '#0f172a';
 
 	if (!hasImageError) {
 		return (
@@ -34,7 +43,11 @@ const SubscriptionIcon = ({ name, size = 'sm', className = '' }: SubscriptionIco
 		);
 	}
 
-	return <div className={`${sizeClass} flex shrink-0 items-center justify-center rounded-xl bg-slate-400 font-bold text-white ${className}`}>{label}</div>;
+	return (
+		<div className={`${sizeClass} flex shrink-0 items-center justify-center rounded-xl bg-[var(--surface-muted)] ${className}`}>
+			<SubscriptionFallbackGlyph name={name} categories={categories} size={glyphSizes[size]} fill={fill} />
+		</div>
+	);
 };
 
 export default SubscriptionIcon;

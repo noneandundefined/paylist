@@ -34,7 +34,7 @@ const Header = () => {
 				</div>
 			</Link>
 
-			{!isPremium && <PremiumBadgeMini />}
+			{isPremium && <PremiumBadgeMini />}
 		</header>
 	);
 };

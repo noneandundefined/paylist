@@ -12,7 +12,7 @@ export const ProtectedRoute = () => {
 	}, []);
 
 	if (!isLoggedIn) {
-		return <Navigate to={ROUTES.SIGNIN} replace />;
+		return <Navigate to={ROUTES.START} replace />;
 	}
 
 	return <Outlet />;

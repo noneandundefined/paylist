@@ -78,7 +78,7 @@ const TotalSpendingCard = ({ summary, subscriptions }: TotalSpendingCardProps) =
 					<div className="mb-1 flex justify-end pl-2">
 						{previewSubscriptions.map((subscription, index) => (
 							<div key={subscription.id} className={`relative ${index > 0 ? '-ml-2' : ''}`} style={{ zIndex: previewSubscriptions.length - index }}>
-								<SubscriptionIcon name={subscription.name} size="xs" className="border-2 border-[var(--surface)]" />
+								<SubscriptionIcon name={subscription.name} categories={subscription.categories} size="xs" className="border-2 border-[var(--surface)]" />
 							</div>
 						))}
 					</div>
