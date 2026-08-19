@@ -12,6 +12,7 @@ const PlansPage = lazy(() => import('@/pages/PlansPage/index'));
 const PaidPage = lazy(() => import('@/pages/PaidPage/index'));
 const AccountPage = lazy(() => import('@/pages/AccountPage/index'));
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
+const AdminPage = lazy(() => import('@/pages/AdminPage/index'));
 const LegalPage = lazy(() => import('@/pages/LegalPage/index'));
 
 /** Auth */
@@ -60,6 +61,12 @@ const config: CustomRouteConfig[] = [
 		loginRequired: true,
 		component: AnalyticsPage,
 		title: 'label.page-analytics',
+	},
+	{
+		path: ROUTES.ADMIN,
+		loginRequired: true,
+		component: AdminPage,
+		title: 'label.page-admin',
 	},
 	{
 		path: ROUTES.ACCOUNT,

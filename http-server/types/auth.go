@@ -27,4 +27,5 @@ type AuthToken struct {
 	NotificationSubscriptions bool            `json:"notification_subscriptions"`
 	MaxTotalSubscriptions     *int            `json:"max_total_subscriptions,omitempty"`
 	AutoFindSubscriptions     bool            `json:"auto_find_subscriptions"`
+	IsAdmin                   bool            `json:"is_admin"`
 }

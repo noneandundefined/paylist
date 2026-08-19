@@ -83,6 +83,7 @@ func IsAuthenticatedMiddleware(h *handler.BaseHandler) mux.MiddlewareFunc {
 				NotificationSubscriptions: permissions.NotificationSubscriptions,
 				MaxTotalSubscriptions:     permissions.MaxTotalSubscriptions,
 				AutoFindSubscriptions:     permissions.AutoFindSubscriptions,
+				IsAdmin:                   user.IsAdmin,
 			}
 
 			// session REFRESH

@@ -20,6 +20,7 @@ export interface UserLoginStateResponse {
 	notification_subscriptions: boolean;
 	max_total_subscriptions: number | null;
 	auto_find_subscriptions: boolean;
+	is_admin?: boolean;
 }
 
 export interface UserSessionResponse {
@@ -49,6 +50,26 @@ export interface UserPublicProfile {
 	last_name?: string | null;
 	avatars?: string | null;
 }
+
+export interface AdminMessageRecipient {
+	user_uuid: string;
+	email: string;
+	first_name?: string | null;
+	last_name?: string | null;
+	telegram_connected: boolean;
+	max_connected: boolean;
+}
+
+export interface AdminSendMessageResponse {
+	sent: number;
+	skipped: number;
+	failed: number;
+}
+
+export const basicAdminRecipients = async (): Promise<AdminMessageRecipient[]> => apiGet(`${apiPath}/admin/recipients`);
+
+export const basicAdminSendMessage = async (payload: { channel: 'email' | 'telegram' | 'max'; user_uuid?: string | null; text: string }): Promise<AdminSendMessageResponse> =>
+	apiPost(`${apiPath}/admin/messages`, payload);
 
 export const basicUserLoginState = async (): Promise<UserLoginStateResponse> => apiGet(`${apiPath}/login-state`);
 

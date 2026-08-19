@@ -63,6 +63,8 @@ func main() {
 
 		if telegramPollingEnabled() {
 			startTelegramPolling(server.telegram, tgClient)
+		} else if webhookSecret := strings.TrimSpace(os.Getenv("TELEGRAM_WEBHOOK_SECRET")); webhookSecret != "" {
+			startTelegramWebhook(tgClient, webhookSecret)
 		}
 	} else if os.Getenv("TELEGRAM_BOT_TOKEN") != "" {
 		logger.Error("Telegram bot is configured but failed to initialize: %s", err.Error())

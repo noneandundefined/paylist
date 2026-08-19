@@ -3,6 +3,7 @@ package telegram
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,6 +32,49 @@ func (e *APIError) Error() string {
 	}
 
 	return fmt.Sprintf("telegram API error %d", e.Code)
+}
+
+func parseAPIError(statusCode int, responseBody []byte) error {
+	var body struct {
+		OK          bool   `json:"ok"`
+		ErrorCode   int    `json:"error_code"`
+		Description string `json:"description"`
+	}
+
+	if err := json.Unmarshal(responseBody, &body); err == nil && (body.ErrorCode != 0 || body.Description != "") {
+		code := body.ErrorCode
+		if code == 0 {
+			code = statusCode
+		}
+
+		return &APIError{Code: code, Description: body.Description}
+	}
+
+	return fmt.Errorf("telegram request failed: %s", strings.TrimSpace(string(responseBody)))
+}
+
+func IsDeliveryRejected(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	var apiErr *APIError
+	if errors.As(err, &apiErr) {
+		desc := strings.ToLower(apiErr.Description)
+		if apiErr.Code == http.StatusForbidden {
+			return true
+		}
+
+		if apiErr.Code == http.StatusBadRequest && (strings.Contains(desc, "chat not found") || strings.Contains(desc, "user not found") || strings.Contains(desc, "peer_id_invalid")) {
+			return true
+		}
+	}
+
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "bot was blocked") ||
+		strings.Contains(msg, "bot was kicked") ||
+		strings.Contains(msg, "user is deactivated") ||
+		strings.Contains(msg, "chat not found")
 }
 
 type Update struct {
@@ -84,9 +128,20 @@ func (c *Client) BotURL(startToken string) string {
 }
 
 func (c *Client) SendMessage(chatID int64, text string) error {
+	return c.sendMessage(chatID, text, nil)
+}
+
+func (c *Client) SendMessageWithOpenApp(chatID int64, text, buttonText string) error {
+	return c.sendMessage(chatID, text, openAppMarkup(buttonText))
+}
+
+func (c *Client) sendMessage(chatID int64, text string, replyMarkup map[string]any) error {
 	payload := map[string]any{
 		"chat_id": chatID,
 		"text":    text,
+	}
+	if replyMarkup != nil {
+		payload["reply_markup"] = replyMarkup
 	}
 
 	body, err := json.Marshal(payload)
@@ -113,7 +168,72 @@ func (c *Client) SendMessage(chatID int64, text string) error {
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("telegram sendMessage failed: %s", strings.TrimSpace(string(responseBody)))
+		return parseAPIError(resp.StatusCode, responseBody)
+	}
+
+	return nil
+}
+
+func openAppMarkup(buttonText string) map[string]any {
+	buttonText = strings.TrimSpace(buttonText)
+	if buttonText == "" {
+		buttonText = "Open Paylist"
+	}
+
+	appURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
+	if appURL == "" {
+		appURL = "https://paylist.site"
+	}
+
+	return map[string]any{
+		"inline_keyboard": [][]map[string]string{
+			{
+				{"text": buttonText, "url": appURL},
+			},
+		},
+	}
+}
+
+func (c *Client) SetWebhook(webhookURL string) error {
+	payload, err := json.Marshal(map[string]any{
+		"url":                  webhookURL,
+		"allowed_updates":      []string{"message"},
+		"drop_pending_updates": false,
+	})
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook", c.token), bytes.NewReader(payload))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := c.shortClient.Do(req)
+	if err != nil {
+		return c.redactError(err)
+	}
+	defer resp.Body.Close()
+
+	responseBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return c.redactError(err)
+	}
+
+	var body struct {
+		OK          bool   `json:"ok"`
+		ErrorCode   int    `json:"error_code"`
+		Description string `json:"description"`
+	}
+
+	if err := json.Unmarshal(responseBody, &body); err != nil {
+		return c.redactError(err)
+	}
+
+	if !body.OK {
+		return &APIError{Code: body.ErrorCode, Description: body.Description}
 	}
 
 	return nil

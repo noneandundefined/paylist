@@ -15,6 +15,14 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	userRouter := router.PathPrefix("/users").Subrouter()
 	userRouter.Use(middleware.IsAuthenticatedMiddleware(h.BaseHandler))
 
+	/* Access: Admin */
+	userRouter.Handle("/admin/recipients", httpx.ErrorHandler(h.AdminRecipientsHandler_V1)).Methods(http.MethodGet)
+
+	/* Access: Admin */
+	userRouter.Handle("/admin/messages", middleware.PowDDos()(
+		httpx.ErrorHandler(h.AdminSendMessageHandler_V1),
+	)).Methods(http.MethodPost)
+
 	/* Access: ALL */
 	userRouter.Handle("/settings", httpx.ErrorHandler(h.UserSettingsGetHandler_V1)).Methods(http.MethodGet)
 

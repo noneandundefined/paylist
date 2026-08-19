@@ -6,6 +6,8 @@ import ElevationRise from '../@icons/elevation-rise';
 
 import Home from '../@icons/home';
 import Plus from '../@icons/plus';
+import Wrench from '../@icons/wrench';
+import { useLoginState } from '@/hooks/useLoginState';
 
 const NAV_ACTIVE_COLOR = '#0085FF';
 
@@ -18,6 +20,9 @@ const Navigation = () => {
 	const { t } = useTranslation();
 	const { pathname } = useLocation();
 	const { isDark } = useTheme();
+	const { isAdmin } = useLoginState();
+
+	const items = isAdmin ? [...navItems, { path: ROUTES.ADMIN, labelKey: 'label.page-admin', Icon: Wrench }] : navItems;
 
 	const inactiveColor = isDark ? '#f1f5f9' : '#000000';
 
@@ -25,7 +30,7 @@ const Navigation = () => {
 		<aside className="pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-5">
 			<div className="pointer-events-auto flex flex-1 max-w-[90%] items-center gap-5 md:max-w-[70%] xl:max-w-[50%]">
 				<nav className="gu-glass-pill flex flex-1 items-center gap-1 px-2 py-2" aria-label={t('home.navigation')}>
-					{navItems.map(({ path, labelKey, Icon }) => {
+					{items.map(({ path, labelKey, Icon }) => {
 						const isActive = pathname === path;
 						const color = isActive ? NAV_ACTIVE_COLOR : inactiveColor;
 

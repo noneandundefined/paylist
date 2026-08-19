@@ -11,6 +11,42 @@ import (
 	"paylist.server/pkg/telegram"
 )
 
+func startTelegramWebhook(client *telegram.Client, secret string) {
+	webhookURL := telegramWebhookURL(secret)
+	if webhookURL == "" {
+		logger.Error("Telegram webhook URL is empty; set TELEGRAM_WEBHOOK_URL or SERVER_BASE_ADDR")
+		return
+	}
+
+	if err := client.SetWebhook(webhookURL); err != nil {
+		logger.Error("Telegram setWebhook failed: %s", err.Error())
+		return
+	}
+
+	logger.Info("Telegram webhook enabled")
+}
+
+func telegramWebhookURL(secret string) string {
+	if webhookURL := strings.TrimSpace(os.Getenv("TELEGRAM_WEBHOOK_URL")); webhookURL != "" {
+		return webhookURL
+	}
+
+	base := strings.TrimRight(strings.TrimSpace(os.Getenv("SERVER_BASE_ADDR")), "/")
+	if base == "" {
+		return ""
+	}
+
+	if !strings.HasPrefix(base, "http://") && !strings.HasPrefix(base, "https://") {
+		return ""
+	}
+
+	if !strings.Contains(base, "/api/v1") {
+		base += "/api/v1"
+	}
+
+	return base + "/telegram/webhook/" + secret
+}
+
 func startTelegramPolling(notifier *telegram.Notifier, client *telegram.Client) {
 	go func() {
 		if err := client.DeleteWebhook(); err != nil {
@@ -40,7 +76,11 @@ func startTelegramPolling(notifier *telegram.Notifier, client *telegram.Client) 
 			for _, update := range updates {
 				ctx := context.WithValue(context.Background(), "XREQID", "telegram-poll")
 				if err := notifier.HandleUpdate(ctx, update); err != nil {
-					logger.Error("Telegram update handling error: %s", err.Error())
+					if telegram.IsDeliveryRejected(err) {
+						logger.Warning("Telegram skip blocked chat: %s", err.Error())
+					} else {
+						logger.Error("Telegram update handling error: %s", err.Error())
+					}
 				}
 
 				offset = update.UpdateID + 1

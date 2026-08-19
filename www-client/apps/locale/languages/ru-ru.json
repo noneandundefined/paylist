@@ -12,6 +12,7 @@
 	"label.page-reset-password": "Новый пароль",
 	"label.page-start": "Paylist",
 	"label.page-paid": "Оплата",
+	"label.page-admin": "Управление",
 	"start.hero-title-lead": "Все платежи",
 	"start.hero-title-accent": "в одном месте",
 	"start.hero-subtitle": "Собирает ваши подписки и платежи, считает расходы и напоминает о предстоящих списаниях.",
@@ -425,5 +426,18 @@
 	"analytics.inflation-premium-hint": "Прогноз с инфляцией — функция Premium.",
 	"analytics.inflation-premium-link": "Подключить",
 	"analytics.inflation-country-hint": "Укажите страну в профиле, чтобы увидеть прогноз с инфляцией.",
-	"analytics.inflation-disclaimer": "Оценка на основе исторического CPI и типичного роста цен подписок. Не гарантия."
+	"analytics.inflation-disclaimer": "Оценка на основе исторического CPI и типичного роста цен подписок. Не гарантия.",
+	"admin.title": "Рассылка",
+	"admin.subtitle": "Сообщение уйдёт на email, в Telegram или MAX. Переносы строк сохраняются.",
+	"admin.channel": "Канал",
+	"admin.channel-email": "Email",
+	"admin.channel-telegram": "Telegram",
+	"admin.channel-max": "MAX",
+	"admin.recipient": "Кому",
+	"admin.recipient-all": "Всем",
+	"admin.recipient-search": "Поиск пользователя",
+	"admin.message-placeholder": "Текст сообщения",
+	"admin.send": "Отправить",
+	"admin.channel-not-connected": "У этого пользователя не подключён выбранный канал",
+	"admin.send-result": "Отправлено: {{sent}}. Пропущено: {{skipped}}. Ошибок: {{failed}}"
 }

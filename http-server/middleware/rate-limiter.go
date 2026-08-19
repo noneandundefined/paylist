@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/mux"
@@ -31,6 +32,11 @@ func getLimiter(ip string, rps float64, burst int) *rate.Limiter {
 func RateLimiterMiddleware(rps float64, burst int) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if isWebhookPath(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			tr := TranslatorFromContext(r.Context())
 			ip := r.RemoteAddr
 
@@ -44,4 +50,8 @@ func RateLimiterMiddleware(rps float64, burst int) mux.MiddlewareFunc {
 			next.ServeHTTP(w, r)
 		})
 	}
+}
+
+func isWebhookPath(path string) bool {
+	return strings.Contains(path, "/telegram/webhook/") || strings.Contains(path, "/max/webhook/")
 }

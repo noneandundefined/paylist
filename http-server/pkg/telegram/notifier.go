@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,6 +12,8 @@ import (
 	"paylist.server/infra/store/postgres/store"
 	"paylist.server/infra/store/redis"
 )
+
+var errDeliveryRejected = errors.New("telegram delivery rejected")
 
 const notifyChannel = "telegram"
 
@@ -69,6 +72,11 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 		text = fmt.Sprintf(text, item.Name, formatPrice(item.SharePrice, item.Currency), item.DatePay.Format("02.01.2006"))
 
 		if err := n.client.SendMessage(item.TelegramChatID, text); err != nil {
+			if IsDeliveryRejected(err) {
+				n.disconnectBlockedChat(ctx, item.TelegramChatID)
+				continue
+			}
+
 			logger.Error("SendDueReminders: failed to send telegram message subscription=%d chat=%d: %s", item.ID, item.TelegramChatID, err.Error())
 			continue
 		}
@@ -82,53 +90,122 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 }
 
 func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
-	if update.Message == nil || update.Message.Text == "" {
+	if update.Message == nil {
 		return nil
 	}
 
 	text := strings.TrimSpace(update.Message.Text)
-	token := ParseStartToken(text)
-	if token == "" {
-		if strings.HasPrefix(text, "/start") {
-			return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.link-missing"))
-		}
-
+	if !isStartCommand(text) {
 		return nil
 	}
 
+	chatID := update.Message.Chat.ID
+	username, language := fromTelegramUser(update.Message.From)
+	tr := locale.NewTranslator(language)
+
+	if err := n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.welcome"))); err != nil {
+		return finishUpdate(err)
+	}
+
+	token := ParseStartToken(text)
+	if token != "" {
+		return finishUpdate(n.linkFromStartToken(ctx, chatID, token, username, language, tr))
+	}
+
+	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, chatID)
+	if err != nil {
+		return err
+	}
+
+	if existingUserUuid != "" {
+		return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.account-created"), tr.T("telegram.open-app"))))
+	}
+
+	return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.sign-in-hint"), tr.T("telegram.open-app"))))
+}
+
+func (n *Notifier) linkFromStartToken(ctx context.Context, chatID int64, token, username, language string, tr locale.Translator) error {
 	userUuid, err := redis.RedisTelegramLinkConsume(token)
 	if err != nil {
 		return err
 	}
 
 	if userUuid == "" {
-		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.link-expired"))
+		return n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.link-expired")))
 	}
 
-	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, update.Message.Chat.ID)
+	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, chatID)
 	if err != nil {
 		return err
 	}
 
 	if existingUserUuid != "" && existingUserUuid != userUuid {
-		return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator("ru").T("telegram.already-linked-other-account"))
+		return n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.already-linked-other-account")))
 	}
 
-	username := ""
-	language := "ru"
-
-	if update.Message.From != nil {
-		username = strings.TrimSpace(update.Message.From.Username)
-		if len(update.Message.From.LanguageCode) >= 2 {
-			language = update.Message.From.LanguageCode[:2]
-		}
-	}
-
-	if err := n.store.Users.Upsert_UserTelegram(ctx, userUuid, update.Message.Chat.ID, username, language); err != nil {
+	if err := n.store.Users.Upsert_UserTelegram(ctx, userUuid, chatID, username, language); err != nil {
 		return err
 	}
 
-	return n.client.SendMessage(update.Message.Chat.ID, locale.NewTranslator(language).T("telegram.link-success"))
+	return n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.link-success"), tr.T("telegram.open-app")))
+}
+
+func (n *Notifier) sendOrDetach(ctx context.Context, chatID int64, err error) error {
+	if err == nil {
+		return nil
+	}
+
+	if IsDeliveryRejected(err) {
+		n.disconnectBlockedChat(ctx, chatID)
+		return errDeliveryRejected
+	}
+
+	return err
+}
+
+func (n *Notifier) disconnectBlockedChat(ctx context.Context, chatID int64) {
+	userUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, chatID)
+	if err != nil {
+		logger.Error("Telegram unlink failed chat=%d: %s", chatID, err.Error())
+		return
+	}
+
+	if userUuid != "" {
+		if err := n.store.Users.Clear_UserTelegram(ctx, userUuid); err != nil {
+			logger.Error("Telegram unlink failed user=%s chat=%d: %s", userUuid, chatID, err.Error())
+			return
+		}
+	}
+
+	logger.Warning("Telegram bot was blocked chat=%d user=%s", chatID, userUuid)
+}
+
+func finishUpdate(err error) error {
+	if errors.Is(err, errDeliveryRejected) {
+		return nil
+	}
+
+	return err
+}
+
+func isStartCommand(text string) bool {
+	return strings.HasPrefix(text, "/start")
+}
+
+func fromTelegramUser(from *User) (string, string) {
+	username := ""
+	language := "ru"
+
+	if from == nil {
+		return username, language
+	}
+
+	username = strings.TrimSpace(from.Username)
+	if len(from.LanguageCode) >= 2 {
+		language = strings.ToLower(from.LanguageCode[:2])
+	}
+
+	return username, language
 }
 
 func formatPrice(price float64, currency string) string {

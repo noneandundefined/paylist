@@ -174,7 +174,8 @@ func (s *UserStore) Get_UserLoginStateByUserUuid(ctx context.Context, userUuid s
 			COALESCE(subscriptions.currency, 'RUB') AS currency,
 			COALESCE(subscriptions.notification_subscriptions, FALSE) AS notification_subscriptions,
 			subscriptions.max_total_subscriptions,
-			COALESCE(subscriptions.auto_find_subscriptions, FALSE) AS auto_find_subscriptions
+			COALESCE(subscriptions.auto_find_subscriptions, FALSE) AS auto_find_subscriptions,
+			COALESCE(user_cores.is_admin, FALSE) AS is_admin
 		FROM user_cores
 		LEFT JOIN user_subscriptions ON user_subscriptions.user_uuid = user_cores.user_uuid
 		LEFT JOIN subscriptions ON LOWER(subscriptions.plan_name) = LOWER(user_subscriptions.plan_name)

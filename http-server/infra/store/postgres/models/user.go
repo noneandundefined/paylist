@@ -13,6 +13,23 @@ type UserCore struct {
 	LastName       *string   `json:"last_name,omitempty" db:"last_name"`
 	Avatars        *string   `json:"avatars,omitempty" db:"avatars"`
 	Password       string    `json:"-" db:"password"`
+	IsAdmin        bool      `json:"is_admin" db:"is_admin"`
+}
+
+type AdminMessageRecipient struct {
+	UserUUID          string  `json:"user_uuid" db:"user_uuid"`
+	Email             string  `json:"email" db:"email"`
+	FirstName         *string `json:"first_name,omitempty" db:"first_name"`
+	LastName          *string `json:"last_name,omitempty" db:"last_name"`
+	TelegramConnected bool    `json:"telegram_connected" db:"telegram_connected"`
+	MaxConnected      bool    `json:"max_connected" db:"max_connected"`
+}
+
+type AdminMessageTarget struct {
+	UserUUID       string `db:"user_uuid"`
+	Email          string `db:"email"`
+	TelegramChatID *int64 `db:"telegram_chat_id"`
+	MaxUserID      *int64 `db:"max_user_id"`
 }
 
 type UserPublicProfile struct {
@@ -72,6 +89,7 @@ type UserLoginState struct {
 	NotificationSubscriptions bool `json:"notification_subscriptions" db:"notification_subscriptions"`
 	MaxTotalSubscriptions     *int `json:"max_total_subscriptions,omitempty" db:"max_total_subscriptions"`
 	AutoFindSubscriptions     bool `json:"auto_find_subscriptions" db:"auto_find_subscriptions"`
+	IsAdmin                   bool `json:"is_admin" db:"is_admin"`
 }
 
 type UserPlanPermissions struct {

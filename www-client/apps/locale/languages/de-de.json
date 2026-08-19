@@ -12,6 +12,7 @@
 	"label.page-reset-password": "Neues Passwort",
 	"label.page-start": "Paylist",
 	"label.page-paid": "Zahlung",
+	"label.page-admin": "Verwaltung",
 	"start.hero-title-lead": "Alle Zahlungen",
 	"start.hero-title-accent": "an einem Ort",
 	"start.hero-subtitle": "Es sammelt Ihre Abos und Zahlungen, zählt Ausgaben und erinnert vor anstehenden Abbuchungen.",
@@ -425,5 +426,18 @@
 	"analytics.inflation-premium-hint": "Inflationsbereinigte Prognose ist eine Premium-Funktion.",
 	"analytics.inflation-premium-link": "Upgrade",
 	"analytics.inflation-country-hint": "Wählen Sie Ihr Land in den Profileinstellungen, um die inflationsbereinigte Prognose zu sehen.",
-	"analytics.inflation-disclaimer": "Schätzung basierend auf historischem VPI und typischem Preiswachstum bei Abonnements. Keine Garantie."
+	"analytics.inflation-disclaimer": "Schätzung basierend auf historischem VPI und typischem Preiswachstum bei Abonnements. Keine Garantie.",
+	"admin.title": "Versand",
+	"admin.subtitle": "Die Nachricht wird per E-Mail, Telegram oder MAX gesendet. Zeilenumbrüche bleiben erhalten.",
+	"admin.channel": "Kanal",
+	"admin.channel-email": "E-Mail",
+	"admin.channel-telegram": "Telegram",
+	"admin.channel-max": "MAX",
+	"admin.recipient": "Empfänger",
+	"admin.recipient-all": "Alle",
+	"admin.recipient-search": "Nutzer suchen",
+	"admin.message-placeholder": "Nachrichtentext",
+	"admin.send": "Senden",
+	"admin.channel-not-connected": "Dieser Nutzer hat den gewählten Kanal nicht verbunden",
+	"admin.send-result": "Gesendet: {{sent}}. Übersprungen: {{skipped}}. Fehler: {{failed}}"
 }

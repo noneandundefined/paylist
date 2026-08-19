@@ -12,6 +12,7 @@
 	"label.page-reset-password": "Nueva contraseña",
 	"label.page-start": "Paylist",
 	"label.page-paid": "Pago",
+	"label.page-admin": "Gestión",
 	"start.hero-title-lead": "Todos los pagos",
 	"start.hero-title-accent": "en un solo lugar",
 	"start.hero-subtitle": "Reúne tus suscripciones y pagos, calcula el gasto y avisa antes de los cobros.",
@@ -425,5 +426,18 @@
 	"analytics.inflation-premium-hint": "La previsión ajustada por inflación es una función Premium.",
 	"analytics.inflation-premium-link": "Mejorar plan",
 	"analytics.inflation-country-hint": "Selecciona tu país en los ajustes del perfil para ver la previsión ajustada por inflación.",
-	"analytics.inflation-disclaimer": "Estimación basada en el IPC histórico y el crecimiento típico de precios de suscripciones. No es una garantía."
+	"analytics.inflation-disclaimer": "Estimación basada en el IPC histórico y el crecimiento típico de precios de suscripciones. No es una garantía.",
+	"admin.title": "Envío",
+	"admin.subtitle": "El mensaje se envía por email, Telegram o MAX. Se conservan los saltos de línea.",
+	"admin.channel": "Canal",
+	"admin.channel-email": "Email",
+	"admin.channel-telegram": "Telegram",
+	"admin.channel-max": "MAX",
+	"admin.recipient": "Destinatario",
+	"admin.recipient-all": "Todos",
+	"admin.recipient-search": "Buscar usuario",
+	"admin.message-placeholder": "Texto del mensaje",
+	"admin.send": "Enviar",
+	"admin.channel-not-connected": "Este usuario no tiene conectado el canal seleccionado",
+	"admin.send-result": "Enviados: {{sent}}. Omitidos: {{skipped}}. Errores: {{failed}}"
 }

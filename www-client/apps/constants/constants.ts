@@ -11,6 +11,7 @@ export const ROUTES = {
 	SUBSCRIPTION_DETAIL: `/subscriptions/${PLACEHOLDER_ROUTE_ID}`,
 	ACCOUNT: '/account',
 	ANALYTICS: '/analytics',
+	ADMIN: '/admin',
 	PLANS: '/plans',
 	PAID: '/paid',
 	LEGAL: '/legal/:type',

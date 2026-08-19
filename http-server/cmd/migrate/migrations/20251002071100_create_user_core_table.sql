@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS user_cores (
     avatars TEXT,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    password VARCHAR(255) NOT NULL CHECK (char_length(password) > 5)
+    password VARCHAR(255) NOT NULL CHECK (char_length(password) > 5),
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_cores_email ON user_cores(email);
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
 
 CREATE INDEX IF NOT EXISTS idx_user_subscriptions_user_uuid ON user_subscriptions(user_uuid);
 CREATE INDEX IF NOT EXISTS idx_user_subscriptions_plan_name ON user_subscriptions(plan_name);
+CREATE INDEX IF NOT EXISTS idx_user_cores_is_admin ON user_cores(is_admin) WHERE is_admin = TRUE;
 
 CREATE OR REPLACE FUNCTION set_updated_at_user_subscriptions()
 RETURNS TRIGGER AS $$
@@ -66,6 +68,7 @@ CREATE TRIGGER set_updated_at_user_subscriptions_trigger
     EXECUTE FUNCTION set_updated_at_user_subscriptions();
 
 COMMENT ON TABLE user_subscriptions IS 'Active SaaS subscription of a user in Paylist';
+COMMENT ON COLUMN user_cores.is_admin IS 'Operator account that can send broadcast messages';
 -- +goose StatementEnd
 
 -- +goose Down

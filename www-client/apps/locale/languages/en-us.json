@@ -12,6 +12,7 @@
 	"label.page-reset-password": "New password",
 	"label.page-start": "Paylist",
 	"label.page-paid": "Payment",
+	"label.page-admin": "Management",
 	"start.hero-title-lead": "All payments",
 	"start.hero-title-accent": "in one place",
 	"start.hero-subtitle": "It collects your subscriptions and payments, tracks spending, and reminds you before charges.",
@@ -425,5 +426,18 @@
 	"analytics.inflation-premium-hint": "Inflation-adjusted forecast is a Premium feature.",
 	"analytics.inflation-premium-link": "Upgrade",
 	"analytics.inflation-country-hint": "Select your country in Profile settings to see inflation-adjusted forecast.",
-	"analytics.inflation-disclaimer": "Estimate based on historical CPI and typical subscription price growth. Not a guarantee."
+	"analytics.inflation-disclaimer": "Estimate based on historical CPI and typical subscription price growth. Not a guarantee.",
+	"admin.title": "Broadcast",
+	"admin.subtitle": "The message is sent by email, Telegram or MAX. Line breaks are kept.",
+	"admin.channel": "Channel",
+	"admin.channel-email": "Email",
+	"admin.channel-telegram": "Telegram",
+	"admin.channel-max": "MAX",
+	"admin.recipient": "Recipient",
+	"admin.recipient-all": "Everyone",
+	"admin.recipient-search": "Search user",
+	"admin.message-placeholder": "Message text",
+	"admin.send": "Send",
+	"admin.channel-not-connected": "This user does not have the selected channel connected",
+	"admin.send-result": "Sent: {{sent}}. Skipped: {{skipped}}. Failed: {{failed}}"
 }

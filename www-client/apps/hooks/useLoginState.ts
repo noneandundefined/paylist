@@ -19,6 +19,7 @@ export const useLoginState = () => {
 	const initials = getInitialsFromName(displayName);
 	const avatar = loginState?.avatars ?? null;
 	const isPremium = isPremiumPlan(loginState?.plan_name);
+	const isAdmin = Boolean(loginState?.is_admin);
 	const canUseNotification = isPremium && (loginState?.notification_subscriptions ?? false);
 
 	return {
@@ -30,6 +31,7 @@ export const useLoginState = () => {
 		initials,
 		avatar,
 		isPremium,
+		isAdmin,
 		canUseNotification,
 	};
 };

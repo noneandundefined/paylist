@@ -20,6 +20,8 @@ type Storage struct {
 		Get_UserSubscriptionsByUserUuid(ctx context.Context, userUuid string) (*models.UserSubscription, error)
 		Get_UserLoginStateByUserUuid(ctx context.Context, userUuid string) (*models.UserLoginState, error)
 		Get_UserPermissionsByUserUuid(ctx context.Context, userUuid string) (*models.UserPlanPermissions, error)
+		List_AdminMessageRecipients(ctx context.Context) ([]models.AdminMessageRecipient, error)
+		List_AdminMessageTargets(ctx context.Context, userUUID *string) ([]models.AdminMessageTarget, error)
 
 		Update_UserSubscriptionResetExpired(ctx context.Context) error
 		Update_UserEmailConfirmedByUid(ctx context.Context, userUuid string, confirmed bool) error

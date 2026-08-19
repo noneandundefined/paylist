@@ -8,6 +8,7 @@ export const QUERY_KEYS = {
 	trackedSubscriptionMembers: 'respTrackedSubscriptionMembers',
 	currencyRates: 'respCurrencyRates',
 	countryList: 'respCountryList',
+	adminRecipients: 'respAdminRecipients',
 	planList: 'respPlanList',
 	paymentBilling: 'respPaymentBilling',
 	trackedSubscriptionAnalytics: 'respTrackedSubscriptionAnalytics',

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"paylist.server/infra/logger"
 	"paylist.server/pkg/telegram"
 )
 
@@ -31,7 +32,14 @@ func WebhookHandler(notifier *telegram.Notifier) http.HandlerFunc {
 			return
 		}
 
-		_ = notifier.HandleUpdate(r.Context(), update)
+		if err := notifier.HandleUpdate(r.Context(), update); err != nil {
+			if telegram.IsDeliveryRejected(err) {
+				logger.Warning("Telegram webhook skip blocked chat: %s", err.Error())
+			} else {
+				logger.Error("Telegram webhook update handling error: %s", err.Error())
+			}
+		}
+
 		w.WriteHeader(http.StatusOK)
 	}
 }
