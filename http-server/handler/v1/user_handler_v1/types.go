@@ -30,6 +30,24 @@ type UserSettingsResponse struct {
 	MaxUsername       *string `json:"max_username,omitempty"`
 }
 
+type UserReferralRankResponse struct {
+	Level      int    `json:"level"`
+	Key        string `json:"key"`
+	MinCount   int    `json:"min_count"`
+	MaxCount   *int   `json:"max_count,omitempty"`
+	RewardDays int    `json:"reward_days"`
+	Current    bool   `json:"current"`
+}
+
+type UserReferralResponse struct {
+	Code          string                     `json:"code"`
+	SiteURL       string                     `json:"site_url"`
+	BotURL        string                     `json:"bot_url"`
+	ReferralCount int                        `json:"referral_count"`
+	Rank          int                        `json:"rank"`
+	Ranks         []UserReferralRankResponse `json:"ranks"`
+}
+
 type UserSettingsUpdatePayload struct {
 	DisplayCurrency *string `json:"display_currency" validate:"omitempty,len=3"`
 	Country         *string `json:"country" validate:"omitempty,len=2"`

@@ -1,6 +1,7 @@
 export const QUERY_KEYS = {
 	userLoginState: 'respUserLoginState',
 	userSettings: 'respUserSettings',
+	userReferral: 'respUserReferral',
 	trackedSubscriptionList: 'respTrackedSubscriptionList',
 	trackedSubscriptionSummary: 'respTrackedSubscriptionSummary',
 	trackedSubscriptionDetail: 'respTrackedSubscriptionDetail',

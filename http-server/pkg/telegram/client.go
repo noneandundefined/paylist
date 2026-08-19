@@ -132,7 +132,11 @@ func (c *Client) SendMessage(chatID int64, text string) error {
 }
 
 func (c *Client) SendMessageWithOpenApp(chatID int64, text, buttonText string) error {
-	return c.sendMessage(chatID, text, openAppMarkup(buttonText))
+	return c.SendMessageWithLink(chatID, text, buttonText, publicAppURL())
+}
+
+func (c *Client) SendMessageWithLink(chatID int64, text, buttonText, appURL string) error {
+	return c.sendMessage(chatID, text, openAppMarkupURL(buttonText, appURL))
 }
 
 func (c *Client) sendMessage(chatID int64, text string, replyMarkup map[string]any) error {
@@ -168,21 +172,30 @@ func (c *Client) sendMessage(chatID int64, text string, replyMarkup map[string]a
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		return parseAPIError(resp.StatusCode, responseBody)
+		err := parseAPIError(resp.StatusCode, responseBody)
+		if replyMarkup != nil && isInvalidButtonURL(err) {
+			return c.sendMessage(chatID, text, nil)
+		}
+
+		return err
 	}
 
 	return nil
 }
 
 func openAppMarkup(buttonText string) map[string]any {
+	return openAppMarkupURL(buttonText, publicAppURL())
+}
+
+func openAppMarkupURL(buttonText, appURL string) map[string]any {
 	buttonText = strings.TrimSpace(buttonText)
 	if buttonText == "" {
 		buttonText = "Open Paylist"
 	}
 
-	appURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
-	if appURL == "" {
-		appURL = "https://paylist.site"
+	appURL = strings.TrimSpace(appURL)
+	if !strings.HasPrefix(strings.ToLower(appURL), "https://") {
+		appURL = publicAppURL()
 	}
 
 	return map[string]any{
@@ -192,6 +205,24 @@ func openAppMarkup(buttonText string) map[string]any {
 			},
 		},
 	}
+}
+
+func publicAppURL() string {
+	appURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
+	if strings.HasPrefix(strings.ToLower(appURL), "https://") {
+		return appURL
+	}
+
+	return "https://paylist.site"
+}
+
+func isInvalidButtonURL(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "button url") || strings.Contains(msg, "wrong http url")
 }
 
 func (c *Client) SetWebhook(webhookURL string) error {

@@ -17,4 +17,5 @@ export const CACHEKEYs = {
 	PAID_PAGE_GRANT: `${indexKey}:paid:grant`,
 	PAID_PAGE_GOAL: `${indexKey}:paid:goal`,
 	SUBSCRIPTION_INVITE_TOKEN: `${indexKey}:subscription:invite-token`,
+	REFERRAL_CODE: `${indexKey}:referral:code`,
 };

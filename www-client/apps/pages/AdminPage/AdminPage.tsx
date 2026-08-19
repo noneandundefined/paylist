@@ -75,7 +75,6 @@ const AdminPage = () => {
 
 			<section className="gu-glass-card space-y-4 px-4 py-4">
 				<h1 className="text-[17px] font-semibold gu-text-primary">{t('admin.title')}</h1>
-				<p className="text-[13px] gu-text-muted">{t('admin.subtitle')}</p>
 
 				<div className="space-y-3">
 					<div className="space-y-1.5">

@@ -11,11 +11,15 @@ CREATE TABLE IF NOT EXISTS user_cores (
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     password VARCHAR(255) NOT NULL CHECK (char_length(password) > 5),
-    is_admin BOOLEAN NOT NULL DEFAULT FALSE
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+    referral_code VARCHAR(16)
 );
 
 CREATE INDEX IF NOT EXISTS idx_user_cores_email ON user_cores(email);
 CREATE INDEX IF NOT EXISTS idx_user_cores_user_uuid ON user_cores(user_uuid);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_cores_referral_code
+    ON user_cores (referral_code)
+    WHERE referral_code IS NOT NULL AND referral_code <> '';
 
 CREATE OR REPLACE FUNCTION set_updated_at_user_cores()
 RETURNS TRIGGER AS $$
@@ -69,6 +73,7 @@ CREATE TRIGGER set_updated_at_user_subscriptions_trigger
 
 COMMENT ON TABLE user_subscriptions IS 'Active SaaS subscription of a user in Paylist';
 COMMENT ON COLUMN user_cores.is_admin IS 'Operator account that can send broadcast messages';
+COMMENT ON COLUMN user_cores.referral_code IS 'Unique public code for the referral program';
 -- +goose StatementEnd
 
 -- +goose Down
@@ -81,6 +86,7 @@ DROP TABLE IF EXISTS user_subscriptions;
 
 DROP TRIGGER IF EXISTS set_updated_at_user_cores_trigger ON user_cores;
 DROP FUNCTION IF EXISTS set_updated_at_user_cores();
+DROP INDEX IF EXISTS idx_user_cores_referral_code;
 DROP INDEX IF EXISTS idx_user_cores_user_uuid;
 DROP INDEX IF EXISTS idx_user_cores_email;
 DROP TABLE IF EXISTS user_cores;

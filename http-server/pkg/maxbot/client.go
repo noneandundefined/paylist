@@ -48,9 +48,10 @@ type Update struct {
 }
 
 type User struct {
-	UserID   int64  `json:"user_id"`
-	Name     string `json:"name"`
-	Username string `json:"username"`
+	UserID    int64  `json:"user_id"`
+	Name      string `json:"name"`
+	FirstName string `json:"first_name"`
+	Username  string `json:"username"`
 }
 
 type Message struct {
@@ -103,15 +104,28 @@ func (c *Client) BotURL(startToken string) string {
 }
 
 func (c *Client) SendMessage(userID int64, text string) error {
-	payload, err := json.Marshal(map[string]any{
+	return c.sendMessage(userID, text, nil)
+}
+
+func (c *Client) SendMessageWithOpenApp(userID int64, text, buttonText string) error {
+	return c.sendMessage(userID, text, openAppAttachments(buttonText))
+}
+
+func (c *Client) sendMessage(userID int64, text string, attachments []map[string]any) error {
+	payload := map[string]any{
 		"text": text,
-	})
+	}
+	if len(attachments) > 0 {
+		payload["attachments"] = attachments
+	}
+
+	body, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
 
 	endpoint := fmt.Sprintf("%s/messages?user_id=%d", apiBaseURL, userID)
-	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(payload))
+	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return err
 	}
@@ -131,10 +145,44 @@ func (c *Client) SendMessage(userID int64, text string) error {
 	}
 
 	if resp.StatusCode >= http.StatusBadRequest {
-		return fmt.Errorf("max sendMessage failed: %s", strings.TrimSpace(string(responseBody)))
+		sendErr := fmt.Errorf("max sendMessage failed: %s", strings.TrimSpace(string(responseBody)))
+		if len(attachments) > 0 {
+			return c.sendMessage(userID, text, nil)
+		}
+
+		return sendErr
 	}
 
 	return nil
+}
+
+func openAppAttachments(buttonText string) []map[string]any {
+	buttonText = strings.TrimSpace(buttonText)
+	if buttonText == "" {
+		buttonText = "Open Paylist"
+	}
+
+	return []map[string]any{
+		{
+			"type": "inline_keyboard",
+			"payload": map[string]any{
+				"buttons": [][]map[string]string{
+					{
+						{"type": "link", "text": buttonText, "url": publicAppURL()},
+					},
+				},
+			},
+		},
+	}
+}
+
+func publicAppURL() string {
+	appURL := strings.TrimRight(strings.TrimSpace(os.Getenv("CLIENT_URL")), "/")
+	if strings.HasPrefix(strings.ToLower(appURL), "https://") {
+		return appURL
+	}
+
+	return "https://paylist.site"
 }
 
 func (c *Client) GetUpdates(marker *int64) ([]Update, *int64, error) {

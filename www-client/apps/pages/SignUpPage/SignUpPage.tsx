@@ -11,6 +11,7 @@ import AuthPageLayout from '@/components/common/Auth/AuthPageLayout';
 import InputPassword from '@/components/ui/Input/InputPassword';
 import { AuthSignupRequest } from '@/interface/auth/authSignupRequest.interface';
 import { ValidationEmailSchema, ValidationPasswordSchema } from '@/utils/ValidationSchema';
+import { clearStoredReferralCode, getStoredReferralCode } from '@/utils/referralCaptureUtils';
 
 const SignUpPage = () => {
 	const { t } = useTranslation();
@@ -32,9 +33,11 @@ const SignUpPage = () => {
 	});
 
 	const onSubmit = async (data: AuthSignupRequest) => {
-		const message = await basicAuthSignUp(data);
+		const referralCode = getStoredReferralCode();
+		const message = await basicAuthSignUp(referralCode ? { ...data, referral_code: referralCode } : data);
 
 		notify.success(message || t('auth.confirm-email-sent'));
+		clearStoredReferralCode();
 
 		const inviteToken = sessionStorage.getItem(CACHEKEYs.SUBSCRIPTION_INVITE_TOKEN);
 		if (inviteToken) {

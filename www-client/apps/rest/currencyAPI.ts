@@ -22,8 +22,7 @@ export interface CurrencyRatesResponse {
 const isCurrencyList = (value: unknown): value is CurrencyItem[] =>
 	Array.isArray(value) && value.length > 0 && value.every((item) => Boolean(item) && typeof item === 'object' && typeof (item as CurrencyItem).code === 'string' && typeof (item as CurrencyItem).name === 'string');
 
-export const fetchCurrencies = async (): Promise<CurrencyItem[]> =>
-	withTtlCache(CACHEKEYs.CURRENCY_LIST, DAY_MS, async () => (await apiGet<CurrencyItem[]>('/currency/currencies')) ?? [], isCurrencyList);
+export const fetchCurrencies = async (): Promise<CurrencyItem[]> => withTtlCache(CACHEKEYs.CURRENCY_LIST, DAY_MS, async () => (await apiGet<CurrencyItem[]>('/currency/currencies')) ?? [], isCurrencyList);
 
 export const loadCurrencySelectOptions = async () => {
 	const items = await fetchCurrencies();

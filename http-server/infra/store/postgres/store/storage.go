@@ -114,6 +114,12 @@ type Storage struct {
 		Get_SubscriptionByPlanName(ctx context.Context, planName string) (*models.Subscription, error)
 		Update_PlanAmount(ctx context.Context, planName string, amount float64, currency string) error
 	}
+	Referrals interface { //nolint
+		Ensure_ReferralCode(ctx context.Context, userUuid string) (string, error)
+		Attach_Referral(ctx context.Context, code, referredUuid string) error
+		Count_ConvertedReferrals(ctx context.Context, referrerUuid string) (int, error)
+		Apply_PaymentConversion(ctx context.Context, referredUuid string) (string, int, error)
+	}
 }
 
 func NewStorage(db *sql.DB) Storage {
@@ -122,6 +128,7 @@ func NewStorage(db *sql.DB) Storage {
 		TrackedSubscriptions: &TrackedSubscriptionStore{db},
 		Payments:             &PaymentStore{db},
 		Subscriptions:        &SubscriptionStore{db},
+		Referrals:            &ReferralStore{db},
 	}
 }
 

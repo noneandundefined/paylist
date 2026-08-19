@@ -11,6 +11,7 @@ import (
 	"paylist.server/infra/logger"
 	"paylist.server/infra/store/postgres/store"
 	"paylist.server/infra/store/redis"
+	"paylist.server/pkg/referral"
 )
 
 var errDeliveryRejected = errors.New("telegram delivery rejected")
@@ -104,6 +105,10 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	tr := locale.NewTranslator(language)
 	token := ParseStartToken(text)
 
+	if code := referral.CodeFromStartToken(token); code != "" {
+		return n.handleReferralStart(ctx, chatID, code, tr)
+	}
+
 	if token != "" {
 		return finishUpdate(n.linkFromStartToken(ctx, chatID, token, username, language, tr))
 	}
@@ -122,6 +127,25 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	}
 
 	return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.sign-in-hint"), tr.T("telegram.open-app"))))
+}
+
+func (n *Notifier) handleReferralStart(ctx context.Context, chatID int64, code string, tr locale.Translator) error {
+	signupURL := referral.SiteURL(publicAppURL(), code)
+
+	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, chatID)
+	if err != nil {
+		return err
+	}
+
+	if existingUserUuid != "" {
+		return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.account-created"), tr.T("telegram.open-app"))))
+	}
+
+	if err := n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.welcome"))); err != nil {
+		return finishUpdate(err)
+	}
+
+	return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithLink(chatID, tr.T("telegram.sign-in-hint"), tr.T("telegram.open-app"), signupURL)))
 }
 
 func (n *Notifier) linkFromStartToken(ctx context.Context, chatID int64, token, username, language string, tr locale.Translator) error {

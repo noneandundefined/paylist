@@ -22,6 +22,7 @@ export const ROUTES = {
 	AUTH_FORGOT_PASSWORD: '/forgot-password',
 	AUTH_RESET_PASSWORD: '/paylist-reset-password',
 	SUBSCRIPTION_INVITE: '/paylist-subscription-invite',
+	REFERRALS: '/account/referrals',
 };
 
 type Params = Record<string, string | number>;

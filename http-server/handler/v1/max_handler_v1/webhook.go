@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"paylist.server/infra/logger"
 	"paylist.server/pkg/maxbot"
 )
 
@@ -36,7 +37,9 @@ func WebhookHandler(notifier *maxbot.Notifier) http.HandlerFunc {
 			return
 		}
 
-		_ = notifier.HandleUpdate(r.Context(), update)
+		if err := notifier.HandleUpdate(r.Context(), update); err != nil {
+			logger.Error("MAX webhook update handling error: %s", err.Error())
+		}
 		w.WriteHeader(http.StatusOK)
 	}
 }

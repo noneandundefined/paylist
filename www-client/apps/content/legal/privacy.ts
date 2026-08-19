@@ -257,8 +257,7 @@ export const privacyDocuments: LegalDocumentsByLang = {
 		title: 'Richtlinie zur Verarbeitung personenbezogener Daten',
 		updated: 'Zuletzt aktualisiert: 16. August 2026',
 		intro: 'Diese Richtlinie zur Verarbeitung personenbezogener Daten wurde gemäß den Anforderungen des Föderalen Gesetzes Nr. 152-FZ vom 27.07.2006 „Über personenbezogene Daten“ (im Folgenden das Gesetz über personenbezogene Daten) erstellt und bestimmt das Verfahren der Verarbeitung personenbezogener Daten sowie die Maßnahmen zur Gewährleistung der Sicherheit personenbezogener Daten, die von Artem Wladimirowitsch Wlassow (im Folgenden der Betreiber) ergriffen werden.',
-		callout:
-			'Die Richtlinie gilt für alle Informationen, die der Betreiber über Besucher der Website https://paylist.site/ erhalten kann. Aktuelle Fassung: https://paylist.site/legal/privacy Kontakt: paylist.info@gmail.com.',
+		callout: 'Die Richtlinie gilt für alle Informationen, die der Betreiber über Besucher der Website https://paylist.site/ erhalten kann. Aktuelle Fassung: https://paylist.site/legal/privacy Kontakt: paylist.info@gmail.com.',
 		sections: [
 			{
 				heading: '1. Allgemeine Bestimmungen',

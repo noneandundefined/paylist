@@ -3,4 +3,5 @@ export interface AuthSignupRequest {
 	last_name: string | null;
 	email: string;
 	password: string;
+	referral_code?: string;
 }

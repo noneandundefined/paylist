@@ -117,6 +117,14 @@ func (h *Handler) AuthSignupHandler_V1(w http.ResponseWriter, r *http.Request) e
 		return httperr.Conflict(tr.TErr("error.failed-to-save-data"))
 	}
 
+	if _, err := h.Store.Referrals.Ensure_ReferralCode(ctx, uuid); err != nil {
+		logger.Error("AuthSignupHandler_V1 req={%s}: Failed to create referral code: %s", ctx.Value("XREQID").(string), err.Error())
+	}
+
+	if err := h.Store.Referrals.Attach_Referral(ctx, payload.ReferralCode, uuid); err != nil {
+		logger.Error("AuthSignupHandler_V1 req={%s}: Failed to attach referral: %s", ctx.Value("XREQID").(string), err.Error())
+	}
+
 	/* Send confirm to email */
 	if err := h.sendConfirmEmail(ctx, userCore.Email, uuid, ctx.Value("XREQID").(string)); err != nil {
 		return err

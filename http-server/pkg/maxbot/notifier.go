@@ -83,30 +83,15 @@ func (n *Notifier) SendDueReminders(ctx context.Context) error {
 
 func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	userID, username, token, isStart := linkPayload(update)
-	if userID == 0 {
+	if userID == 0 || !isStart {
 		return nil
 	}
 
-	if token == "" {
-		if isStart {
-			existingUserUuid, err := n.store.Users.Get_UserUuidByMaxUserID(ctx, userID)
-			if err != nil {
-				return err
-			}
+	language := "ru"
+	tr := locale.NewTranslator(language)
 
-			if existingUserUuid != "" {
-				return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-success"))
-			}
-
-			return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-missing"))
-		}
-
-		return nil
-	}
-
-	userUuid, language, err := redis.RedisMaxLinkGet(token)
-	if err != nil {
-		return err
+	if token != "" {
+		return n.linkFromStartToken(ctx, userID, token, username)
 	}
 
 	existingUserUuid, err := n.store.Users.Get_UserUuidByMaxUserID(ctx, userID)
@@ -114,16 +99,21 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 		return err
 	}
 
-	if userUuid == "" {
-		if existingUserUuid != "" {
-			return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-success"))
-		}
-
-		return n.client.SendMessage(userID, locale.NewTranslator("ru").T("max.link-expired"))
+	if existingUserUuid != "" {
+		return n.client.SendMessageWithOpenApp(userID, tr.T("max.account-created"), tr.T("max.open-app"))
 	}
 
-	if existingUserUuid != "" && existingUserUuid != userUuid {
-		return n.client.SendMessage(userID, locale.NewTranslator(language).T("max.already-linked-other-account"))
+	if err := n.client.SendMessage(userID, tr.T("max.welcome")); err != nil {
+		return err
+	}
+
+	return n.client.SendMessageWithOpenApp(userID, tr.T("max.sign-in-hint"), tr.T("max.open-app"))
+}
+
+func (n *Notifier) linkFromStartToken(ctx context.Context, userID int64, token, username string) error {
+	userUuid, language, err := redis.RedisMaxLinkGet(token)
+	if err != nil {
+		return err
 	}
 
 	if language == "" {
@@ -134,13 +124,32 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 		language = language[:2]
 	}
 
+	tr := locale.NewTranslator(language)
+
+	existingUserUuid, err := n.store.Users.Get_UserUuidByMaxUserID(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	if userUuid == "" {
+		if existingUserUuid != "" {
+			return n.client.SendMessageWithOpenApp(userID, tr.T("max.link-success"), tr.T("max.open-app"))
+		}
+
+		return n.client.SendMessage(userID, tr.T("max.link-expired"))
+	}
+
+	if existingUserUuid != "" && existingUserUuid != userUuid {
+		return n.client.SendMessage(userID, tr.T("max.already-linked-other-account"))
+	}
+
 	if err := n.store.Users.Upsert_UserMax(ctx, userUuid, userID, username, language); err != nil {
 		return err
 	}
 
 	_ = redis.RedisMaxLinkDelete(token)
 
-	return n.client.SendMessage(userID, locale.NewTranslator(language).T("max.link-success"))
+	return n.client.SendMessageWithOpenApp(userID, tr.T("max.link-success"), tr.T("max.open-app"))
 }
 
 func linkPayload(update Update) (int64, string, string, bool) {
@@ -171,6 +180,10 @@ func maxDisplayName(user *User) string {
 
 	if username := strings.TrimSpace(user.Username); username != "" {
 		return username
+	}
+
+	if firstName := strings.TrimSpace(user.FirstName); firstName != "" {
+		return firstName
 	}
 
 	return strings.TrimSpace(user.Name)

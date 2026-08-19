@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PageLayout from '../PageLayout';
 import { ROUTES } from '@/constants/constants';
 import { useTranslation } from 'react-i18next';
@@ -35,10 +36,12 @@ import Cookie from '@/components/@icons/cookie';
 import ExportVariant from '@/components/@icons/export-variant';
 import LogoutVariant from '@/components/@icons/logout-variant';
 import ThemeLightDark from '@/components/@icons/theme-light-dark';
+import AccountGroup from '@/components/@icons/account-group';
 import { openCookiePreferences } from '@/utils/cookieConsentUtils';
 
 const AccountPage = () => {
 	const { t, i18n } = useTranslation();
+	const navigate = useNavigate();
 	const { isDark, setTheme } = useTheme();
 	const { confirm } = useConfirm();
 	const { invalidateListAndSummary } = useInvalidateSubscriptions();
@@ -165,7 +168,7 @@ const AccountPage = () => {
 
 				{isPremium ? <AccountPremiumPlanCard validTo={loginState.valid_to} amount={loginState.amount} currency={loginState.currency} /> : <PremiumBadge />}
 
-				<AccountSection title={t('account.settings-section')}>
+				<AccountSection title={t('account.settings-section')} collapsible>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<div className="p-3 space-y-2">
 							<div className="flex items-center gap-3">
@@ -189,10 +192,11 @@ const AccountPage = () => {
 							switchChecked={isDark}
 							onSwitchChange={(checked) => setTheme(checked ? 'dark' : 'light')}
 						/>
+						<AccountSettingsRow icon={<AccountGroup fill="currentColor" size={21} />} label={t('account.referral-section')} onClick={() => navigate(ROUTES.REFERRALS)} />
 					</div>
 				</AccountSection>
 
-				<AccountSection title={t('account.subscriptions-section')}>
+				<AccountSection title={t('account.subscriptions-section')} collapsible defaultOpen={false}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<PremiumGatedSection title={t('account.notifications-settings')} isPremium={isPremium && canUseNotification}>
 							<div>
@@ -224,7 +228,7 @@ const AccountPage = () => {
 					</div>
 				</AccountSection>
 
-				<AccountSection title={t('account.analytics-section')}>
+				<AccountSection title={t('account.analytics-section')} collapsible defaultOpen={false}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<PremiumGatedSection title={t('account.country')} isPremium={isPremium}>
 							<CountrySelect value={country} onChange={onCountryChange} />
@@ -232,7 +236,7 @@ const AccountPage = () => {
 					</div>
 				</AccountSection>
 
-				<AccountSection title={t('account.content-section')}>
+				<AccountSection title={t('account.content-section')} collapsible defaultOpen={false}>
 					<div className="gu-glass-card divide-y gu-divide overflow-hidden">
 						<AccountSettingsRow
 							icon={<ExportVariant fill="currentColor" size={21} />}

@@ -18,6 +18,11 @@ func startTelegramWebhook(client *telegram.Client, secret string) {
 		return
 	}
 
+	if strings.HasPrefix(webhookURL, "http://") || strings.Contains(webhookURL, "localhost") {
+		logger.Info("Telegram webhook skipped: URL must be public https")
+		return
+	}
+
 	if err := client.SetWebhook(webhookURL); err != nil {
 		logger.Error("Telegram setWebhook failed: %s", err.Error())
 		return
@@ -96,8 +101,16 @@ func telegramPollingEnabled() bool {
 
 	// Webhook mode: polling is opt-in to avoid two receivers fighting for updates.
 	if strings.TrimSpace(os.Getenv("TELEGRAM_WEBHOOK_SECRET")) != "" {
+		if isDevEnv() {
+			return false
+		}
+
 		return strings.TrimSpace(os.Getenv("TELEGRAM_POLLING")) == "true"
 	}
 
 	return true
+}
+
+func isDevEnv() bool {
+	return strings.EqualFold(strings.TrimSpace(os.Getenv("GO_ENV")), "DEV")
 }

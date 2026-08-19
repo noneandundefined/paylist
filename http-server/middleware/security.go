@@ -30,6 +30,11 @@ var (
 func SecurityMiddleware() mux.MiddlewareFunc { //nolint
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if isWebhookPath(r.URL.Path) {
+				next.ServeHTTP(w, r)
+				return
+			}
+
 			tr := TranslatorFromContext(r.Context())
 			ip := getIP(r)
 

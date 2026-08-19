@@ -13,17 +13,9 @@ export interface CountryItem {
 const isCountryList = (value: unknown): value is CountryItem[] =>
 	Array.isArray(value) &&
 	value.length > 0 &&
-	value.every(
-		(item) =>
-			Boolean(item) &&
-			typeof item === 'object' &&
-			typeof (item as CountryItem).code === 'string' &&
-			typeof (item as CountryItem).name === 'string' &&
-			typeof (item as CountryItem).inflation_rate === 'number'
-	);
+	value.every((item) => Boolean(item) && typeof item === 'object' && typeof (item as CountryItem).code === 'string' && typeof (item as CountryItem).name === 'string' && typeof (item as CountryItem).inflation_rate === 'number');
 
-export const fetchCountries = async (): Promise<CountryItem[]> =>
-	withTtlCache(CACHEKEYs.COUNTRY_LIST, DAY_MS, async () => (await apiGet<CountryItem[]>('/country/countries')) ?? [], isCountryList);
+export const fetchCountries = async (): Promise<CountryItem[]> => withTtlCache(CACHEKEYs.COUNTRY_LIST, DAY_MS, async () => (await apiGet<CountryItem[]>('/country/countries')) ?? [], isCountryList);
 
 export const loadCountrySelectOptions = async () => {
 	const items = await fetchCountries();

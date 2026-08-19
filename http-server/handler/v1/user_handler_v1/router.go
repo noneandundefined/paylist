@@ -26,6 +26,9 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 	/* Access: ALL */
 	userRouter.Handle("/settings", httpx.ErrorHandler(h.UserSettingsGetHandler_V1)).Methods(http.MethodGet)
 
+	/* Access: ALL */
+	userRouter.Handle("/referral", httpx.ErrorHandler(h.UserReferralGetHandler_V1)).Methods(http.MethodGet)
+
 	/* Access: Premium */
 	userRouter.Handle("/telegram/link", middleware.PowDDos()(
 		httpx.ErrorHandler(h.UserTelegramLinkHandler_V1),

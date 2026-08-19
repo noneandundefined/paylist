@@ -11,6 +11,7 @@ const CreateSubscriptionPage = lazy(() => import('@/pages/CreateSubscriptionPage
 const PlansPage = lazy(() => import('@/pages/PlansPage/index'));
 const PaidPage = lazy(() => import('@/pages/PaidPage/index'));
 const AccountPage = lazy(() => import('@/pages/AccountPage/index'));
+const ReferralPage = lazy(() => import('@/pages/ReferralPage/index'));
 const AnalyticsPage = lazy(() => import('@/pages/AnalyticsPage/index'));
 const AdminPage = lazy(() => import('@/pages/AdminPage/index'));
 const LegalPage = lazy(() => import('@/pages/LegalPage/index'));
@@ -73,6 +74,12 @@ const config: CustomRouteConfig[] = [
 		loginRequired: true,
 		component: AccountPage,
 		title: 'label.page-account',
+	},
+	{
+		path: ROUTES.REFERRALS,
+		loginRequired: true,
+		component: ReferralPage,
+		title: 'label.page-referrals',
 	},
 	{
 		path: ROUTES.PLANS,

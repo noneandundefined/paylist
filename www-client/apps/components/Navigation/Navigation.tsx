@@ -6,8 +6,8 @@ import ElevationRise from '../@icons/elevation-rise';
 
 import Home from '../@icons/home';
 import Plus from '../@icons/plus';
-import Wrench from '../@icons/wrench';
 import { useLoginState } from '@/hooks/useLoginState';
+import Forum from '../@icons/forum';
 
 const NAV_ACTIVE_COLOR = '#0085FF';
 
@@ -22,7 +22,7 @@ const Navigation = () => {
 	const { isDark } = useTheme();
 	const { isAdmin } = useLoginState();
 
-	const items = isAdmin ? [...navItems, { path: ROUTES.ADMIN, labelKey: 'label.page-admin', Icon: Wrench }] : navItems;
+	const items = isAdmin ? [...navItems, { path: ROUTES.ADMIN, labelKey: 'label.page-admin', Icon: Forum }] : navItems;
 
 	const inactiveColor = isDark ? '#f1f5f9' : '#000000';
 

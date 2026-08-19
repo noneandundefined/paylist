@@ -44,6 +44,24 @@ export interface TelegramLinkResponse {
 	bot_url: string;
 }
 
+export interface UserReferralRank {
+	level: number;
+	key: string;
+	min_count: number;
+	max_count?: number | null;
+	reward_days: number;
+	current: boolean;
+}
+
+export interface UserReferralResponse {
+	code: string;
+	site_url: string;
+	bot_url: string;
+	referral_count: number;
+	rank: number;
+	ranks: UserReferralRank[];
+}
+
 export interface UserPublicProfile {
 	email: string;
 	first_name?: string | null;
@@ -68,8 +86,7 @@ export interface AdminSendMessageResponse {
 
 export const basicAdminRecipients = async (): Promise<AdminMessageRecipient[]> => apiGet(`${apiPath}/admin/recipients`);
 
-export const basicAdminSendMessage = async (payload: { channel: 'email' | 'telegram' | 'max'; user_uuid?: string | null; text: string }): Promise<AdminSendMessageResponse> =>
-	apiPost(`${apiPath}/admin/messages`, payload);
+export const basicAdminSendMessage = async (payload: { channel: 'email' | 'telegram' | 'max'; user_uuid?: string | null; text: string }): Promise<AdminSendMessageResponse> => apiPost(`${apiPath}/admin/messages`, payload);
 
 export const basicUserLoginState = async (): Promise<UserLoginStateResponse> => apiGet(`${apiPath}/login-state`);
 
@@ -82,6 +99,8 @@ export const basicUserSearchByEmail = async (email: string): Promise<UserPublicP
 };
 
 export const basicUserSettingsGet = async (): Promise<UserSettingsResponse> => apiGet(`${apiPath}/settings`);
+
+export const basicUserReferralGet = async (): Promise<UserReferralResponse> => apiGet(`${apiPath}/referral`);
 
 export const basicUserSettingsUpdate = async (payload: { display_currency?: string; country?: string }): Promise<void> => {
 	const message = await apiPatch<string>(`${apiPath}/settings`, payload);

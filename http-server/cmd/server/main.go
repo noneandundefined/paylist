@@ -79,6 +79,9 @@ func main() {
 			if webhookURL := maxWebhookURL(webhookSecret); webhookURL != "" {
 				if err := maxClient.SubscribeWebhook(webhookURL, webhookSecret); err != nil {
 					logger.Error("MAX subscribe webhook failed: %s", err.Error())
+					if !isDevEnv() {
+						startMaxPolling(server.maxbot, maxClient)
+					}
 				} else {
 					logger.Info("MAX webhook subscribed")
 				}

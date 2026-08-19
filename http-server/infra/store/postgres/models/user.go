@@ -14,6 +14,7 @@ type UserCore struct {
 	Avatars        *string   `json:"avatars,omitempty" db:"avatars"`
 	Password       string    `json:"-" db:"password"`
 	IsAdmin        bool      `json:"is_admin" db:"is_admin"`
+	ReferralCode   *string   `json:"referral_code,omitempty" db:"referral_code"`
 }
 
 type AdminMessageRecipient struct {

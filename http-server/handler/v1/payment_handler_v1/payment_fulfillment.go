@@ -63,6 +63,17 @@ func fulfillSucceededPayment(ctx context.Context, storage store.Storage, payment
 		}
 	}
 
+	referrerUUID, daysGranted, err := storage.Referrals.Apply_PaymentConversion(ctx, userUUID)
+	if err != nil {
+		return err
+	}
+
+	if daysGranted > 0 && referrerUUID != "" {
+		if err := storage.TrackedSubscriptions.Enable_NotificationsForUser(ctx, referrerUUID); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
