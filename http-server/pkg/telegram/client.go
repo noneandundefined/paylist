@@ -198,7 +198,7 @@ func (c *Client) SetWebhook(webhookURL string) error {
 	payload, err := json.Marshal(map[string]any{
 		"url":                  webhookURL,
 		"allowed_updates":      []string{"message"},
-		"drop_pending_updates": false,
+		"drop_pending_updates": true,
 	})
 	if err != nil {
 		return err
@@ -240,7 +240,7 @@ func (c *Client) SetWebhook(webhookURL string) error {
 }
 
 func (c *Client) DeleteWebhook() error {
-	url := fmt.Sprintf("https://api.telegram.org/bot%s/deleteWebhook?drop_pending_updates=false", c.token)
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/deleteWebhook?drop_pending_updates=true", c.token)
 
 	resp, err := c.shortClient.Get(url)
 	if err != nil {
@@ -331,5 +331,18 @@ func ParseStartToken(text string) string {
 		return ""
 	}
 
-	return strings.TrimSpace(parts[1])
+	return sanitizeStartToken(parts[1])
+}
+
+func sanitizeStartToken(token string) string {
+	var builder strings.Builder
+
+	for _, char := range strings.TrimSpace(token) {
+		switch {
+		case char >= '0' && char <= '9', char >= 'a' && char <= 'z', char >= 'A' && char <= 'Z', char == '_', char == '-':
+			builder.WriteRune(char)
+		}
+	}
+
+	return builder.String()
 }

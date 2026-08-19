@@ -44,7 +44,7 @@ func (h *Handler) UserMaxLinkHandler_V1(w http.ResponseWriter, r *http.Request) 
 		return httperr.Db(ctx, err)
 	}
 
-	httpx.HttpResponseWithETag(w, r, http.StatusOK, MaxLinkResponse{
+	httpx.HttpResponse(w, r, http.StatusOK, MaxLinkResponse{
 		BotURL: client.BotURL(token),
 	})
 

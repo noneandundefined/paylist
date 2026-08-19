@@ -28,7 +28,6 @@ const AccountMessengerConnectModal: React.FC<AccountMessengerConnectModalProps> 
 	const { close } = useModalContext();
 	const { displayName, initials, avatar } = useLoginState();
 	const [busy, setBusy] = useState(false);
-	const [botUrl, setBotUrl] = useState('');
 	const [avatarBroken, setAvatarBroken] = useState(() => isImageFailed(avatar));
 
 	useEffect(() => {
@@ -40,49 +39,30 @@ const AccountMessengerConnectModal: React.FC<AccountMessengerConnectModalProps> 
 	const accentSoft = `color-mix(in srgb, ${config.accent} 16%, transparent)`;
 	const showAvatar = Boolean(avatar) && !avatarBroken;
 
-	useEffect(() => {
-		if (connected) {
-			return;
-		}
-
-		let cancelled = false;
-
-		void onConnect().then((url) => {
-			if (!cancelled) {
-				setBotUrl(url);
-			}
-		});
-
-		return () => {
-			cancelled = true;
-		};
-	}, [connected, onConnect]);
-
 	const onPrimary = async () => {
 		if (busy) {
 			return;
 		}
 
-		if (connected) {
-			setBusy(true);
+		setBusy(true);
 
-			try {
+		try {
+			if (connected) {
 				await onDisconnect();
 				close();
-			} finally {
-				setBusy(false);
+				return;
 			}
 
-			return;
-		}
+			const url = await onConnect();
+			if (!url) {
+				return;
+			}
 
-		const url = botUrl || (await onConnect());
-		if (!url) {
-			return;
+			window.open(url, '_blank', 'noopener,noreferrer');
+			close();
+		} finally {
+			setBusy(false);
 		}
-
-		window.open(url, '_blank', 'noopener,noreferrer');
-		close();
 	};
 
 	return (
@@ -126,12 +106,12 @@ const AccountMessengerConnectModal: React.FC<AccountMessengerConnectModalProps> 
 			<div className="mt-8 flex flex-1">
 				<button
 					type="button"
-					disabled={busy || (!connected && !botUrl)}
+					disabled={busy}
 					onClick={() => void onPrimary()}
 					className={`flex flex-1 items-center justify-center text-center rounded-[16px] py-3.5 text-[15px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 ${connected ? 'bg-red-500' : ''}`}
 					style={connected ? undefined : { backgroundColor: config.accent }}
 				>
-					{busy || (!connected && !botUrl) ? t('action.loading') : primaryLabel}
+					{busy ? t('action.loading') : primaryLabel}
 				</button>
 			</div>
 		</div>

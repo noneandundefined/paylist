@@ -44,7 +44,7 @@ func (h *Handler) UserTelegramLinkHandler_V1(w http.ResponseWriter, r *http.Requ
 		return httperr.Db(ctx, err)
 	}
 
-	httpx.HttpResponseWithETag(w, r, http.StatusOK, TelegramLinkResponse{
+	httpx.HttpResponse(w, r, http.StatusOK, TelegramLinkResponse{
 		BotURL: client.BotURL(token),
 	})
 

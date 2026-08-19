@@ -102,12 +102,8 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 	chatID := update.Message.Chat.ID
 	username, language := fromTelegramUser(update.Message.From)
 	tr := locale.NewTranslator(language)
-
-	if err := n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.welcome"))); err != nil {
-		return finishUpdate(err)
-	}
-
 	token := ParseStartToken(text)
+
 	if token != "" {
 		return finishUpdate(n.linkFromStartToken(ctx, chatID, token, username, language, tr))
 	}
@@ -121,22 +117,30 @@ func (n *Notifier) HandleUpdate(ctx context.Context, update Update) error {
 		return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.account-created"), tr.T("telegram.open-app"))))
 	}
 
+	if err := n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.welcome"))); err != nil {
+		return finishUpdate(err)
+	}
+
 	return finishUpdate(n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.sign-in-hint"), tr.T("telegram.open-app"))))
 }
 
 func (n *Notifier) linkFromStartToken(ctx context.Context, chatID int64, token, username, language string, tr locale.Translator) error {
-	userUuid, err := redis.RedisTelegramLinkConsume(token)
+	userUuid, err := redis.RedisTelegramLinkGet(token)
 	if err != nil {
 		return err
-	}
-
-	if userUuid == "" {
-		return n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.link-expired")))
 	}
 
 	existingUserUuid, err := n.store.Users.Get_UserUuidByTelegramChatID(ctx, chatID)
 	if err != nil {
 		return err
+	}
+
+	if userUuid == "" {
+		if existingUserUuid != "" {
+			return n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.link-success"), tr.T("telegram.open-app")))
+		}
+
+		return n.sendOrDetach(ctx, chatID, n.client.SendMessage(chatID, tr.T("telegram.link-expired")))
 	}
 
 	if existingUserUuid != "" && existingUserUuid != userUuid {
@@ -146,6 +150,8 @@ func (n *Notifier) linkFromStartToken(ctx context.Context, chatID int64, token, 
 	if err := n.store.Users.Upsert_UserTelegram(ctx, userUuid, chatID, username, language); err != nil {
 		return err
 	}
+
+	_ = redis.RedisTelegramLinkDelete(token)
 
 	return n.sendOrDetach(ctx, chatID, n.client.SendMessageWithOpenApp(chatID, tr.T("telegram.link-success"), tr.T("telegram.open-app")))
 }

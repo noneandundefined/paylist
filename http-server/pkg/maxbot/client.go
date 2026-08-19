@@ -307,5 +307,18 @@ func ParseStartToken(text string) string {
 		return ""
 	}
 
-	return strings.TrimSpace(parts[1])
+	return sanitizeStartToken(parts[1])
+}
+
+func sanitizeStartToken(token string) string {
+	var builder strings.Builder
+
+	for _, char := range strings.TrimSpace(token) {
+		switch {
+		case char >= '0' && char <= '9', char >= 'a' && char <= 'z', char >= 'A' && char <= 'Z', char == '_', char == '-':
+			builder.WriteRune(char)
+		}
+	}
+
+	return builder.String()
 }

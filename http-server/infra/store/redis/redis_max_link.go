@@ -11,6 +11,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const maxLinkTTL = 30 * time.Minute
+
 func maxLinkKey(token string) string {
 	return fmt.Sprintf("max_link:%s", token)
 }
@@ -29,20 +31,20 @@ func RedisMaxLinkCreate(userUuid, language string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := client.Set(ctx, key, value, 15*time.Minute).Err(); err != nil {
+	if err := client.Set(ctx, key, value, maxLinkTTL).Err(); err != nil {
 		return "", err
 	}
 
 	return token, nil
 }
 
-func RedisMaxLinkConsume(token string) (string, string, error) {
+func RedisMaxLinkGet(token string) (string, string, error) {
 	key := maxLinkKey(token)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	value, err := client.GetDel(ctx, key).Result()
+	value, err := client.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return "", "", nil
 	}
@@ -57,4 +59,13 @@ func RedisMaxLinkConsume(token string) (string, string, error) {
 	}
 
 	return userUuid, language, nil
+}
+
+func RedisMaxLinkDelete(token string) error {
+	key := maxLinkKey(token)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return client.Del(ctx, key).Err()
 }
